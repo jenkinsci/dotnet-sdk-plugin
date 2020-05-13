@@ -1,0 +1,4 @@
+<?jelly escape-by-default='true'?>
+<div>
+  This plugin provides handling for .NET Core and .NET 5.0 SDKs as global tools.
+</div>

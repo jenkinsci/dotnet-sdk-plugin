@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>dotnet-sdk</artifactId>
+  <groupId>io.jenkins.plugins</groupId>
+  <name>.NET SDK Support</name>
+  <packaging>hpi</packaging>
+  <url>https://github.com/Zastai/${project.artifactId}-plugin</url>
+  <version>${revision}${changelist}</version>
+
+  <scm>
+    <connection>scm:git:git://github.com/${github.host}/${project.artifactId}-plugin.git</connection>
+    <developerConnection>scm:git:git@github.com:${github.host}/${project.artifactId}-plugin.git</developerConnection>
+    <url>https://github.com/${github.host}/${project.artifactId}-plugin</url>
+  </scm>
+
+  <properties>
+    <github.host>Zastai</github.host>
+    <revision>1.0</revision>
+    <changelist>-SNAPSHOT</changelist>
+    <jenkins.version>2.164.3</jenkins.version>
+    <java.level>8</java.level>
+  </properties>
+
+  <licenses>
+    <license>
+      <name>MIT License</name>
+      <url>https://opensource.org/licenses/MIT</url>
+    </license>
+  </licenses>
+
+  <parent>
+    <groupId>org.jenkins-ci.plugins</groupId>
+    <artifactId>plugin</artifactId>
+    <version>3.50</version>
+    <relativePath/>
+  </parent>
+
+  <repositories>
+    <repository>
+      <id>repo.jenkins-ci.org</id>
+      <url>https://repo.jenkins-ci.org/public/</url>
+    </repository>
+  </repositories>
+
+  <pluginRepositories>
+    <pluginRepository>
+      <id>repo.jenkins-ci.org</id>
+      <url>https://repo.jenkins-ci.org/public/</url>
+    </pluginRepository>
+  </pluginRepositories>
+
+</project>
