@@ -27,13 +27,17 @@ import java.util.logging.Logger;
 /** Information about .NET SDKs. */
 public final class DotNetSDK extends ToolInstallation implements NodeSpecific<DotNetSDK>, EnvironmentSpecific<DotNetSDK> {
 
-  public DotNetSDK(String name, String home) {
+  private final boolean telemetryOptOut;
+
+  public DotNetSDK(String name, String home, boolean telemetryOptOut) {
     super(name, home, Collections.emptyList());
+    this.telemetryOptOut = telemetryOptOut;
   }
 
   @DataBoundConstructor
-  public DotNetSDK(String name, String home, List<? extends ToolProperty<?>> properties) {
+  public DotNetSDK(String name, String home, List<? extends ToolProperty<?>> properties, boolean telemetryOptOut) {
     super(name, home, properties);
+    this.telemetryOptOut = telemetryOptOut;
   }
 
   public static void addSdks(@NonNull ListBoxModel model) {
@@ -46,16 +50,18 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
   public void buildEnvVars(EnvVars env) {
     env.put("DOTNET_HOME", this.getHome());
     env.put("PATH+DOTNET", this.getHome());
+    if (this.telemetryOptOut)
+      env.put("DOTNET_CLI_TELEMETRY_OPTOUT", "1");
   }
 
   @Override
   public DotNetSDK forEnvironment(EnvVars envVars) {
-    return new DotNetSDK(this.getName(), envVars.expand(getHome()));
+    return new DotNetSDK(this.getName(), envVars.expand(getHome()), this.telemetryOptOut);
   }
 
   @Override
   public DotNetSDK forNode(@NonNull Node node, TaskListener log) throws IOException, InterruptedException {
-    return new DotNetSDK(this.getName(), translateFor(node, log));
+    return new DotNetSDK(this.getName(), translateFor(node, log), this.telemetryOptOut);
   }
 
   /**
@@ -68,7 +74,7 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
     return sdks != null && sdks.length > 0;
   }
 
-  private static final Logger LOGGER = Logger.getLogger(DotNetSDK.class.getName());
+  //region ConverterImpl
 
   public static class ConverterImpl extends ToolConverter {
 
@@ -79,6 +85,10 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
     }
 
   }
+
+  //endregion
+
+  //region DescriptorImpl
 
   @Extension
   @Symbol("dotnetsdk")
@@ -121,7 +131,6 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
 
   }
 
-  // TODO: Maybe subclassed installers, either for custom help text (but then I'd need to know how to "inherit" jelly/docs), or
-  // TODO: provide a "well known" set of URLs.
+  //endregion
 
 }
