@@ -1,4 +1,6 @@
 <?jelly escape-by-default='true'?>
 <div>
-  This plugin provides handling for .NET Core and .NET 5.0 SDKs as global tools.
+  This plugin provides handling for .NET Core and .NET 5.0 SDKs as global tools.<br/>
+  It provides a build wrapper (<code>withDotNet</code>) to set up the environment to make the <code>dotnet</code> command-line
+  utility available.
 </div>
