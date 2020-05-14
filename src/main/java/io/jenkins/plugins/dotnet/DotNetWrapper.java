@@ -75,11 +75,9 @@ public class DotNetWrapper extends SimpleBuildWrapper {
     }
   }
 
-// TODO
-//  @Override
-//  public ConsoleLogFilter createLoggerDecorator(Run<?, ?> build) {
-//    return DotNetConsoleAnnotator.asConsoleLogFilter();
-//  }
+  // TODO: Custom Logger Decorator?
+
+  //region DescriptorImpl
 
   @Extension
   @Symbol("withDotNet")
@@ -103,5 +101,7 @@ public class DotNetWrapper extends SimpleBuildWrapper {
     }
 
   }
+
+  //endregion
 
 }
