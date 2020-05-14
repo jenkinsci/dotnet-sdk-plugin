@@ -16,6 +16,14 @@
     <url>https://github.com/${github.host}/${project.artifactId}-plugin</url>
   </scm>
 
+  <developers>
+    <developer>
+      <id>Zastai</id>
+      <name>Tim Van Holder</name>
+      <email>tim.vanholder@gmail.com</email>
+    </developer>
+  </developers>
+
   <properties>
     <github.host>Zastai</github.host>
     <revision>1.0</revision>
