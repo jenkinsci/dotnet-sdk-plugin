@@ -9,9 +9,9 @@ The first release will include:
 - a build wrapper (`withDotNet`), to set up a particular .NET SDK for use in jobs or pipeline steps
 - four builders:
   - `dotnetBuild`: runs "dotnet build"
+  - `dotnetClean`: runs "dotnet clean"
   - `dotnetPack`: runs "dotnet pack"
   - `dotnetTest`: runs "dotnet test"
-  - `dotnetVsTest`: runs "dotnet vstest"
 
 The builders are just for convenience; when using the build wrapper, any dotnet command line can
 be executed using a batch or shell step, as applicable.
