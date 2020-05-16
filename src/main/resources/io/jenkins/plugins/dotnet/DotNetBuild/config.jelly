@@ -1,0 +1,35 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
+
+  <f:entry title="${%.NET SDK}" field="sdk">
+    <f:select/>
+  </f:entry>
+
+  <f:entry title="${%Project or Solution}" field="project">
+    <f:textbox/>
+  </f:entry>
+
+  <f:entry title="${%Configuration}" field="configuration">
+    <f:combobox />
+  </f:entry>
+
+  <f:advanced>
+    <f:entry title="${%Targets}" field="targets">
+      <f:textbox />
+    </f:entry>
+
+    <f:entry title="${%Properties}" field="properties">
+      <f:expandableTextbox />
+    </f:entry>
+
+    <f:entry title="${%Verbosity}" field="verbosity">
+      <f:select default="n"/>
+    </f:entry>
+
+    <f:entry title="${%Use Binary Logger}" field="binLog">
+      <f:checkbox />
+    </f:entry>
+
+  </f:advanced>
+
+</j:jelly>

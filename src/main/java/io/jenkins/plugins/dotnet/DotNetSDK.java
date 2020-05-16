@@ -1,28 +1,27 @@
 package io.jenkins.plugins.dotnet;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
-import hudson.EnvVars;
-import hudson.Extension;
-import hudson.model.EnvironmentSpecific;
-import hudson.model.Node;
-import hudson.model.PersistentDescriptor;
-import hudson.model.TaskListener;
+import edu.umd.cs.findbugs.annotations.Nullable;
+import hudson.*;
+import hudson.model.*;
+import hudson.remoting.VirtualChannel;
 import hudson.slaves.NodeSpecific;
-import hudson.tools.*;
+import hudson.tools.ToolDescriptor;
+import hudson.tools.ToolInstallation;
+import hudson.tools.ToolProperty;
 import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
 import hudson.util.XStream2;
-import io.jenkins.plugins.dotnet._dotnet.Messages;
 import jenkins.model.Jenkins;
+import jenkins.security.MasterToSlaveCallable;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Logger;
 
 /** Information about .NET SDKs. */
 public final class DotNetSDK extends ToolInstallation implements NodeSpecific<DotNetSDK>, EnvironmentSpecific<DotNetSDK> {
@@ -54,14 +53,53 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
       env.put("DOTNET_CLI_TELEMETRY_OPTOUT", "1");
   }
 
-  @Override
-  public DotNetSDK forEnvironment(EnvVars envVars) {
-    return new DotNetSDK(this.getName(), envVars.expand(getHome()), this.telemetryOptOut);
+  public String ensureExecutableExists(@NonNull Launcher launcher) throws IOException, InterruptedException {
+    final String executable = DotNetSDK.getExecutableFileName(launcher);
+    final String fullExecutablePath = this.getSdkFilePath(launcher, executable);
+    if (fullExecutablePath == null)
+      throw new AbortException(Messages.DotNetSDK_ExecutableNotFound(this.getName()));
+    return fullExecutablePath;
   }
 
   @Override
-  public DotNetSDK forNode(@NonNull Node node, TaskListener log) throws IOException, InterruptedException {
-    return new DotNetSDK(this.getName(), translateFor(node, log), this.telemetryOptOut);
+  public DotNetSDK forEnvironment(EnvVars envVars) {
+    return new DotNetSDK(this.getName(), envVars.expand(this.getHome()), this.telemetryOptOut);
+  }
+
+  @Override
+  public DotNetSDK forNode(@NonNull Node node, TaskListener listener) throws IOException, InterruptedException {
+    return new DotNetSDK(this.getName(), this.translateFor(node, listener), this.telemetryOptOut);
+  }
+  public static String getExecutableFileName(@NonNull Launcher launcher) {
+    return launcher.isUnix() ? "dotnet" : "dotnet.exe";
+  }
+
+  public String getSdkFilePath(Launcher launcher, String name) throws IOException, InterruptedException {
+    final VirtualChannel channel = launcher.getChannel();
+    if (channel != null)
+      return channel.call(new GetSdkFilePath(this.getHome(), name));
+    return null;
+  }
+
+  private static final class GetSdkFilePath extends MasterToSlaveCallable<String, IOException> implements Serializable {
+
+    private final String home;
+    private final String name;
+
+    public GetSdkFilePath(String home, String name) {
+      this.home = home;
+      this.name = name;
+    }
+
+    @Override
+    public String call() {
+      final String expandedHome = Util.replaceMacro(this.home, EnvVars.masterEnvVars);
+      final File file = new File(expandedHome, name);
+      if (file.exists())
+        return file.getPath();
+      return null;
+    }
+
   }
 
   /**
@@ -69,7 +107,7 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
    *
    * @return {@code true} when at least one .NET SDK has been configured; otherwise, {@code false}.
    */
-  public static boolean sdkConfigured() {
+  public static boolean hasConfiguration() {
     final DotNetSDK[] sdks = Jenkins.get().getDescriptorByType(DescriptorImpl.class).getInstallations();
     return sdks != null && sdks.length > 0;
   }
@@ -116,6 +154,33 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
         // - a folder of the same name must exist under shared/Microsoft.NETCore.App
       }
       return FormValidation.ok();
+    }
+
+    public DotNetSDK prepareAndValidateInstance(@NonNull String name, @NonNull FilePath workspace, @Nullable EnvVars env, @Nullable TaskListener listener) throws IOException, InterruptedException {
+      DotNetSDK sdkInstance = null;
+      {
+        for (final DotNetSDK sdk : this.getInstallations()) {
+          if (sdk.getName().equals(name)) {
+            sdkInstance = sdk;
+            break;
+          }
+        }
+        if (sdkInstance == null)
+          throw new AbortException(Messages.DotNetSDK_UnknownSDK(name));
+      }
+      { // Apply NodeSpecific
+        final Node node;
+        {
+          final Computer computer = workspace.toComputer();
+          node = (computer != null) ? computer.getNode() : null;
+        }
+        if (node == null)
+          throw new AbortException(Messages.DotNetSDK_NoNode());
+        sdkInstance = sdkInstance.forNode(node, listener);
+      }
+      if (env != null) // Apply EnvironmentSpecific
+        sdkInstance = sdkInstance.forEnvironment(env);
+      return sdkInstance;
     }
 
     @NonNull

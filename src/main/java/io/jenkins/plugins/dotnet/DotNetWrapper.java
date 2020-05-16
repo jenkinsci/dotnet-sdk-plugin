@@ -2,10 +2,11 @@ package io.jenkins.plugins.dotnet;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.*;
-import hudson.model.*;
+import hudson.model.AbstractProject;
+import hudson.model.Run;
+import hudson.model.TaskListener;
 import hudson.tasks.BuildWrapperDescriptor;
 import hudson.util.ListBoxModel;
-import io.jenkins.plugins.dotnet._dotnet.Messages;
 import jenkins.model.Jenkins;
 import jenkins.tasks.SimpleBuildWrapper;
 import org.jenkinsci.Symbol;
@@ -45,28 +46,8 @@ public class DotNetWrapper extends SimpleBuildWrapper {
     // FIXME: Or should the constructor have already stopped null from being assigned?
     if (this.sdk == null)
       throw new AbortException(String.format(Messages.DotNetWrapper_NoSDK(), this.sdk));
-    DotNetSDK sdkInstance = null;
-    {
-      final DotNetSDK[] sdks = Jenkins.get().getDescriptorByType(DotNetSDK.DescriptorImpl.class).getInstallations();
-      for (final DotNetSDK _sdk : sdks) {
-        if (_sdk.getName().equals(this.sdk)) {
-          sdkInstance = _sdk;
-          break;
-        }
-      }
-      if (sdkInstance == null)
-        throw new AbortException(String.format(Messages.DotNetWrapper_UnknownSDK(), this.sdk));
-    }
-    { // Apply NodeSpecific
-      final Computer computer = workspace.toComputer();
-      if (computer != null) {
-        final Node node = computer.getNode();
-        if (node != null)
-          sdkInstance = sdkInstance.forNode(node, listener);
-      }
-    }
-    // Apply EnvironmentSpecific
-    sdkInstance = sdkInstance.forEnvironment(initialEnvironment);
+    final DotNetSDK sdkInstance = Jenkins.get().getDescriptorByType(DotNetSDK.DescriptorImpl.class).prepareAndValidateInstance(this.sdk, workspace, initialEnvironment, listener);
+    sdkInstance.ensureExecutableExists(launcher);
     { // Update Environment
       final EnvVars modified = new EnvVars();
       sdkInstance.buildEnvVars(modified);
@@ -91,7 +72,7 @@ public class DotNetWrapper extends SimpleBuildWrapper {
 
     @Override
     public boolean isApplicable(AbstractProject<?, ?> item) {
-      return DotNetSDK.sdkConfigured();
+      return DotNetSDK.hasConfiguration();
     }
 
     public ListBoxModel doFillSdkItems() {
