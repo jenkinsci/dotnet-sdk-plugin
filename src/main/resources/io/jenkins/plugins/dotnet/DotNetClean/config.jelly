@@ -5,4 +5,44 @@
     <f:select/>
   </f:entry>
 
+  <f:entry title="${%Directory}" field="workDirectory">
+    <f:textbox/>
+  </f:entry>
+
+  <f:entry title="${%Project or Solution}" field="project">
+    <f:textbox/>
+  </f:entry>
+
+  <f:entry title="${%Configuration}" field="configuration">
+    <f:combobox />
+  </f:entry>
+
+  <f:advanced>
+
+    <f:entry title="${%Output Directory}" field="outputDirectory">
+      <f:textbox />
+    </f:entry>
+
+    <f:entry title="${%Framework}" field="framework">
+      <f:textbox />
+    </f:entry>
+
+    <f:entry title="${%Runtime}" field="runtime">
+      <f:textbox />
+    </f:entry>
+
+    <f:entry title="${%Verbosity}" field="verbosity">
+      <f:select default="n"/>
+    </f:entry>
+
+    <f:entry title="${%No Startup Banner}" field="noLogo">
+      <f:checkbox />
+    </f:entry>
+
+    <f:entry title="${%Shut Down Build Servers}" field="shutDownBuildServers">
+      <f:checkbox />
+    </f:entry>
+
+  </f:advanced>
+
 </j:jelly>
