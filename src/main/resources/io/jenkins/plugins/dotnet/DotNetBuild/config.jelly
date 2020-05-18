@@ -5,6 +5,10 @@
     <f:select/>
   </f:entry>
 
+  <f:entry title="${%Work Directory}" field="workDirectory">
+    <f:textbox/>
+  </f:entry>
+
   <f:entry title="${%Project or Solution}" field="project">
     <f:textbox/>
   </f:entry>
@@ -13,20 +17,65 @@
     <f:combobox />
   </f:entry>
 
-  <f:advanced>
-    <f:entry title="${%Targets}" field="targets">
+  <f:entry title="${%Warnings Result in Unstable Build}" field="unstableIfWarnings">
+    <f:checkbox />
+  </f:entry>
+
+  <f:advanced title="${%More Options}">
+
+    <f:entry title="${%Additional Targets}" field="targets">
       <f:textbox />
     </f:entry>
 
-    <f:entry title="${%Properties}" field="properties">
+    <f:entry title="${%Framework}" field="framework">
+      <f:textbox />
+    </f:entry>
+
+    <f:entry title="${%MSBuild Options}" field="options">
+      <f:textbox />
+    </f:entry>
+
+    <f:entry title="${%MSBuild Properties}" field="properties">
       <f:expandableTextbox />
+    </f:entry>
+
+    <f:entry title="${%Output Directory}" field="outputDirectory">
+      <f:textbox />
+    </f:entry>
+
+    <f:entry title="${%Runtime}" field="runtime">
+      <f:textbox />
     </f:entry>
 
     <f:entry title="${%Verbosity}" field="verbosity">
       <f:select default="n"/>
     </f:entry>
 
-    <f:entry title="${%Use Binary Logger}" field="binLog">
+    <f:entry title="${%Version Suffix}" field="versionSuffix">
+      <f:textbox />
+    </f:entry>
+
+    <f:entry title="${%Force Dependency Resolution}" field="force">
+      <f:checkbox />
+    </f:entry>
+
+    <f:entry title="${%Ignore Project Dependencies}" field="noDependencies">
+      <f:checkbox />
+    </f:entry>
+
+    <f:entry title="${%No Implicit Restore}" field="noRestore">
+      <f:checkbox />
+    </f:entry>
+
+    <f:entry title="${%No Incremental Build}" field="noIncremental">
+      <f:checkbox />
+    </f:entry>
+
+    <f:entry title="${%No Startup Banner}" field="noLogo">
+      <f:checkbox />
+    </f:entry>
+
+    <f:entry title="${%Shut Down Build Servers}" field="shutDownBuildServers">
       <f:checkbox />
     </f:entry>
 

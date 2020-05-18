@@ -1,0 +1,17 @@
+<div>
+  The <code>dotnet build</code> command builds the project and its dependencies into a set of binaries. The binaries include the
+  project's code in Intermediate Language (IL) files with a <em>.dll</em> extension. Depending on the project type and settings,
+  other files may be included, such as:
+</div>
+<ol>
+  <li>
+    An executable that can be used to run the application, if the project type is an executable targeting .NET Core 3.0 or later.
+  </li>
+  <li>Symbol files used for debugging, with a <em>.pdb</em> extension.</li>
+  <li>A <em>.deps.json</em> file, which lists the dependencies of the application or library.</li>
+  <li>A <em>.runtimeconfig.json</em> file, which specifies the shared runtime and its version for an application.</li>
+  <li>Other libraries that the project depends on (via project references or NuGet package references).</li>
+</ol>
+<div align="right">
+  (see also: <a href="https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-build">Microsoft Documentation</a>)
+</div>

@@ -1,0 +1,18 @@
+<div>
+  La commande <code>dotnet build</code> génère le projet et ses dépendances dans un ensemble de fichiers binaires. Les binaires
+  incluent le code du projet dans les fichiers de langue intermédiaire (IL) avec une extension <em>.dll</em>. Selon le type de
+  projet et les paramètres, d’autres fichiers peuvent être inclus, tels que :
+</div>
+<ol>
+  <li>
+    Un exécutant qui peut être utilisé pour exécuter l’application, si le type de projet est un ciblage exécutable .NET Core 3.0 ou
+    plus tard.
+  </li>
+  <li>Fichiers de symbole utilisés pour débogage avec une extension <em>.pdb</em>.</li>
+  <li>Un fichier <em>.deps.json</em>, qui répertorie les dépendances de l’application ou de la bibliothèque.</li>
+  <li>A <em>.runtimeconfig.json</em>, qui spécifie le temps d’exécution partagé et sa version pour une application.</li>
+  <li>Autres bibliothèques dont dépend le projet (via des références de projet ou des références de paquets NuGet).</li>
+</ol>
+<div align="right">
+  (voir aussi la <a href="https://docs.microsoft.com/fr-fr/dotnet/core/tools/dotnet-build">Documentation de Microsoft</a>)
+</div>
