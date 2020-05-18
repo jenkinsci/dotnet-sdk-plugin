@@ -59,9 +59,8 @@ public abstract class DotNet extends Builder {
     // TODO: Optionally handle build variables (sensitive and otherwise)
     this.addCommandLineArguments(args);
     final FilePath workDir = this.getWorkDirectory(workspace);
-    final long startTime = System.currentTimeMillis();
+    final DotNetConsoleProcessor dncp = new DotNetConsoleProcessor(listener.getLogger(), Charset.defaultCharset());
     try {
-      final DotNetConsoleProcessor dncp = new DotNetConsoleProcessor(listener.getLogger(), Charset.defaultCharset());
       final int rc = launcher.launch().cmds(args).envs(env).stdout(dncp).pwd(workDir).join();
       listener.getLogger().printf("Exit Code: %d%n", rc);
       if (dncp.getErrors() > 0)
@@ -74,9 +73,9 @@ public abstract class DotNet extends Builder {
       Util.displayIOException(e, listener);
       Functions.printStackTrace(e, listener.fatalError(Messages.DotNet_ExecutionFailed()));
       String msg = Messages.DotNet_ExecutionFailed();
-      final long elapsed = System.currentTimeMillis() - startTime;
-      // This is what the Ant plugin does - assume that if it fails fast, it's because the executable wasn't in the path.
-      if (sdkInstance == null && elapsed >= 0 && elapsed < 1000) {
+      // TODO: Extend the console processor to detect "command not found" cases, so we can suggest actions to take
+      final boolean commandNotFound = false;
+      if (commandNotFound && sdkInstance == null) {
         if (DotNetSDK.hasConfiguration()) // at least one SDK configured
           msg += Messages.DotNet_ToolConfigurationNeeded();
         else
