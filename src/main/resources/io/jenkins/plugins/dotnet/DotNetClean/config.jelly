@@ -17,7 +17,7 @@
     <f:combobox />
   </f:entry>
 
-  <f:advanced>
+  <f:advanced title="${%More Options}">
 
     <f:entry title="${%Output Directory}" field="outputDirectory">
       <f:textbox />
