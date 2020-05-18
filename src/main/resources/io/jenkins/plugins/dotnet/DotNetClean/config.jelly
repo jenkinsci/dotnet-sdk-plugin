@@ -5,7 +5,7 @@
     <f:select/>
   </f:entry>
 
-  <f:entry title="${%Directory}" field="workDirectory">
+  <f:entry title="${%Work Directory}" field="workDirectory">
     <f:textbox/>
   </f:entry>
 
@@ -19,11 +19,23 @@
 
   <f:advanced title="${%More Options}">
 
-    <f:entry title="${%Output Directory}" field="outputDirectory">
+    <f:entry title="${%Additional Targets}" field="targets">
       <f:textbox />
     </f:entry>
 
     <f:entry title="${%Framework}" field="framework">
+      <f:textbox />
+    </f:entry>
+
+    <f:entry title="${%MSBuild Options}" field="options">
+      <f:textbox />
+    </f:entry>
+
+    <f:entry title="${%MSBuild Properties}" field="properties">
+      <f:expandableTextbox />
+    </f:entry>
+
+    <f:entry title="${%Output Directory}" field="outputDirectory">
       <f:textbox />
     </f:entry>
 
