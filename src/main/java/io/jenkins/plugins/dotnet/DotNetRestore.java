@@ -6,14 +6,18 @@ import hudson.model.AbstractProject;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 
+import java.util.List;
+
 /** A build step using the 'dotnet' executable to restore dependencies for a project. */
 public final class DotNetRestore extends DotNet {
 
-  // TODO: Determine configuration needed.
-
   @DataBoundConstructor
-  public DotNetRestore(String sdk) {
-    super(sdk, "restore");
+  public DotNetRestore() {
+  }
+
+  @Override
+  protected void addCommandLineArguments(@NonNull List<String> args) {
+    args.add("restore");
   }
 
   @Extension

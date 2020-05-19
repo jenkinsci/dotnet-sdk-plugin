@@ -6,14 +6,18 @@ import hudson.model.AbstractProject;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 
+import java.util.List;
+
 /** A build step using the 'dotnet' executable to create a NuGet package for a project. */
 public final class DotNetClean extends DotNet {
 
-  // TODO: Determine configuration needed.
-
   @DataBoundConstructor
-  public DotNetClean(String sdk) {
-    super(sdk, "clean");
+  public DotNetClean() {
+  }
+
+  @Override
+  protected void addCommandLineArguments(@NonNull List<String> args) {
+    args.add("clean");
   }
 
   @Extension

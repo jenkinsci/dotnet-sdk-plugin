@@ -6,14 +6,18 @@ import hudson.model.AbstractProject;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 
+import java.util.List;
+
 /** A build step using the 'dotnet' executable to run unit tests for a project, using its configured runner. */
 public final class DotNetTest extends DotNet {
 
-  // TODO: Determine configuration needed.
-
   @DataBoundConstructor
-  public DotNetTest(String sdk) {
-    super(sdk, "test");
+  public DotNetTest() {
+  }
+
+  @Override
+  protected void addCommandLineArguments(@NonNull List<String> args) {
+    args.add("test");
   }
 
   @Extension

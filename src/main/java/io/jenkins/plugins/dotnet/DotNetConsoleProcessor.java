@@ -28,7 +28,7 @@ public final class DotNetConsoleProcessor extends LineTransformationOutputStream
 
   // FIXME: This will fail for non-English installs. A better approach would be to create a custom MSBuild logger (deployment method
   // FIXME: TBD), we could emit special invariant markers to pick up here, then pass the message along to the standard logger.
-  private static final Pattern RE_ERROR = Pattern.compile(": error [A-Z]+[0-9]+:", Pattern.CASE_INSENSITIVE);
+  private static final Pattern RE_ERROR   = Pattern.compile(": error [A-Z]+[0-9]+:", Pattern.CASE_INSENSITIVE);
   private static final Pattern RE_WARNING = Pattern.compile(": warning [A-Z]+[0-9]+:", Pattern.CASE_INSENSITIVE);
 
   @Override
@@ -36,11 +36,11 @@ public final class DotNetConsoleProcessor extends LineTransformationOutputStream
     final String line = this.trimEOL(this.charset.decode(ByteBuffer.wrap(lineBytes, 0, lineLength)).toString());
     {
       Matcher m = DotNetConsoleProcessor.RE_ERROR.matcher(line);
-      if (m.matches())
+      if (m.find())
         ++this.errors;
       else {
         m = DotNetConsoleProcessor.RE_WARNING.matcher(line);
-        if (m.matches())
+        if (m.find())
           ++this.warnings;
       }
     }
@@ -63,5 +63,10 @@ public final class DotNetConsoleProcessor extends LineTransformationOutputStream
   }
 
   //endregion
+
+  public boolean isCommandNotFound() {
+    // TODO: Detect this
+    return false;
+  }
 
 }
