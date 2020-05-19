@@ -1,6 +1,5 @@
 <?jelly escape-by-default='true'?>
 <div>
-  This plugin provides handling for .NET Core and .NET 5.0 SDKs as global tools.<br/>
-  It provides a build wrapper (<code>withDotNet</code>) to set up the environment to make the <code>dotnet</code> command-line
-  utility available.
+  This plugin provides handling for <a href="https://dotnet.microsoft.com/download/dotnet-core">.NET SDKs</a> (Core and 5.0+) as
+  global tools in Jenkins. Includes a build wrapper and several convenience builders.
 </div>
