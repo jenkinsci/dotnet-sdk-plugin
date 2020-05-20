@@ -233,27 +233,9 @@ public abstract class DotNet extends Builder implements SimpleBuildStep {
 
   protected boolean shutDownBuildServers = false;
 
-  public boolean isShutDownBuildServers() {
-    return this.shutDownBuildServers;
-  }
-
-  @DataBoundSetter
-  public void setShutDownBuildServers(boolean shutDownBuildServers) {
-    this.shutDownBuildServers = shutDownBuildServers;
-  }
-
   protected boolean unstableIfWarnings = false;
 
-  public boolean isUnstableIfWarnings() {
-    return this.unstableIfWarnings;
-  }
-
-  @DataBoundSetter
-  public void setUnstableIfWarnings(boolean unstableIfWarnings) {
-    this.unstableIfWarnings = unstableIfWarnings;
-  }
-
-  protected boolean showSdkInfo = true;
+  protected boolean showSdkInfo = false;
 
   public boolean isShowSdkInfo() {
     return this.showSdkInfo;
@@ -277,6 +259,10 @@ public abstract class DotNet extends Builder implements SimpleBuildStep {
 
     protected DescriptorImpl(Class<? extends DotNet> clazz) {
       super(clazz);
+    }
+
+    public boolean isApplicable(Class<? extends AbstractProject> jobType) {
+      return true;
     }
 
     public final DotNetSDK.DescriptorImpl getToolDescriptor() {

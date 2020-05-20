@@ -5,11 +5,12 @@ import hudson.Extension;
 import hudson.model.AbstractProject;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.DataBoundSetter;
 
 import java.util.List;
 
 /** A build step using the 'dotnet' executable to create a NuGet package for a project. */
-public final class DotNetClean extends DotNet {
+public final class DotNetClean extends DotNetUsingMSBuild {
 
   @DataBoundConstructor
   public DotNetClean() {
@@ -19,6 +20,12 @@ public final class DotNetClean extends DotNet {
   protected void addCommandLineArguments(@NonNull List<String> args) {
     args.add("clean");
   }
+
+  //region Properties
+
+  //endregion
+
+  //region DescriptorImpl
 
   @Extension
   @Symbol("dotnetClean")
@@ -32,15 +39,13 @@ public final class DotNetClean extends DotNet {
       super(clazz);
     }
 
-    public boolean isApplicable(Class<? extends AbstractProject> jobType) {
-      return true;
-    }
-
     @NonNull
     public String getDisplayName() {
       return Messages.DotNetClean_DisplayName();
     }
 
   }
+
+  //endregion
 
 }

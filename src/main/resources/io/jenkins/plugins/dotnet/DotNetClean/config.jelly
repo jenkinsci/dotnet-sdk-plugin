@@ -14,45 +14,53 @@
   </f:entry>
 
   <f:entry title="${%Configuration}" field="configuration">
-    <f:combobox />
+    <f:combobox/>
   </f:entry>
 
   <f:advanced title="${%More Options}">
 
     <f:entry title="${%Additional Targets}" field="targets">
-      <f:textbox />
+      <f:textbox/>
     </f:entry>
 
     <f:entry title="${%Framework}" field="framework">
-      <f:textbox />
+      <f:textbox/>
     </f:entry>
 
     <f:entry title="${%MSBuild Options}" field="options">
-      <f:textbox />
+      <f:textbox/>
     </f:entry>
 
     <f:entry title="${%MSBuild Properties}" field="properties">
-      <f:expandableTextbox />
+      <f:expandableTextbox/>
     </f:entry>
 
     <f:entry title="${%Output Directory}" field="outputDirectory">
-      <f:textbox />
+      <f:textbox/>
     </f:entry>
 
     <f:entry title="${%Runtime}" field="runtime">
-      <f:textbox />
+      <f:textbox/>
     </f:entry>
 
     <f:entry title="${%Verbosity}" field="verbosity">
       <f:select/>
     </f:entry>
 
+    <f:entry title="${%Warnings Result in Unstable Build}" field="unstableIfWarnings">
+      <f:checkbox/>
+    </f:entry>
+
     <f:entry title="${%No Startup Banner}" field="noLogo">
-      <f:checkbox />
+      <f:checkbox/>
+    </f:entry>
+
+    <f:entry title="${%Show SDK Information}" field="showSdkInfo">
+      <f:checkbox/>
     </f:entry>
 
     <f:entry title="${%Shut Down Build Servers}" field="shutDownBuildServers">
-      <f:checkbox />
+      <f:checkbox/>
     </f:entry>
 
   </f:advanced>

@@ -2,14 +2,13 @@ package io.jenkins.plugins.dotnet;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
-import hudson.model.AbstractProject;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.util.List;
 
 /** A build step using the 'dotnet' executable to create a NuGet package for a project. */
-public final class DotNetPack extends DotNet {
+public final class DotNetPack extends DotNetUsingMSBuild {
 
   @DataBoundConstructor
   public DotNetPack() {
@@ -19,6 +18,12 @@ public final class DotNetPack extends DotNet {
   protected void addCommandLineArguments(@NonNull List<String> args) {
     args.add("pack");
   }
+
+  //region Properties
+
+  //endregion
+
+  //region DescriptorImpl
 
   @Extension
   @Symbol("dotnetPack")
@@ -32,15 +37,13 @@ public final class DotNetPack extends DotNet {
       super(clazz);
     }
 
-    public boolean isApplicable(Class<? extends AbstractProject> jobType) {
-      return true;
-    }
-
     @NonNull
     public String getDisplayName() {
       return Messages.DotNetPack_DisplayName();
     }
 
   }
+
+  //endregion
 
 }

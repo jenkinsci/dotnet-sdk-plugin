@@ -5,11 +5,12 @@ import hudson.Extension;
 import hudson.model.AbstractProject;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.DataBoundSetter;
 
 import java.util.List;
 
 /** A build step using the 'dotnet' executable to build a project. */
-public final class DotNetBuild extends DotNet {
+public final class DotNetBuild extends DotNetUsingMSBuild {
 
   @DataBoundConstructor
   public DotNetBuild() {
@@ -19,6 +20,10 @@ public final class DotNetBuild extends DotNet {
   protected void addCommandLineArguments(@NonNull List<String> args) {
     args.add("build");
   }
+
+  //region Properties
+
+  //endregion
 
   //region DescriptorImpl
 
@@ -32,10 +37,6 @@ public final class DotNetBuild extends DotNet {
 
     protected DescriptorImpl(Class<? extends DotNetBuild> clazz) {
       super(clazz);
-    }
-
-    public boolean isApplicable(Class<? extends AbstractProject> jobType) {
-      return true;
     }
 
     @NonNull

@@ -21,6 +21,12 @@ public final class DotNetListPackage extends DotNet {
     args.add("package");
   }
 
+  //region Properties
+
+  //endregion
+
+  //region DescriptorImpl
+
   @Extension
   @Symbol("dotnetListPackage")
   public static class DescriptorImpl extends DotNet.DescriptorImpl {
@@ -33,15 +39,13 @@ public final class DotNetListPackage extends DotNet {
       super(clazz);
     }
 
-    public boolean isApplicable(Class<? extends AbstractProject> jobType) {
-      return true;
-    }
-
     @NonNull
     public String getDisplayName() {
       return Messages.DotNetListPackage_DisplayName();
     }
 
   }
+
+  //endregion
 
 }

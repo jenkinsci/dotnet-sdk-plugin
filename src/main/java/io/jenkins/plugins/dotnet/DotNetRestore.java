@@ -2,7 +2,6 @@ package io.jenkins.plugins.dotnet;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
-import hudson.model.AbstractProject;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 
@@ -20,6 +19,12 @@ public final class DotNetRestore extends DotNet {
     args.add("restore");
   }
 
+  //region Properties
+
+  //endregion
+
+  //region DescriptorImpl
+
   @Extension
   @Symbol("dotnetRestore")
   public static class DescriptorImpl extends DotNet.DescriptorImpl {
@@ -32,15 +37,13 @@ public final class DotNetRestore extends DotNet {
       super(clazz);
     }
 
-    public boolean isApplicable(Class<? extends AbstractProject> jobType) {
-      return true;
-    }
-
     @NonNull
     public String getDisplayName() {
       return Messages.DotNetRestore_DisplayName();
     }
 
   }
+
+  //endregion
 
 }

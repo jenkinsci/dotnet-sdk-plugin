@@ -16,36 +16,40 @@
   <f:advanced title="${%More Options}">
 
     <f:entry title="${%Frameworks}" field="frameworks">
-      <f:textbox />
+      <f:textbox/>
     </f:entry>
 
     <f:entry title="${%Include Transitive Packages}" field="includeTransitive">
-      <f:checkbox />
+      <f:checkbox/>
     </f:entry>
 
     <f:optionalBlock title="${%Show Outdated Packages}" field="outdated">
 
       <f:entry title="${%Include Pre-Release Versions}" field="includePreRelease">
-        <f:checkbox />
+        <f:checkbox/>
       </f:entry>
 
       <f:entry title="${%NuGet Config to Use}" field="config">
-        <f:textbox />
+        <f:textbox/>
       </f:entry>
 
       <f:entry title="${%NuGet Sources to Search for Updates}" field="sources">
-        <f:textbox />
+        <f:textbox/>
       </f:entry>
 
       <f:entry title="${%Major Version Must Match}" field="highestMinor">
-        <f:checkbox />
+        <f:checkbox/>
       </f:entry>
 
       <f:entry title="${%Major/Minor Versions Must Match}" field="highestPatch">
-        <f:checkbox />
+        <f:checkbox/>
       </f:entry>
 
     </f:optionalBlock>
+
+    <f:entry title="${%Show SDK Information}" field="showSdkInfo">
+      <f:checkbox/>
+    </f:entry>
 
   </f:advanced>
 
