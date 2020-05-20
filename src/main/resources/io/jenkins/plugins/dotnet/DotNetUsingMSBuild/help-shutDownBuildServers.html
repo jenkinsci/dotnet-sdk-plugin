@@ -5,7 +5,8 @@
 </div>
 <div>
   Note: If this is not specified, a build that causes such a build server to be started may <q>hang</q> until those server processes
-  end.
+  end. As such, it's recommended to specify this for the last .NET-related step in a job. If using multiple SDKs, each needs its
+  own shutdown (e.g. the .NET Core 3.1 SDK will not shut down build servers from the .NET 5.0 SDK).
 </div>
 <br/>
 <div>
