@@ -48,7 +48,7 @@
     </f:entry>
 
     <f:entry title="${%Verbosity}" field="verbosity">
-      <f:select default="n"/>
+      <f:select/>
     </f:entry>
 
     <f:entry title="${%Version Suffix}" field="versionSuffix">
