@@ -27,7 +27,7 @@ public final class DotNetTest extends DotNetUsingMSBuild {
 
   @Extension
   @Symbol("dotnetTest")
-  public static class DescriptorImpl extends DotNet.DescriptorImpl {
+  public static class DescriptorImpl extends DotNetUsingMSBuild.DescriptorImpl {
 
     public DescriptorImpl() {
       load();

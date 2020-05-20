@@ -1,19 +1,11 @@
 <?jelly escape-by-default='true'?>
-<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
+<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form" xmlns:s="jelly:stapler">
 
-  <f:entry title="${%.NET SDK}" field="sdk">
-    <f:select/>
-  </f:entry>
+  <s:include page="options.jelly" class="io.jenkins.plugins.dotnet.DotNet"/>
 
-  <f:entry title="${%Work Directory}" field="workDirectory">
-    <f:textbox/>
-  </f:entry>
+  <f:advanced title="${descriptor.moreOptions}">
 
-  <f:advanced>
-
-    <f:entry title="${%Show SDK Information}" field="showSdkInfo">
-      <f:checkbox/>
-    </f:entry>
+    <s:include page="moreOptions.jelly" class="io.jenkins.plugins.dotnet.DotNet"/>
 
   </f:advanced>
 

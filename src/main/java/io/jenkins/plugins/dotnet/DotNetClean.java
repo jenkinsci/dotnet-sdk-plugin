@@ -2,10 +2,8 @@ package io.jenkins.plugins.dotnet;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
-import hudson.model.AbstractProject;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
-import org.kohsuke.stapler.DataBoundSetter;
 
 import java.util.List;
 
@@ -19,6 +17,7 @@ public final class DotNetClean extends DotNetUsingMSBuild {
   @Override
   protected void addCommandLineArguments(@NonNull List<String> args) {
     args.add("clean");
+    super.addCommandLineArguments(args);
   }
 
   //region Properties
@@ -29,7 +28,7 @@ public final class DotNetClean extends DotNetUsingMSBuild {
 
   @Extension
   @Symbol("dotnetClean")
-  public static class DescriptorImpl extends DotNet.DescriptorImpl {
+  public static class DescriptorImpl extends DotNetUsingMSBuild.DescriptorImpl {
 
     public DescriptorImpl() {
       load();

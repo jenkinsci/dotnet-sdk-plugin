@@ -8,7 +8,6 @@ import hudson.remoting.ChannelClosedException;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.tools.ToolInstallation;
-import hudson.util.ComboBoxModel;
 import hudson.util.LineEndingConversion;
 import hudson.util.ListBoxModel;
 import jenkins.tasks.SimpleBuildStep;
@@ -248,6 +247,13 @@ public abstract class DotNet extends Builder implements SimpleBuildStep {
 
   //endregion
 
+  protected static String normalizeList(@CheckForNull String list) {
+    if (list == null)
+      return null;
+    list = list.replaceAll("(?:\\s|[,;])+", " ");
+    return Util.fixEmptyAndTrim(list);
+  }
+
   private static final Logger LOGGER = Logger.getLogger(DotNet.class.getName());
 
   //region DescriptorImpl
@@ -261,7 +267,7 @@ public abstract class DotNet extends Builder implements SimpleBuildStep {
       super(clazz);
     }
 
-    public boolean isApplicable(Class<? extends AbstractProject> jobType) {
+    public final boolean isApplicable(Class<? extends AbstractProject> jobType) {
       return true;
     }
 
@@ -269,28 +275,14 @@ public abstract class DotNet extends Builder implements SimpleBuildStep {
       return ToolInstallation.all().get(DotNetSDK.DescriptorImpl.class);
     }
 
-    public final ComboBoxModel doFillConfigurationItems() {
-      final ComboBoxModel model = new ComboBoxModel();
-      model.add("Debug");
-      model.add("Release");
-      return model;
+    public final String getMoreOptions() {
+      return Messages.DotNet_MoreOptions();
     }
 
     public final ListBoxModel doFillSdkItems() {
       final ListBoxModel model = new ListBoxModel();
       model.add(Messages.DotNet_DefaultSDK(), null);
       DotNetSDK.addSdks(model);
-      return model;
-    }
-
-    public final ListBoxModel doFillVerbosityItems() {
-      final ListBoxModel model = new ListBoxModel();
-      model.add(Messages.DotNet_Verbosity_Default(), null);
-      model.add(Messages.DotNet_Verbosity_Quiet(), "q");
-      model.add(Messages.DotNet_Verbosity_Minimal(), "m");
-      model.add(Messages.DotNet_Verbosity_Normal(), "n");
-      model.add(Messages.DotNet_Verbosity_Detailed(), "d");
-      model.add(Messages.DotNet_Verbosity_Diagnostic(), "diag");
       return model;
     }
 

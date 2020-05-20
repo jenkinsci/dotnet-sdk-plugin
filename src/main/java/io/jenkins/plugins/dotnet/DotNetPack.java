@@ -27,7 +27,7 @@ public final class DotNetPack extends DotNetUsingMSBuild {
 
   @Extension
   @Symbol("dotnetPack")
-  public static class DescriptorImpl extends DotNet.DescriptorImpl {
+  public static class DescriptorImpl extends DotNetUsingMSBuild.DescriptorImpl {
 
     public DescriptorImpl() {
       load();
