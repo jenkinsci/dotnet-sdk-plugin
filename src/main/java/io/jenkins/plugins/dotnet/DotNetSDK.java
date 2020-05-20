@@ -1,7 +1,6 @@
 package io.jenkins.plugins.dotnet;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
-import edu.umd.cs.findbugs.annotations.Nullable;
 import hudson.*;
 import hudson.model.*;
 import hudson.remoting.VirtualChannel;
@@ -17,6 +16,7 @@ import jenkins.security.MasterToSlaveCallable;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 
+import javax.annotation.CheckForNull;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
@@ -156,7 +156,7 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
       return FormValidation.ok();
     }
 
-    public DotNetSDK prepareAndValidateInstance(@NonNull String name, @NonNull FilePath workspace, @Nullable EnvVars env, @Nullable TaskListener listener) throws IOException, InterruptedException {
+    public DotNetSDK prepareAndValidateInstance(@NonNull String name, @NonNull FilePath workspace, @CheckForNull EnvVars env, @CheckForNull TaskListener listener) throws IOException, InterruptedException {
       DotNetSDK sdkInstance = null;
       {
         for (final DotNetSDK sdk : this.getInstallations()) {

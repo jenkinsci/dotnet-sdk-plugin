@@ -1,11 +1,9 @@
 package io.jenkins.plugins.dotnet;
 
+import edu.umd.cs.findbugs.annotations.CheckForNull;
 import edu.umd.cs.findbugs.annotations.NonNull;
-import edu.umd.cs.findbugs.annotations.Nullable;
 import hudson.*;
-import hudson.model.AbstractBuild;
-import hudson.model.BuildListener;
-import hudson.model.Result;
+import hudson.model.*;
 import hudson.remoting.ChannelClosedException;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
@@ -13,6 +11,7 @@ import hudson.tools.ToolInstallation;
 import hudson.util.ComboBoxModel;
 import hudson.util.LineEndingConversion;
 import hudson.util.ListBoxModel;
+import jenkins.tasks.SimpleBuildStep;
 import org.kohsuke.stapler.DataBoundSetter;
 
 import java.io.IOException;
@@ -25,7 +24,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /** A builder using a .NET SDK. */
-public abstract class DotNet extends Builder {
+public abstract class DotNet extends Builder implements SimpleBuildStep {
 
   @Override
   public DescriptorImpl getDescriptor() {
@@ -44,7 +43,7 @@ public abstract class DotNet extends Builder {
     batchFile.append("echo Command Exit Code: %ERRORLEVEL%\n");
   }
 
-  private String createBatchFileContents(@Nullable List<String> preCommand, @NonNull List<String> mainCommand, @Nullable List<String> postCommand) {
+  private String createBatchFileContents(@CheckForNull List<String> preCommand, @NonNull List<String> mainCommand, @CheckForNull List<String> postCommand) {
     final StringBuilder sb = new StringBuilder();
     sb.append("@echo off\n");
     if (preCommand != null)
@@ -65,7 +64,7 @@ public abstract class DotNet extends Builder {
     return String.join(" ", command);
   }
 
-  private String createShellScriptContents(@Nullable List<String> preCommand, @NonNull List<String> mainCommand, @Nullable List<String> postCommand) {
+  private String createShellScriptContents(@CheckForNull List<String> preCommand, @NonNull List<String> mainCommand, @CheckForNull List<String> postCommand) {
     final StringBuilder sb = new StringBuilder();
     sb.append("#!/bin/sh\n");
     if (preCommand != null)
@@ -207,7 +206,7 @@ public abstract class DotNet extends Builder {
   }
 
   @DataBoundSetter
-  public void setSdk(String sdk) {
+  public void setSdk(@CheckForNull String sdk) {
     this.sdk = Util.fixEmpty(sdk);
   }
 
@@ -218,8 +217,8 @@ public abstract class DotNet extends Builder {
   }
 
   @DataBoundSetter
-  public void setWorkDirectory(@Nullable String workDirectory) {
-    this.workDirectory = workDirectory;
+  public void setWorkDirectory(@CheckForNull String workDirectory) {
+    this.workDirectory = Util.fixEmpty(workDirectory);
   }
 
   protected boolean shutDownBuildServers = false;
