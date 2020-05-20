@@ -88,11 +88,23 @@ public abstract class DotNet extends Builder implements SimpleBuildStep {
     if (workspace == null)
       throw new AbortException(Messages.DotNet_NoWorkspace());
     final EnvVars env = build.getEnvironment(listener);
+    for (Map.Entry<String, String> e : build.getBuildVariables().entrySet())
+      env.put(e.getKey(), e.getValue());
+    build.setResult(this.run(workspace, env, launcher, listener));
+    return true;
+  }
+
+  @Override
+  public void perform(@NonNull Run<?, ?> run, @NonNull FilePath wd, @NonNull Launcher launcher, @NonNull TaskListener listener) throws InterruptedException, IOException {
+    run.setResult(this.run(wd, run.getEnvironment(listener), launcher, listener));
+  }
+
+  private Result run(@NonNull FilePath wd, @NonNull EnvVars env, @NonNull Launcher launcher, @NonNull TaskListener listener) throws InterruptedException, IOException {
     final DotNetSDK sdkInstance;
     if (this.sdk == null)
       sdkInstance = null;
     else
-      sdkInstance = this.getDescriptor().getToolDescriptor().prepareAndValidateInstance(this.sdk, workspace, env, listener);
+      sdkInstance = this.getDescriptor().getToolDescriptor().prepareAndValidateInstance(this.sdk, wd, env, listener);
     final String executable;
     if (sdkInstance != null)
       executable = sdkInstance.ensureExecutableExists(launcher);
@@ -103,9 +115,9 @@ public abstract class DotNet extends Builder implements SimpleBuildStep {
     this.addCommandLineArguments(mainCommand);
     final FilePath workDir;
     if (this.workDirectory == null)
-      workDir = workspace;
+      workDir = wd;
     else
-      workDir = workspace.child(this.workDirectory);
+      workDir = wd.child(this.workDirectory);
     final List<String> preCommand;
     if (this.showSdkInfo)
       preCommand = Arrays.asList(executable, "--info");
@@ -141,24 +153,22 @@ public abstract class DotNet extends Builder implements SimpleBuildStep {
     catch (IOException e) {
       Util.displayIOException(e, listener);
       Functions.printStackTrace(e, listener.fatalError(Messages.DotNet_ScriptCreationFailed()));
-      return false;
+      return Result.FAILURE;
     }
     int rc = -1;
     try {
-      for (Map.Entry<String, String> e : build.getBuildVariables().entrySet())
-        env.put(e.getKey(), e.getValue());
       if (sdkInstance != null)
         sdkInstance.buildEnvVars(env);
       rc = launcher.launch().cmds(cmdLine).envs(env).stdout(dncp).pwd(workDir).join();
       listener.getLogger().printf("Exit Code: %d%n", rc);
       // TODO: Maybe also add configuration to set the build as either failed or unstable based on return code
       if (rc != 0)
-        return false;
+        return Result.FAILURE;
       if (dncp.getErrors() > 0)
-        return false;
+        return Result.FAILURE;
       if (this.unstableIfWarnings && dncp.getWarnings() > 0)
-        build.setResult(Result.UNSTABLE);
-      return true;
+        return Result.UNSTABLE;
+      return Result.SUCCESS;
     }
     catch (IOException e) {
       Util.displayIOException(e, listener);
