@@ -5,6 +5,38 @@
 
   <f:advanced title="${descriptor.moreOptions}">
 
+    <f:entry title="${%Runtime}" field="runtime">
+      <f:textbox/>
+    </f:entry>
+
+    <f:entry title="${%Version Suffix}" field="versionSuffix">
+      <f:textbox/>
+    </f:entry>
+
+    <f:entry title="${%Force Dependency Resolution}" field="force">
+      <f:checkbox/>
+    </f:entry>
+
+    <f:entry title="${%Include Sources}" field="includeSources">
+      <f:checkbox/>
+    </f:entry>
+
+    <f:entry title="${%Include Symbols}" field="includeSymbols">
+      <f:checkbox/>
+    </f:entry>
+
+    <f:entry title="${%No Build}" field="noBuild">
+      <f:checkbox/>
+    </f:entry>
+
+    <f:entry title="${%Ignore Project Dependencies}" field="noDependencies">
+      <f:checkbox/>
+    </f:entry>
+
+    <f:entry title="${%No Implicit Restore}" field="noRestore">
+      <f:checkbox/>
+    </f:entry>
+
     <s:include page="moreOptions.jelly" class="io.jenkins.plugins.dotnet.DotNetUsingMSBuild"/>
 
   </f:advanced>
