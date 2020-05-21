@@ -1,6 +1,14 @@
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form" xmlns:s="jelly:stapler">
 
+  <f:entry title="${%MSBuild Options}" field="options">
+    <f:textbox/>
+  </f:entry>
+
+  <f:entry title="${%MSBuild Properties}" field="properties">
+    <f:expandableTextbox/>
+  </f:entry>
+
   <f:entry title="${%Verbosity}" field="verbosity">
     <f:select/>
   </f:entry>

@@ -4,6 +4,7 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.DataBoundSetter;
 
 import java.util.List;
 
@@ -18,9 +19,24 @@ public final class DotNetBuild extends DotNetUsingMSBuild {
   protected void addCommandLineArguments(@NonNull List<String> args) {
     args.add("build");
     super.addCommandLineArguments(args);
+    if (this.targets != null) {
+      for (final String target : this.targets.split(" "))
+        args.add("-t:" + target);
+    }
   }
 
   //region Properties
+
+  private String targets;
+
+  public String getTargets() {
+    return this.targets;
+  }
+
+  @DataBoundSetter
+  public void setTargets(String targets) {
+    this.targets = DotNet.normalizeList(targets);
+  }
 
   //endregion
 

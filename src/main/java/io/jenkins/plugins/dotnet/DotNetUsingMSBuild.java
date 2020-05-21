@@ -6,12 +6,25 @@ import hudson.util.ComboBoxModel;
 import hudson.util.ListBoxModel;
 import org.kohsuke.stapler.DataBoundSetter;
 
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public abstract class DotNetUsingMSBuild extends DotNet {
 
   @Override
   protected void addCommandLineArguments(@NonNull List<String> args) {
+    if (this.options != null) {
+      for (String option : Util.tokenize(this.options)) {
+        option = Util.fixEmptyAndTrim(option);
+        if (option != null)
+          args.add(option);
+      }
+    }
     if (this.noLogo)
       args.add("--nologo");
     if (this.verbosity != null)
@@ -20,7 +33,20 @@ public abstract class DotNetUsingMSBuild extends DotNet {
       args.add(this.project);
     if (this.configuration != null)
       args.add("-c:" + this.configuration);
+    if (this.properties != null) {
+      Properties props = new Properties();
+      try {
+        props.load(new StringReader(this.properties));
+      }
+      catch (IOException e) {
+        LOGGER.log(Level.FINE, "Failed to load configured MSBuild properties.", e);
+      }
+      for (Map.Entry<Object, Object> prop : props.entrySet())
+        args.add("-p:" + prop.getKey() + "=" + prop.getValue());
+    }
   }
+
+  private static final Logger LOGGER = Logger.getLogger(DotNetUsingMSBuild.class.getName());
 
   //region Properties
 
@@ -35,6 +61,17 @@ public abstract class DotNetUsingMSBuild extends DotNet {
     this.configuration = Util.fixEmptyAndTrim(configuration);
   }
 
+  protected String options;
+
+  public String getOptions() {
+    return this.options;
+  }
+
+  @DataBoundSetter
+  public void setOptions(String options) {
+    this.options = Util.fixEmptyAndTrim(options);
+  }
+
   protected String project;
 
   public String getProject() {
@@ -44,6 +81,17 @@ public abstract class DotNetUsingMSBuild extends DotNet {
   @DataBoundSetter
   public void setProject(String project) {
     this.project = Util.fixEmptyAndTrim(project);
+  }
+
+  protected String properties;
+
+  public String getProperties() {
+    return this.properties;
+  }
+
+  @DataBoundSetter
+  public void setProperties(String properties) {
+    this.properties = Util.fixEmpty(properties);
   }
 
   protected boolean noLogo;

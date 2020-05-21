@@ -3,22 +3,14 @@
 
   <s:include page="options.jelly" class="io.jenkins.plugins.dotnet.DotNetUsingMSBuild"/>
 
-  <f:advanced title="${descriptor.moreOptions}">
+  <f:entry title="${%Targets}" field="targets">
+    <f:textbox/>
+  </f:entry>
 
-    <f:entry title="${%Additional Targets}" field="targets">
-      <f:textbox/>
-    </f:entry>
+  <f:advanced title="${descriptor.moreOptions}">
 
     <f:entry title="${%Framework}" field="framework">
       <f:textbox/>
-    </f:entry>
-
-    <f:entry title="${%MSBuild Options}" field="options">
-      <f:textbox/>
-    </f:entry>
-
-    <f:entry title="${%MSBuild Properties}" field="properties">
-      <f:expandableTextbox/>
     </f:entry>
 
     <f:entry title="${%Output Directory}" field="outputDirectory">
