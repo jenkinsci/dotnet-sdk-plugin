@@ -89,13 +89,17 @@ public abstract class DotNet extends Builder implements SimpleBuildStep {
     final EnvVars env = build.getEnvironment(listener);
     for (Map.Entry<String, String> e : build.getBuildVariables().entrySet())
       env.put(e.getKey(), e.getValue());
-    build.setResult(this.run(workspace, env, launcher, listener));
+    final Result r = this.run(workspace, env, launcher, listener);
+    if (r != Result.SUCCESS)
+      build.setResult(r);
     return true;
   }
 
   @Override
   public void perform(@NonNull Run<?, ?> run, @NonNull FilePath wd, @NonNull Launcher launcher, @NonNull TaskListener listener) throws InterruptedException, IOException {
-    run.setResult(this.run(wd, run.getEnvironment(listener), launcher, listener));
+    final Result r = this.run(wd, run.getEnvironment(listener), launcher, listener);
+    if (r != Result.SUCCESS)
+      run.setResult(r);
   }
 
   private Result run(@NonNull FilePath wd, @NonNull EnvVars env, @NonNull Launcher launcher, @NonNull TaskListener listener) throws InterruptedException, IOException {
@@ -201,6 +205,15 @@ public abstract class DotNet extends Builder implements SimpleBuildStep {
     }
   }
 
+  protected static String normalizeList(@CheckForNull String list) {
+    if (list == null)
+      return null;
+    list = list.replaceAll("(?:\\s|[,;])+", " ");
+    return Util.fixEmptyAndTrim(list);
+  }
+
+  private static final Logger LOGGER = Logger.getLogger(DotNet.class.getName());
+
   //region Properties
 
   // TODO: Add a "force exact version" flag; if set, the setup will create/update global.json in the workspace root to specify
@@ -246,15 +259,6 @@ public abstract class DotNet extends Builder implements SimpleBuildStep {
   }
 
   //endregion
-
-  protected static String normalizeList(@CheckForNull String list) {
-    if (list == null)
-      return null;
-    list = list.replaceAll("(?:\\s|[,;])+", " ");
-    return Util.fixEmptyAndTrim(list);
-  }
-
-  private static final Logger LOGGER = Logger.getLogger(DotNet.class.getName());
 
   //region DescriptorImpl
 
