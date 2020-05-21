@@ -31,6 +31,10 @@ public abstract class DotNetUsingMSBuild extends DotNet {
       args.add("-v:" + this.verbosity);
     if (this.project != null)
       args.add(this.project);
+    if (this.outputDirectory != null) {
+      args.add("--output");
+      args.add(this.outputDirectory);
+    }
     if (this.configuration != null)
       args.add("-c:" + this.configuration);
     if (this.properties != null) {
@@ -103,6 +107,17 @@ public abstract class DotNetUsingMSBuild extends DotNet {
   @DataBoundSetter
   public void setNoLogo(boolean noLogo) {
     this.noLogo = noLogo;
+  }
+
+  protected String outputDirectory;
+
+  public String getOutputDirectory() {
+    return this.outputDirectory;
+  }
+
+  @DataBoundSetter
+  public void setOutputDirectory(String outputDirectory) {
+    this.outputDirectory = Util.fixEmptyAndTrim(outputDirectory);
   }
 
   public boolean isShutDownBuildServers() {
