@@ -23,7 +23,7 @@ public final class DotNetClean extends DotNetUsingMSBuild {
     if (this.framework != null)
       args.add("-f:" + this.framework);
     if (this.runtime != null)
-      args.add("-r:" + this.framework);
+      args.add("-r:" + this.runtime);
   }
 
   //region Properties

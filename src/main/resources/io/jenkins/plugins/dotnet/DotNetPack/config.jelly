@@ -17,7 +17,7 @@
       <f:checkbox/>
     </f:entry>
 
-    <f:entry title="${%Include Sources}" field="includeSources">
+    <f:entry title="${%Include Sources}" field="includeSource">
       <f:checkbox/>
     </f:entry>
 

@@ -31,7 +31,7 @@ public final class DotNetBuild extends DotNetUsingMSBuild {
     if (this.framework != null)
       args.add("-f:" + this.framework);
     if (this.runtime != null)
-      args.add("-r:" + this.framework);
+      args.add("-r:" + this.runtime);
     if (this.targets != null) {
       for (final String target : this.targets.split(" "))
         args.add("-t:" + target);
@@ -131,6 +131,7 @@ public final class DotNetBuild extends DotNetUsingMSBuild {
   public void setVersionSuffix(String versionSuffix) {
     this.versionSuffix = Util.fixEmptyAndTrim(versionSuffix);
   }
+
   //endregion
 
   //region DescriptorImpl
