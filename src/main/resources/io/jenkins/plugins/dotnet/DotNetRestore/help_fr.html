@@ -1,0 +1,24 @@
+<div>
+  La commande <code>dotnet restore</code> utilise NuGet pour restaurer les dépendances, ainsi que les outils spécifiques aux projets
+  qui sont spécifiés dans le fichier projet. Dans la plupart des cas, vous n’avez pas besoin d’utiliser explicitement la commande
+  <code>dotnet restore</code>, car une restauration NuGet est exécutée implicitement si nécessaire lorsque vous exécutez les
+  commandes suivantes :
+</div>
+<ul>
+  <li><a href="https://docs.microsoft.com/fr-fr/dotnet/core/tools/dotnet-new">dotnet new</a></li>
+  <li><a href="https://docs.microsoft.com/fr-fr/dotnet/core/tools/dotnet-build">dotnet build</a></li>
+  <li><a href="https://docs.microsoft.com/fr-fr/dotnet/core/tools/dotnet-build-server">dotnet build-server</a></li>
+  <li><a href="https://docs.microsoft.com/fr-fr/dotnet/core/tools/dotnet-run">dotnet run</a></li>
+  <li><a href="https://docs.microsoft.com/fr-fr/dotnet/core/tools/dotnet-test">dotnet test</a></li>
+  <li><a href="https://docs.microsoft.com/fr-fr/dotnet/core/tools/dotnet-publish">dotnet publish</a></li>
+  <li><a href="https://docs.microsoft.com/fr-fr/dotnet/core/tools/dotnet-pack">dotnet pack</a></li>
+</ul>
+<div>
+  Parfois, il peut être gênant d’exécuter la restauration NuGet implicite avec ces commandes. Par exemple, certains systèmes
+  automatisés, comme les systèmes de génération, doivent appeler explicitement <code>dotnet restore</code> pour contrôler quand la
+  restauration a lieu afin de pouvoir contrôler l’utilisation du réseau. Pour empêcher la restauration NuGet implicite, vous pouvez
+  utiliser l’indicateur <code>--no-restore<code> avec l’une de ces commandes pour désactiver la restauration implicite.
+</div>
+<div align="right">
+  (voir aussi la <a href="https://docs.microsoft.com/fr-fr/dotnet/core/tools/dotnet-restore">Documentation de Microsoft</a>)
+</div>
