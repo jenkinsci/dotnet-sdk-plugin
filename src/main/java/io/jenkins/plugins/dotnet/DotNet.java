@@ -8,10 +8,12 @@ import hudson.remoting.ChannelClosedException;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.tools.ToolInstallation;
+import hudson.util.FormValidation;
 import hudson.util.LineEndingConversion;
 import hudson.util.ListBoxModel;
 import jenkins.tasks.SimpleBuildStep;
 import org.kohsuke.stapler.DataBoundSetter;
+import org.kohsuke.stapler.QueryParameter;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -283,10 +285,43 @@ public abstract class DotNet extends Builder implements SimpleBuildStep {
       return Messages.DotNet_MoreOptions();
     }
 
+    public FormValidation doCheckRuntime(@QueryParameter String runtime) {
+      runtime = Util.fixEmptyAndTrim(runtime);
+      if (runtime != null) {
+        // TODO: Validate against the RID catalog:
+        //   https://github.com/dotnet/runtime/blob/master/src/libraries/pkg/Microsoft.NETCore.Platforms/runtime.json
+      }
+      return FormValidation.ok();
+    }
+
+    public FormValidation doCheckRuntimes(@QueryParameter String runtimes) {
+      runtimes = DotNet.normalizeList(runtimes);
+      final List<FormValidation> result = new ArrayList<>();
+      if (runtimes != null) {
+        for (final String runtime : runtimes.split(" ")) {
+          final FormValidation fv = this.doCheckRuntime(runtime);
+          if (fv.kind != FormValidation.Kind.OK)
+            result.add(fv);
+        }
+      }
+      return FormValidation.aggregate(result);
+    }
+
     public final ListBoxModel doFillSdkItems() {
       final ListBoxModel model = new ListBoxModel();
       model.add(Messages.DotNet_DefaultSDK(), null);
       DotNetSDK.addSdks(model);
+      return model;
+    }
+
+    public final ListBoxModel doFillVerbosityItems() {
+      final ListBoxModel model = new ListBoxModel();
+      model.add(Messages.DotNet_Verbosity_Default(), null);
+      model.add(Messages.DotNet_Verbosity_Quiet(), "q");
+      model.add(Messages.DotNet_Verbosity_Minimal(), "m");
+      model.add(Messages.DotNet_Verbosity_Normal(), "n");
+      model.add(Messages.DotNet_Verbosity_Detailed(), "d");
+      model.add(Messages.DotNet_Verbosity_Diagnostic(), "diag");
       return model;
     }
 

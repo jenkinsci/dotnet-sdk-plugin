@@ -154,17 +154,6 @@ public abstract class DotNetUsingMSBuild extends DotNet {
       return model;
     }
 
-    public final ListBoxModel doFillVerbosityItems() {
-      final ListBoxModel model = new ListBoxModel();
-      model.add(Messages.DotNet_Verbosity_Default(), null);
-      model.add(Messages.DotNet_Verbosity_Quiet(), "q");
-      model.add(Messages.DotNet_Verbosity_Minimal(), "m");
-      model.add(Messages.DotNet_Verbosity_Normal(), "n");
-      model.add(Messages.DotNet_Verbosity_Detailed(), "d");
-      model.add(Messages.DotNet_Verbosity_Diagnostic(), "diag");
-      return model;
-    }
-
   }
 
   //endregion
