@@ -276,16 +276,8 @@ public abstract class DotNet extends Builder implements SimpleBuildStep {
       super(clazz);
     }
 
-    public final boolean isApplicable(Class<? extends AbstractProject> jobType) {
-      return true;
-    }
-
-    public final DotNetSDK.DescriptorImpl getToolDescriptor() {
-      return ToolInstallation.all().get(DotNetSDK.DescriptorImpl.class);
-    }
-
-    public final String getMoreOptions() {
-      return Messages.DotNet_MoreOptions();
+    public final AutoCompletionCandidates doAutoCompleteRuntime(@QueryParameter String value) {
+      return Runtime.autoComplete(value);
     }
 
     public FormValidation doCheckRuntime(@QueryParameter String runtime) {
@@ -312,6 +304,18 @@ public abstract class DotNet extends Builder implements SimpleBuildStep {
       model.add(Messages.DotNet_Verbosity_Detailed(), "d");
       model.add(Messages.DotNet_Verbosity_Diagnostic(), "diag");
       return model;
+    }
+
+    public final String getMoreOptions() {
+      return Messages.DotNet_MoreOptions();
+    }
+
+    public final DotNetSDK.DescriptorImpl getToolDescriptor() {
+      return ToolInstallation.all().get(DotNetSDK.DescriptorImpl.class);
+    }
+
+    public final boolean isApplicable(Class<? extends AbstractProject> jobType) {
+      return true;
     }
 
   }

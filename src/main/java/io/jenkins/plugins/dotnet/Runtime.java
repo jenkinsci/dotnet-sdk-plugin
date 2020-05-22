@@ -1,6 +1,7 @@
 package io.jenkins.plugins.dotnet;
 
 import hudson.Util;
+import hudson.model.AutoCompletionCandidates;
 import hudson.util.FormValidation;
 import net.sf.json.JSONObject;
 
@@ -15,6 +16,16 @@ import java.util.logging.Logger;
 abstract class Runtime {
 
   private static Set<String> identifiers = null;
+
+  public static AutoCompletionCandidates autoComplete(String text) {
+    Runtime.loadIdentifiers();
+    final AutoCompletionCandidates candidates = new AutoCompletionCandidates();
+    for (String rid : Runtime.identifiers) {
+      if (text == null || rid.startsWith(text))
+        candidates.add(rid);
+    }
+    return candidates;
+  }
 
   public static FormValidation checkIdentifier(String runtime) {
     runtime = Util.fixEmptyAndTrim(runtime);
