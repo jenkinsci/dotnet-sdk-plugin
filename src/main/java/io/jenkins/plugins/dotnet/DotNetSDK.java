@@ -70,6 +70,7 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
   public DotNetSDK forNode(@NonNull Node node, TaskListener listener) throws IOException, InterruptedException {
     return new DotNetSDK(this.getName(), this.translateFor(node, listener), this.telemetryOptOut);
   }
+
   public static String getExecutableFileName(@NonNull Launcher launcher) {
     return launcher.isUnix() ? "dotnet" : "dotnet.exe";
   }
