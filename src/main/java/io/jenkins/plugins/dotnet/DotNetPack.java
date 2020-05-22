@@ -19,6 +19,7 @@ public final class DotNetPack extends DotNetUsingMSBuild {
   @Override
   protected void addCommandLineArguments(@NonNull List<String> args) {
     args.add("pack");
+    super.addCommandLineArguments(args);
     if (this.force)
       args.add("--force");
     if (this.noBuild)
