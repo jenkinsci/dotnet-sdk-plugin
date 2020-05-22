@@ -276,8 +276,16 @@ public abstract class DotNet extends Builder implements SimpleBuildStep {
       super(clazz);
     }
 
+    public final AutoCompletionCandidates doAutoCompleteFramework(@QueryParameter String value) {
+      return Framework.autoComplete(value);
+    }
+
     public final AutoCompletionCandidates doAutoCompleteRuntime(@QueryParameter String value) {
       return Runtime.autoComplete(value);
+    }
+
+    public FormValidation doCheckFramework(@QueryParameter String framework) {
+      return Framework.checkMoniker(framework);
     }
 
     public FormValidation doCheckRuntime(@QueryParameter String runtime) {

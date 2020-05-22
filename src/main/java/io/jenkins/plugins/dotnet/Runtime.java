@@ -57,11 +57,11 @@ abstract class Runtime {
     // FIXME:   https://github.com/dotnet/runtime/blob/master/src/libraries/pkg/Microsoft.NETCore.Platforms/runtime.json
     // FIXME: or a mirrored version on the Jenkins Update Central.
     try {
-      final JSONObject ridCatalog = Resource.loadJson(DotNet.class, "runtime.json");
+      final JSONObject ridCatalog = Resource.loadJson(Runtime.class, "runtime.json");
       if (ridCatalog != null) {
         @SuppressWarnings("unchecked")
         final Set<String> rids = ridCatalog.getJSONObject("runtimes").keySet();
-        identifiers = rids;
+        Runtime.identifiers = rids;
       }
     }
     catch (Throwable t) {
