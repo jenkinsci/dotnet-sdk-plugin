@@ -289,25 +289,11 @@ public abstract class DotNet extends Builder implements SimpleBuildStep {
     }
 
     public FormValidation doCheckRuntime(@QueryParameter String runtime) {
-      runtime = Util.fixEmptyAndTrim(runtime);
-      if (runtime != null) {
-        // TODO: Validate against the RID catalog:
-        //   https://github.com/dotnet/runtime/blob/master/src/libraries/pkg/Microsoft.NETCore.Platforms/runtime.json
-      }
-      return FormValidation.ok();
+      return Runtime.checkIdentifier(runtime);
     }
 
     public FormValidation doCheckRuntimes(@QueryParameter String runtimes) {
-      runtimes = DotNet.normalizeList(runtimes);
-      final List<FormValidation> result = new ArrayList<>();
-      if (runtimes != null) {
-        for (final String runtime : runtimes.split(" ")) {
-          final FormValidation fv = this.doCheckRuntime(runtime);
-          if (fv.kind != FormValidation.Kind.OK)
-            result.add(fv);
-        }
-      }
-      return FormValidation.aggregate(result);
+      return Runtime.checkIdentifiers(runtimes);
     }
 
     public final ListBoxModel doFillSdkItems() {
