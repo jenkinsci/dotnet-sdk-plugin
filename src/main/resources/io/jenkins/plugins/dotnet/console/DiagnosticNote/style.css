@@ -1,0 +1,26 @@
+.dotnet-completed-line {
+  width: 100%;
+  border-bottom: thin lavender;
+}
+
+.dotnet-error-line {
+  color: #b81900;
+}
+
+.dotnet-exit-code {
+  font-weight: bold;
+  font-style: italic;
+  text-decoration: underline;
+}
+
+.dotnet-message-code {
+  font-weight: bold;
+}
+
+.dotnet-message-context {
+  font-style: italic;
+}
+
+.dotnet-warning-line {
+  color: #eb8f00;
+}

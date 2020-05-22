@@ -11,6 +11,8 @@ import hudson.tools.ToolInstallation;
 import hudson.util.FormValidation;
 import hudson.util.LineEndingConversion;
 import hudson.util.ListBoxModel;
+import io.jenkins.plugins.dotnet.console.DiagnosticNote;
+import io.jenkins.plugins.dotnet.console.StatusScanner;
 import jenkins.tasks.SimpleBuildStep;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
@@ -91,7 +93,7 @@ public abstract class DotNet extends Builder implements SimpleBuildStep {
     final EnvVars env = build.getEnvironment(listener);
     for (Map.Entry<String, String> e : build.getBuildVariables().entrySet())
       env.put(e.getKey(), e.getValue());
-    final Result r = this.run(workspace, env, launcher, listener);
+    final Result r = this.run(workspace, env, launcher, listener, build.getCharset());
     if (r != Result.SUCCESS)
       build.setResult(r);
     return true;
@@ -99,12 +101,12 @@ public abstract class DotNet extends Builder implements SimpleBuildStep {
 
   @Override
   public void perform(@NonNull Run<?, ?> run, @NonNull FilePath wd, @NonNull Launcher launcher, @NonNull TaskListener listener) throws InterruptedException, IOException {
-    final Result r = this.run(wd, run.getEnvironment(listener), launcher, listener);
+    final Result r = this.run(wd, run.getEnvironment(listener), launcher, listener, run.getCharset());
     if (r != Result.SUCCESS)
       run.setResult(r);
   }
 
-  private Result run(@NonNull FilePath wd, @NonNull EnvVars env, @NonNull Launcher launcher, @NonNull TaskListener listener) throws InterruptedException, IOException {
+  private Result run(@NonNull FilePath wd, @NonNull EnvVars env, @NonNull Launcher launcher, @NonNull TaskListener listener, @NonNull Charset cs) throws InterruptedException, IOException {
     final DotNetSDK sdkInstance;
     if (this.sdk == null)
       sdkInstance = null;
@@ -133,7 +135,6 @@ public abstract class DotNet extends Builder implements SimpleBuildStep {
       postCommand = Arrays.asList(executable, "build-server", "shutdown");
     else
       postCommand = null;
-    final DotNetConsoleProcessor dncp = new DotNetConsoleProcessor(listener.getLogger(), Charset.defaultCharset());
     final FilePath script;
     final List<String> cmdLine = new ArrayList<>();
     try {
@@ -161,33 +162,35 @@ public abstract class DotNet extends Builder implements SimpleBuildStep {
       return Result.FAILURE;
     }
     int rc = -1;
+    new DiagnosticNote().encodeTo(listener.getLogger());
+    final StatusScanner scanner = new StatusScanner(listener.getLogger(), cs);
     try {
       if (sdkInstance != null)
         sdkInstance.buildEnvVars(env);
-      rc = launcher.launch().cmds(cmdLine).envs(env).stdout(dncp).pwd(workDir).join();
-      listener.getLogger().printf("Exit Code: %d%n", rc);
+      rc = launcher.launch().cmds(cmdLine).envs(env).stdout(scanner).pwd(workDir).join();
       // TODO: Maybe also add configuration to set the build as either failed or unstable based on return code
       if (rc != 0)
         return Result.FAILURE;
-      if (dncp.getErrors() > 0)
+      if (scanner.getErrors() > 0)
         return Result.FAILURE;
-      if (this.unstableIfWarnings && dncp.getWarnings() > 0)
+      if (this.unstableIfWarnings && scanner.getWarnings() > 0)
         return Result.UNSTABLE;
       return Result.SUCCESS;
     }
     catch (IOException e) {
       Util.displayIOException(e, listener);
       Functions.printStackTrace(e, listener.fatalError(Messages.DotNet_ExecutionFailed()));
-      String msg = Messages.DotNet_ExecutionFailed();
-      if (dncp.isCommandNotFound() && sdkInstance == null) {
-        if (DotNetSDK.hasConfiguration()) // at least one SDK configured
-          msg += Messages.DotNet_ToolConfigurationNeeded();
-        else
-          msg += Messages.DotNet_ToolSelectionNeeded();
-      }
-      throw new AbortException(msg);
+      throw new AbortException(Messages.DotNet_ExecutionFailed());
     }
     finally {
+      try {
+        // Note: this string is used by DiagnosticAnnotator as a "stop here" marker.
+        listener.getLogger().printf(".NET Command Completed - Exit Code: %d%n", rc);
+      }
+      catch (Throwable t) {
+        LOGGER.log(Level.FINE, Messages.DotNet_CompletionMessageFailed(), t);
+        // the annotator won't stop, but an error serious enough to make that output line fail is going to abort the build anyway
+      }
       try {
         script.delete();
       }
