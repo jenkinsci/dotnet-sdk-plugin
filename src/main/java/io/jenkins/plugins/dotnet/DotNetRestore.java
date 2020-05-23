@@ -177,7 +177,7 @@ public final class DotNetRestore extends DotNet {
 
   @DataBoundSetter
   public void setRuntimes(String runtimes) {
-    this.runtimes = DotNet.normalizeList(runtimes);
+    this.runtimes = DotNetUtils.normalizeList(runtimes);
   }
 
   private String sources;
@@ -188,7 +188,7 @@ public final class DotNetRestore extends DotNet {
 
   @DataBoundSetter
   public void setSources(String sources) {
-    this.sources = DotNet.normalizeList(sources);
+    this.sources = DotNetUtils.normalizeList(sources);
   }
 
   private boolean useLockFile;

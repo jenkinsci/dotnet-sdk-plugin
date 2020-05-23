@@ -13,6 +13,8 @@ import hudson.util.LineEndingConversion;
 import hudson.util.ListBoxModel;
 import io.jenkins.plugins.dotnet.console.DiagnosticNote;
 import io.jenkins.plugins.dotnet.console.StatusScanner;
+import io.jenkins.plugins.dotnet.data.Framework;
+import io.jenkins.plugins.dotnet.data.Runtime;
 import jenkins.tasks.SimpleBuildStep;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
@@ -188,7 +190,7 @@ public abstract class DotNet extends Builder implements SimpleBuildStep {
         listener.getLogger().printf(".NET Command Completed - Exit Code: %d%n", rc);
       }
       catch (Throwable t) {
-        LOGGER.log(Level.FINE, Messages.DotNet_CompletionMessageFailed(), t);
+        DotNet.LOGGER.log(Level.FINE, Messages.DotNet_CompletionMessageFailed(), t);
         // the annotator won't stop, but an error serious enough to make that output line fail is going to abort the build anyway
       }
       try {
@@ -198,7 +200,7 @@ public abstract class DotNet extends Builder implements SimpleBuildStep {
         // Copied from CommandInterpreter. May or may not be particularly relevant.
         // This avoids reporting a big error immediately after reporting another, more relevant, error. (JENKINS-5073)
         if (rc == -1 && e.getCause() instanceof ChannelClosedException)
-          LOGGER.log(Level.FINE, Messages.DotNet_ScriptDeletionFailed(script), e);
+          DotNet.LOGGER.log(Level.FINE, Messages.DotNet_ScriptDeletionFailed(script), e);
         else {
           Util.displayIOException(e,listener);
           Functions.printStackTrace(e, listener.fatalError(Messages.DotNet_ScriptDeletionFailed(script)));
@@ -208,13 +210,6 @@ public abstract class DotNet extends Builder implements SimpleBuildStep {
         Functions.printStackTrace(e, listener.fatalError(Messages.DotNet_ScriptDeletionFailed(script)));
       }
     }
-  }
-
-  protected static String normalizeList(@CheckForNull String list) {
-    if (list == null)
-      return null;
-    list = list.replaceAll("(?:\\s|[,;])+", " ");
-    return Util.fixEmptyAndTrim(list);
   }
 
   private static final Logger LOGGER = Logger.getLogger(DotNet.class.getName());
@@ -276,31 +271,38 @@ public abstract class DotNet extends Builder implements SimpleBuildStep {
       super(clazz);
     }
 
+    @SuppressWarnings("unused")
     public final AutoCompletionCandidates doAutoCompleteFramework(@QueryParameter String value) {
-      return Framework.autoComplete(value);
+      return Framework.autoCompleteMoniker(value);
     }
 
+    @SuppressWarnings("unused")
     public final AutoCompletionCandidates doAutoCompleteRuntime(@QueryParameter String value) {
       return Runtime.autoComplete(value);
     }
 
+    @SuppressWarnings("unused")
     public final AutoCompletionCandidates doAutoCompleteRuntimes(@QueryParameter String value) {
       // FIXME: How to handle autocompletion of a space-separated list?
       return Runtime.autoComplete(value);
     }
 
+    @SuppressWarnings("unused")
     public FormValidation doCheckFramework(@QueryParameter String value) {
       return Framework.checkMoniker(value);
     }
 
+    @SuppressWarnings("unused")
     public FormValidation doCheckRuntime(@QueryParameter String value) {
       return Runtime.checkIdentifier(value);
     }
 
+    @SuppressWarnings("unused")
     public FormValidation doCheckRuntimes(@QueryParameter String value) {
       return Runtime.checkIdentifiers(value);
     }
 
+    @SuppressWarnings("unused")
     public final ListBoxModel doFillSdkItems() {
       final ListBoxModel model = new ListBoxModel();
       model.add(Messages.DotNet_DefaultSDK(), null);
@@ -308,6 +310,7 @@ public abstract class DotNet extends Builder implements SimpleBuildStep {
       return model;
     }
 
+    @SuppressWarnings("unused")
     public final ListBoxModel doFillVerbosityItems() {
       final ListBoxModel model = new ListBoxModel();
       model.add(Messages.DotNet_Verbosity_Default(), null);
@@ -319,6 +322,7 @@ public abstract class DotNet extends Builder implements SimpleBuildStep {
       return model;
     }
 
+    @SuppressWarnings("unused")
     public final String getMoreOptions() {
       return Messages.DotNet_MoreOptions();
     }

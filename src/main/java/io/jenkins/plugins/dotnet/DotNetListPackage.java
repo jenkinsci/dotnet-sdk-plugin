@@ -87,7 +87,7 @@ public final class DotNetListPackage extends DotNet {
 
   @DataBoundSetter
   public void setFrameworks(String frameworks) {
-    this.frameworks = DotNet.normalizeList(frameworks);
+    this.frameworks = DotNetUtils.normalizeList(frameworks);
   }
 
   private boolean highestMinor;
@@ -164,7 +164,7 @@ public final class DotNetListPackage extends DotNet {
 
   @DataBoundSetter
   public void setSources(String sources) {
-    this.sources = DotNet.normalizeList(sources);
+    this.sources = DotNetUtils.normalizeList(sources);
   }
 
   //endregion

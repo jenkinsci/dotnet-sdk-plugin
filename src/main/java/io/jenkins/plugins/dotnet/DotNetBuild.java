@@ -118,7 +118,7 @@ public final class DotNetBuild extends DotNetUsingMSBuild {
 
   @DataBoundSetter
   public void setTargets(String targets) {
-    this.targets = DotNet.normalizeList(targets);
+    this.targets = DotNetUtils.normalizeList(targets);
   }
 
   private String versionSuffix;
