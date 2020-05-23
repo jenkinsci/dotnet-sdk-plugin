@@ -23,8 +23,7 @@ public final class StatusScanner extends LineTransformationOutputStream {
   @Override
   public void close() throws IOException {
     super.close();
-    out.close();
-    System.err.printf("SCANNER CLOSE -> %d warnings, %d errors%n", this.warnings, this.errors);
+    this.out.close();
   }
 
   // FIXME: This will fail for non-English environments.
@@ -44,18 +43,18 @@ public final class StatusScanner extends LineTransformationOutputStream {
 
   @Override
   protected void eol(byte[] lineBytes, int lineLength) throws IOException {
-    final String line = trimEOL(charset.decode(ByteBuffer.wrap(lineBytes, 0, lineLength)).toString());
+    final String line = this.trimEOL(this.charset.decode(ByteBuffer.wrap(lineBytes, 0, lineLength)).toString());
     {
-      Matcher m = RE_ERROR_COUNT.matcher(line);
+      Matcher m = StatusScanner.RE_ERROR_COUNT.matcher(line);
       if (m.matches())
         this.errors = Integer.parseInt(m.group(1));
       else {
-        m = RE_WARNING_COUNT.matcher(line);
+        m = StatusScanner.RE_WARNING_COUNT.matcher(line);
         if (m.matches())
           this.warnings = Integer.parseInt(m.group(1));
       }
     }
-    out.write(lineBytes, 0, lineLength);
+    this.out.write(lineBytes, 0, lineLength);
   }
 
   private int errors = 0;

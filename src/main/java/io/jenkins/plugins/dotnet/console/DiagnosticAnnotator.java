@@ -22,9 +22,9 @@ public final class DiagnosticAnnotator extends ConsoleAnnotator<Object> {
   private static final Map<String, String> MESSAGE_PREFIX_URLS = new HashMap<>();
 
   static {
-    MESSAGE_PREFIX_URLS.put("CS", "https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/compiler-messages/"); // C#
-    MESSAGE_PREFIX_URLS.put("FS", "https://docs.microsoft.com/en-us/dotnet/fsharp/language-reference/compiler-messages/"); // F#
-    MESSAGE_PREFIX_URLS.put("NU", "https://docs.microsoft.com/en-us/nuget/reference/errors-and-warnings/"); // NuGet
+    DiagnosticAnnotator.MESSAGE_PREFIX_URLS.put("CS", "https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/compiler-messages/"); // C#
+    DiagnosticAnnotator.MESSAGE_PREFIX_URLS.put("FS", "https://docs.microsoft.com/en-us/dotnet/fsharp/language-reference/compiler-messages/"); // F#
+    DiagnosticAnnotator.MESSAGE_PREFIX_URLS.put("NU", "https://docs.microsoft.com/en-us/nuget/reference/errors-and-warnings/"); // NuGet
   }
 
   // FIXME: This will fail for non-English environments.
@@ -59,10 +59,10 @@ public final class DiagnosticAnnotator extends ConsoleAnnotator<Object> {
   private static final String RE_END = " *(?: *([A-Z]+)([0-9]+)| [^ ]+)? *:).*?( +\\[.*])?$";
 
   /** Regular expression pattern for an error line. */
-  private static final Pattern RE_ERROR_LINE = Pattern.compile("" + RE_START + RE_ERROR + RE_END, Pattern.CASE_INSENSITIVE);
+  private static final Pattern RE_ERROR_LINE = Pattern.compile("" + DiagnosticAnnotator.RE_START + DiagnosticAnnotator.RE_ERROR + DiagnosticAnnotator.RE_END, Pattern.CASE_INSENSITIVE);
 
   /** Regular expression pattern for a warning line. */
-  private static final Pattern RE_WARNING_LINE = Pattern.compile("" + RE_START + RE_WARNING + RE_END, Pattern.CASE_INSENSITIVE);
+  private static final Pattern RE_WARNING_LINE = Pattern.compile("" + DiagnosticAnnotator.RE_START + DiagnosticAnnotator.RE_WARNING + DiagnosticAnnotator.RE_END, Pattern.CASE_INSENSITIVE);
 
   @Override
   public ConsoleAnnotator<Object> annotate(@NonNull Object context, @NonNull MarkupText text) {
@@ -73,7 +73,7 @@ public final class DiagnosticAnnotator extends ConsoleAnnotator<Object> {
       return null;
     }
     {
-      Matcher m = RE_ERROR_LINE.matcher(t);
+      Matcher m = DiagnosticAnnotator.RE_ERROR_LINE.matcher(t);
       final String htmlClass;
       final char icon;
       if (m.matches()) {
@@ -81,7 +81,7 @@ public final class DiagnosticAnnotator extends ConsoleAnnotator<Object> {
         icon = '⛔';
       }
       else {
-        m = RE_WARNING_LINE.matcher(t);
+        m = DiagnosticAnnotator.RE_WARNING_LINE.matcher(t);
         if (m.matches()) {
           htmlClass = "dotnet-warning-line";
           icon = '⚠';
@@ -100,9 +100,9 @@ public final class DiagnosticAnnotator extends ConsoleAnnotator<Object> {
         final String prefix = m.group(3);
         final String number = m.group(4);
         if (prefix != null) {
-          String url = MESSAGE_PREFIX_URLS.get(prefix);
+          String url = DiagnosticAnnotator.MESSAGE_PREFIX_URLS.get(prefix);
           if (url == null)
-            url = GENERIC_MESSAGE_URL_BASE + prefix + number;
+            url = DiagnosticAnnotator.GENERIC_MESSAGE_URL_BASE + prefix + number;
           else
             url += prefix.toLowerCase() + number;
           text.addHyperlinkLowKey(m.start(2), m.end(2), url);
