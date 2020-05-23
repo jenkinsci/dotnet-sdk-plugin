@@ -95,7 +95,7 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
     @Override
     public String call() {
       final String expandedHome = Util.replaceMacro(this.home, EnvVars.masterEnvVars);
-      final File file = new File(expandedHome, name);
+      final File file = new File(expandedHome, this.name);
       if (file.exists())
         return file.getPath();
       return null;
@@ -115,11 +115,15 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
 
   //region ConverterImpl
 
+  @SuppressWarnings("unused")
   public static class ConverterImpl extends ToolConverter {
 
-    public ConverterImpl(XStream2 xstream) { super(xstream); }
+    public ConverterImpl(XStream2 xstream) {
+      super(xstream);
+    }
 
-    @Override protected String oldHomeField(ToolInstallation obj) {
+    @Override
+    protected String oldHomeField(ToolInstallation obj) {
       return null;
     }
 
@@ -135,6 +139,9 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
 
     @Override
     protected FormValidation checkHomeDirectory(File home) {
+      // This can be used to check the existence of a file on the server, so needs to be protected.
+      if (!Jenkins.get().hasPermission(Jenkins.ADMINISTER))
+        return FormValidation.ok();
       { // Top level needs a 'dotnet' executable
         final File dotnet_exe = new File(home, "dotnet.exe");
         final File dotnet = new File(home, "dotnet");
@@ -155,6 +162,11 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
         // - a folder of the same name must exist under shared/Microsoft.NETCore.App
       }
       return FormValidation.ok();
+    }
+
+    @NonNull
+    public String getDisplayName() {
+      return Messages.DotNetSDK_DisplayName();
     }
 
     public DotNetSDK prepareAndValidateInstance(@NonNull String name, @NonNull FilePath workspace, @CheckForNull EnvVars env, @CheckForNull TaskListener listener) throws IOException, InterruptedException {
@@ -182,11 +194,6 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
       if (env != null) // Apply EnvironmentSpecific
         sdkInstance = sdkInstance.forEnvironment(env);
       return sdkInstance;
-    }
-
-    @NonNull
-    public String getDisplayName() {
-      return Messages.DotNetSDK_DisplayName();
     }
 
     @Override
