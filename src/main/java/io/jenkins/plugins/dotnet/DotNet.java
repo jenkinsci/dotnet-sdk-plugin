@@ -284,16 +284,21 @@ public abstract class DotNet extends Builder implements SimpleBuildStep {
       return Runtime.autoComplete(value);
     }
 
-    public FormValidation doCheckFramework(@QueryParameter String framework) {
-      return Framework.checkMoniker(framework);
+    public final AutoCompletionCandidates doAutoCompleteRuntimes(@QueryParameter String value) {
+      // FIXME: How to handle autocompletion of a space-separated list?
+      return Runtime.autoComplete(value);
     }
 
-    public FormValidation doCheckRuntime(@QueryParameter String runtime) {
-      return Runtime.checkIdentifier(runtime);
+    public FormValidation doCheckFramework(@QueryParameter String value) {
+      return Framework.checkMoniker(value);
     }
 
-    public FormValidation doCheckRuntimes(@QueryParameter String runtimes) {
-      return Runtime.checkIdentifiers(runtimes);
+    public FormValidation doCheckRuntime(@QueryParameter String value) {
+      return Runtime.checkIdentifier(value);
+    }
+
+    public FormValidation doCheckRuntimes(@QueryParameter String value) {
+      return Runtime.checkIdentifiers(value);
     }
 
     public final ListBoxModel doFillSdkItems() {
