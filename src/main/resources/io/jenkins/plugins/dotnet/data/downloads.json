@@ -1,0 +1,962 @@
+{
+  "versions": [
+    {
+      "name": ".NET 5.0",
+      "status": "PREVIEW",
+      "endOfSupport": null,
+      "releases": [
+        {
+          "name": "v5.0.0-preview.4",
+          "released": "2020-05-19",
+          "sdks": [
+            {
+              "name": "5.0.100-preview.4",
+              "vs": "2019 (16.6)",
+              "packages": [
+                {
+                  "platform": "Linux",
+                  "architecture": "ARM32",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/76bea762-22d3-4ce8-a3cf-64276d4b9aca/74a7bed0b9e67a11cf025115c52506ca/dotnet-sdk-5.0.100-preview.4.20258.7-linux-arm.tar.gz"
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "ARM64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/adb3ed49-26af-40a2-8df3-1460b178e55e/01187433dc24decf562d90d4bb2ce058/dotnet-sdk-5.0.100-preview.4.20258.7-linux-arm64.tar.gz"
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "x64 Alpine",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/02c5780b-df7c-4b37-a936-10d5d91259f1/7222fd36139fc536e795f7341fb0700b/dotnet-sdk-5.0.100-preview.4.20258.7-linux-musl-x64.tar.gz"
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "x64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/473651e3-55d5-4e7c-b255-2cbe11358eea/6b6f33d86ee00720b36a7c34200f4d0c/dotnet-sdk-5.0.100-preview.4.20258.7-linux-x64.tar.gz"
+                },
+                {
+                  "platform": "macOS",
+                  "architecture": "x64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/d7a77b5b-4592-46ae-8f1e-9e84b5bbc001/30f37207e7e149cbd01cd0ac33086b41/dotnet-sdk-5.0.100-preview.4.20258.7-osx-x64.tar.gz"
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "ARM32",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/e80d700f-3910-45e2-9414-320eefa54efa/10b76fbfe00159ad8b4ea81b42daaa5b/dotnet-sdk-5.0.100-preview.4.20258.7-win-arm.zip"
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "ARM64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/52fdaa14-c08b-407f-bc7c-091af11f243d/7f40461579aa105e47a19c7745287847/dotnet-sdk-5.0.100-preview.4.20258.7-win-arm64.zip"
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "x64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/22e64aea-4ee4-4c98-b913-303a04b89103/adc3fa5461c11e387aa07ab32f513fd9/dotnet-sdk-5.0.100-preview.4.20258.7-win-x64.zip"
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "x86",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/7255fb86-edeb-4ce2-b1fc-aae124e22d76/bb5b9b8103346ddf78b9a4c17c006b80/dotnet-sdk-5.0.100-preview.4.20258.7-win-x86.zip"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "v5.0.0-preview.3",
+          "released": "2020-04-23",
+          "sdks": [
+            {
+              "name": "5.0.100-preview.3",
+              "vs": "2019 (16.6)",
+              "packages": [
+                {
+                  "platform": "Linux",
+                  "architecture": "ARM32",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/58276f20-1ff1-49e7-afbd-fcc6a20acf56/18aacff58da12a91e691036be7ef8063/dotnet-sdk-5.0.100-preview.3.20216.6-linux-arm.tar.gz"
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "ARM64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/67d8e63e-753d-4900-997f-b332bb63b025/303b7ac855985d077056ef4552f4a4e9/dotnet-sdk-5.0.100-preview.3.20216.6-linux-arm64.tar.gz"
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "x64 Alpine",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/a9d2501d-4089-4255-9d5c-e94e1ec6532c/9abb1d2998427fa23701649a7b1b1513/dotnet-sdk-5.0.100-preview.3.20216.6-linux-musl-x64.tar.gz"
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "x64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/7ceba34e-5d50-4b23-b326-0a7d02b4decd/62dd73db9be67127a5645ef0efb0bba4/dotnet-sdk-5.0.100-preview.3.20216.6-linux-x64.tar.gz"
+                },
+                {
+                  "platform": "macOS",
+                  "architecture": "x64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/4b8fe806-7a65-43e8-889d-215999715bbf/22005a4af0c34e257e652dbe39d3661f/dotnet-sdk-5.0.100-preview.3.20216.6-osx-x64.tar.gz"
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "ARM32",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/585c7f99-1d47-4422-8e74-4beb2809e9c7/531e64c80bfa9937ad5a3e19f78847c0/dotnet-sdk-5.0.100-preview.3.20216.6-win-arm.zip"
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "x64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/5d93d786-1442-4479-868d-5d3b4175b160/b7629a4cd3f95cb0a2d7b202537fdc2d/dotnet-sdk-5.0.100-preview.3.20216.6-win-x64.zip"
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "x86",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/be4d30a2-9cb9-43d0-b5a7-b6ba63d77bbe/f77ee9cd22084283dd23762b23996db8/dotnet-sdk-5.0.100-preview.3.20216.6-win-x86.zip"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": ".NET Core 3.1",
+      "status": "LTS",
+      "endOfSupport": "2022-12-03",
+      "releases": [
+        {
+          "name": "v3.1.4",
+          "released": "2020-05-19",
+          "securityFixes": true,
+          "sdks": [
+            {
+              "name": "3.1.300",
+              "vs": "2019 (16.6)",
+              "packages": [
+                {
+                  "platform": "Linux",
+                  "architecture": "ARM32",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/f2e1cb4a-0c70-49b6-871c-ebdea5ebf09d/acb1ea0c0dbaface9e19796083fe1a6b/dotnet-sdk-3.1.300-linux-arm.tar.gz"
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "ARM64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/e5e70860-a6d4-48cf-b0d1-eeba32657d80/2da3c605aaa65c7e4ac2ad0507a2e429/dotnet-sdk-3.1.300-linux-arm64.tar.gz"
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "x64 Alpine",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/041277e6-2759-47a0-b990-e15b564c2485/6156fb738728ffe2f226c431739584d5/dotnet-sdk-3.1.300-linux-musl-x64.tar.gz"
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "x64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/0c795076-b679-457e-8267-f9dd20a8ca28/02446ea777b6f5a5478cd3244d8ed65b/dotnet-sdk-3.1.300-linux-x64.tar.gz"
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "RHEL 6 x64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/cdb98822-bf8f-4f11-a5a4-baa8d8ad66d0/b696896552ca7768a7189f775e220d2e/dotnet-sdk-3.1.300-rhel.6-x64.tar.gz"
+                },
+                {
+                  "platform": "macOS",
+                  "architecture": "x64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/c5449411-0257-4483-82fa-d4a6bf017e4f/da5635f42e11cb2c911a0e9a46025c06/dotnet-sdk-3.1.300-osx-x64.tar.gz"
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "ARM32",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/048302c4-d583-4a31-acba-fdf85d0ebad7/8d33b36319286e27463e9e3fe1d46597/dotnet-sdk-3.1.300-win-arm.zip"
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "x64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/b8fee6d8-0d26-4b0f-9082-52a46550e702/46c99a915b1200f0795ce05caa946e9a/dotnet-sdk-3.1.300-win-x64.zip"
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "x86",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/3ccea7f3-2286-4cf9-bedc-3e9b6f1798fc/10df049c5f87ad87b4eb26e73e80f98a/dotnet-sdk-3.1.300-win-x86.zip"
+                }
+              ]
+            },
+            {
+              "name": "3.1.202",
+              "vs": "2019 (16.5)",
+              "packages": [
+                {
+                  "platform": "Linux",
+                  "architecture": "ARM32",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/647e322c-e198-4bff-ba2a-a1a5b8477033/87b7b0af543dba7048a57ee2ab5a31ee/dotnet-sdk-3.1.202-linux-arm.tar.gz"
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "ARM64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/15434752-2803-4722-b406-9a62d3e089d5/159bd7713f8a7ff82d7b2f756ae87f4f/dotnet-sdk-3.1.202-linux-arm64.tar.gz"
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "x64 Alpine",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/f25da546-fa02-430f-8a90-a306b97654cf/e9bbc498aabfc92db96df09b325769a4/dotnet-sdk-3.1.202-linux-musl-x64.tar.gz"
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "x64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/7d4c708b-38db-48b2-8532-9fc8a3ab0e42/23229fd17482119822bd9261b3570d87/dotnet-sdk-3.1.202-linux-x64.tar.gz"
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "RHEL 6 x64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/20de4099-de97-4123-a2e8-a1700a528f1e/0ad9784f4f4e2ce307a9f175086da997/dotnet-sdk-3.1.202-rhel.6-x64.tar.gz"
+                },
+                {
+                  "platform": "macOS",
+                  "architecture": "x64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/08088821-e58b-4bf3-9e4a-2c04448eee4b/e6e50aff8769ad382ed279730405ee3e/dotnet-sdk-3.1.202-osx-x64.tar.gz"
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "ARM32",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/a28cd4b5-0a4e-4123-b8c7-2d18d7cb3d45/5c90ac7db0c3ee6f0696e25edf65f8f7/dotnet-sdk-3.1.202-win-arm.zip"
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "x64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/090e6423-fe28-48cd-a431-a211d43517aa/7fb2b2d8e7ff32777e189a105c7af396/dotnet-sdk-3.1.202-win-x64.zip"
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "x86",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/3db2254d-c77b-44d2-8800-185811647d3b/083a2e65638978f1d97e4f5fe67043e8/dotnet-sdk-3.1.202-win-x86.zip"
+                }
+              ]
+            },
+            {
+              "name": "3.1.104",
+              "vs": "2019 (16.4)",
+              "packages": [
+                {
+                  "platform": "Linux",
+                  "architecture": "ARM32",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/74e61bc8-e8b1-4728-9c56-7d978010e4dd/a3c8533ed97dcfea09fe64e6969cd60c/dotnet-sdk-3.1.104-linux-arm.tar.gz"
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "ARM64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/7148dc66-dc70-4d6f-ae3d-c65aa8443259/734885b4dafa4097c0b264ca20be7e26/dotnet-sdk-3.1.104-linux-arm64.tar.gz"
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "x64 Alpine",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/6fc7ce85-b14f-4718-9a9e-cdcf3c74f1ed/312edf594fe97da6ccdede646e18d479/dotnet-sdk-3.1.104-linux-musl-x64.tar.gz"
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "x64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/c9c8cca6-2281-4ce8-980f-f49723057f09/06fef88edc9d38fbfefc315953e368ea/dotnet-sdk-3.1.104-linux-x64.tar.gz"
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "RHEL 6 x64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/a8a4aa8f-35f9-4aaf-866e-755032f0a1c7/8af868783d6dfb81d1cb568558158225/dotnet-sdk-3.1.104-rhel.6-x64.tar.gz"
+                },
+                {
+                  "platform": "macOS",
+                  "architecture": "x64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/c067f1f7-0be9-4178-9dbd-b4029a337961/ddfd7200138fca35ba1786d713bb21bd/dotnet-sdk-3.1.104-osx-x64.tar.gz"
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "ARM32",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/760831c2-779f-4a3e-8a0e-5a92af17ef0f/83b7d9d1295c6c31913f4878485c52b4/dotnet-sdk-3.1.104-win-arm.zip"
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "x64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/e6f1ffa8-2025-436c-b368-49d5235d3c53/81da2fa5b34e27e99127a49823dbfe48/dotnet-sdk-3.1.104-win-x64.zip"
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "x86",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/c29c71b2-87fd-4054-89d1-48c257265d03/ef377454ac4a0d520cd97950d0d006fc/dotnet-sdk-3.1.104-win-x86.zip"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": ".NET Core 3.0",
+      "status": "END_OF_LIFE",
+      "endOfSupport": "2020-03-03",
+      "releases": [
+        {
+          "name": "v3.0.3",
+          "released": "2020-02-18",
+          "sdks": [
+            {
+              "name": "3.0.103",
+              "vs": "2019 (16.3)",
+              "packages": [
+                {
+                  "platform": "Linux",
+                  "architecture": "ARM32",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/4a44d4d2-19c1-485a-8b58-fa06805cddcf/cc805a1ebd9d72099309dcd46492d36f/dotnet-sdk-3.0.103-linux-arm.tar.gz"
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "ARM64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/eb4ffaf1-b0a9-466d-8440-0220dca8f806/48df585d8d978c5418fa514da6a2bd9b/dotnet-sdk-3.0.103-linux-arm64.tar.gz"
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "x64 Alpine",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/66a28bc9-f5c1-454b-b729-986b7c7040be/72285e6d6e74780c63cc061503a2d88a/dotnet-sdk-3.0.103-linux-musl-x64.tar.gz"
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "x64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/43f3a3bd-3df2-41e6-beca-3ec4952ca6c4/30fe7779249607d1bb3bb4b20d61a479/dotnet-sdk-3.0.103-linux-x64.tar.gz"
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "RHEL 6 x64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/9951d9b5-286a-434b-89a3-18e87f1c5aa4/14e7bf58086f0dd96d98d78af2feb310/dotnet-sdk-3.0.103-rhel.6-x64.tar.gz"
+                },
+                {
+                  "platform": "macOS",
+                  "architecture": "x64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/1c0c10c5-c7f1-463d-b9d3-e11b19f0fd00/984ad2bde8d919c53032d45ae61ff86a/dotnet-sdk-3.0.103-osx-x64.tar.gz"
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "ARM32",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/914b0608-b8ee-4485-87bb-cca2a3f78e1d/68dd03598a4503ad1de4b3a3099c6357/dotnet-sdk-3.0.103-win-arm.zip"
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "x64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/874a85a8-de9b-405d-b75e-9c3e9b3ddd0d/eb5f33724a7ba55d47fd12b2f1f8f764/dotnet-sdk-3.0.103-win-x64.zip"
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "x86",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/b9728e15-2acb-4a02-ba8e-d122bd2c497c/ad2258b4463a4180187b1fed0f340971/dotnet-sdk-3.0.103-win-x86.zip"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": ".NET Core 2.2",
+      "status": "END_OF_LIFE",
+      "endOfSupport": "2019-12-23",
+      "releases": [
+        {
+          "name": "v2.2.8",
+          "released": "2019-11-19",
+          "sdks": [
+            {
+              "name": "2.2.207",
+              "vs": "2019 (16.0)",
+              "packages": [
+                {
+                  "platform": "Linux",
+                  "architecture": "ARM32",
+                  "url": ""
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "ARM64",
+                  "url": ""
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "x64 Alpine",
+                  "url": ""
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "x64",
+                  "url": ""
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "RHEL 6 x64",
+                  "url": ""
+                },
+                {
+                  "platform": "macOS",
+                  "architecture": "x64",
+                  "url": ""
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "ARM32",
+                  "url": ""
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "x64",
+                  "url": ""
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "x86",
+                  "url": ""
+                }
+              ]
+            },
+            {
+              "name": "2.2.110",
+              "vs": "2017 (15.9)",
+              "packages": [
+                {
+                  "platform": "Linux",
+                  "architecture": "ARM32",
+                  "url": ""
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "ARM64",
+                  "url": ""
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "x64 Alpine",
+                  "url": ""
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "x64",
+                  "url": ""
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "RHEL 6 x64",
+                  "url": ""
+                },
+                {
+                  "platform": "macOS",
+                  "architecture": "x64",
+                  "url": ""
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "ARM32",
+                  "url": ""
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "x64",
+                  "url": ""
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "x86",
+                  "url": ""
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": ".NET Core 2.1",
+      "status": "LTS",
+      "endOfSupport": "2021-08-21",
+      "releases": [
+        {
+          "name": "v2.1.18",
+          "released": "2020-05-12",
+          "securityFixes": true,
+          "sdks": [
+            {
+              "name": "2.1.806",
+              "vs": "2019 (16.2)",
+              "packages": [
+                {
+                  "platform": "Linux",
+                  "architecture": "ARM32",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/47cf1500-e5de-4fb6-8506-2818beda75bc/288834aa886d9374acca223591413435/dotnet-sdk-2.1.806-linux-arm.tar.gz"
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "ARM64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/77e2f35a-e9b2-431e-adeb-d3854f0a86fc/ea7841fdf797eeaf4b7bcbab24a01104/dotnet-sdk-2.1.806-linux-arm64.tar.gz"
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "x64 Alpine",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/4584f2a8-442f-4fdb-a909-fbf5c3432cd5/d057109116e6318d72c564b3ac9d83ea/dotnet-sdk-2.1.806-linux-musl-x64.tar.gz"
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "x64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/490da2e4-8f32-433d-8c2e-dd2a11088acd/cfba2ec3df2dedc2dd060b0f79f44b4e/dotnet-sdk-2.1.806-linux-x64.tar.gz"
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "RHEL 6 x64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/af39b565-e7c2-4966-a822-6ae900d81123/fb5c7f877b5260d40c63522d89109452/dotnet-sdk-2.1.806-rhel.6-x64.tar.gz"
+                },
+                {
+                  "platform": "macOS",
+                  "architecture": "x64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/c42f5bc5-2716-40f6-9236-3d849aeaf4f2/cb8dbdad3915d575a9243b718156666c/dotnet-sdk-2.1.806-osx-x64.tar.gz"
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "x64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/c297443b-bf81-4960-b832-4b5ff063053f/2af3f9900134361d607c072d72d6a609/dotnet-sdk-2.1.806-win-x64.zip"
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "x86",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/151164bd-1d9c-44b3-872b-2bfa3612b1a6/36f252fcc6a9b5c6eb0aebe30401a340/dotnet-sdk-2.1.806-win-x86.zip"
+                }
+              ]
+            },
+            {
+              "name": "2.1.611",
+              "vs": "2019 (16.2)",
+              "packages": [
+                {
+                  "platform": "Linux",
+                  "architecture": "ARM32",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/89175acd-e0a8-4e1d-a142-0e44e6a5f40d/fce41ad70859c134f9bbee6a33f76fe1/dotnet-sdk-2.1.611-linux-arm.tar.gz"
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "ARM64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/290e09f9-a36d-404d-9019-e3d33d6ccb16/ffa6f8cc47b60be68a45427d6c88c43d/dotnet-sdk-2.1.611-linux-arm64.tar.gz"
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "x64 Alpine",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/731eb8a9-1550-4c27-bcd3-0934b8de48ad/75d5879a0f4f5cd56a5f9d63b239f344/dotnet-sdk-2.1.611-linux-musl-x64.tar.gz"
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "x64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/e490e402-a05c-4be6-80b7-bdba636371c4/26e50ab61c4eb6edc3226a033061edf3/dotnet-sdk-2.1.611-linux-x64.tar.gz"
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "RHEL 6 x64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/ed6158fc-4450-47a3-999e-67965761c0bd/b8af9b3278abd64e6bb73336288a236e/dotnet-sdk-2.1.611-rhel.6-x64.tar.gz"
+                },
+                {
+                  "platform": "macOS",
+                  "architecture": "x64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/8e220e29-73b0-4ea8-a587-df39e769f777/9be42d40926375a7ab4e5d9d939a7d8e/dotnet-sdk-2.1.611-osx-x64.tar.gz"
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "x64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/77c00d6b-44ae-48de-9cc8-4c5507409b0e/00e9d542799478b0aa4e0b34cc6d9466/dotnet-sdk-2.1.611-win-x64.zip"
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "x86",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/6d3e0cab-0e0b-4f2e-8eb2-e0223a18b209/c77e583cd00571416b28a9a6a593e02f/dotnet-sdk-2.1.611-win-x86.zip"
+                }
+              ]
+            },
+            {
+              "name": "2.1.514",
+              "vs": "2019 (16.2)",
+              "packages": [
+                {
+                  "platform": "Linux",
+                  "architecture": "ARM32",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/cfcc3817-b524-42dc-9760-05b902ce8328/efcbd6fa92372cde33e66af40d206515/dotnet-sdk-2.1.514-linux-arm.tar.gz"
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "ARM64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/bf43ad9b-44a2-41ca-b917-05eaa279ede3/3d6d2b5345d3a015db6a64046252e8d2/dotnet-sdk-2.1.514-linux-arm64.tar.gz"
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "x64 Alpine",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/1e538dcb-8bb4-407d-b0ae-6007f6095fe6/43074915bff09ca0af56ab46228a3710/dotnet-sdk-2.1.514-linux-musl-x64.tar.gz"
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "x64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/56155631-159c-475e-a057-6ce2ef861565/5f1d6620156afebce94d67af9f59594b/dotnet-sdk-2.1.514-linux-x64.tar.gz"
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "RHEL 6 x64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/99f4b10d-1d20-40e2-a836-0a4cbb1e9abd/16ffc6bf624276512fc8692e9d495451/dotnet-sdk-2.1.514-rhel.6-x64.tar.gz"
+                },
+                {
+                  "platform": "macOS",
+                  "architecture": "x64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/676bb253-31f8-43fa-9a4e-e217faaf0eac/1de0957735689d2108fac4505322e29a/dotnet-sdk-2.1.514-osx-x64.tar.gz"
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "x64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/563de998-0ba8-4879-b20d-d529525a7278/1b309cee08ab9bda220e415c84f91049/dotnet-sdk-2.1.514-win-x64.zip"
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "x86",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/d1593de6-f7dc-490e-803c-a7912e87aeff/3a4e0a063920c6256db03c1e3d94327a/dotnet-sdk-2.1.514-win-x86.zip"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "v2.1.17",
+          "released": "2020-03-24",
+          "sdks": [
+            {
+              "name": "2.1.805",
+              "vs": "2019 (16.2)",
+              "packages": [
+                {
+                  "platform": "Linux",
+                  "architecture": "ARM32",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/57666a6d-0c82-4431-b251-f70356a1b6f7/8190a9b4ff5e962eb4547955c88848c3/dotnet-sdk-2.1.805-linux-arm.tar.gz"
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "ARM64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/e9a7e3c5-2db0-4eb2-9dc4-cc7060d0ee81/1ed6a7621a066dd15a06d4bb4a894a29/dotnet-sdk-2.1.805-linux-arm64.tar.gz"
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "x64 Alpine",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/7498aa28-4290-4083-b96b-146c120f0bdb/b19f28dfdc88306abf057baf578198d7/dotnet-sdk-2.1.805-linux-musl-x64.tar.gz"
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "x64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/e730fe40-e2ea-42e5-a5d0-f86830d75849/571e5a2f4ebf9f8117878eeaad5cb19b/dotnet-sdk-2.1.805-linux-x64.tar.gz"
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "RHEL 6 x64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/a9f5a7a5-96aa-4b2a-9e4a-4af7938fa79b/897102688fb88691411f7e74f4bc699f/dotnet-sdk-2.1.805-rhel.6-x64.tar.gz"
+                },
+                {
+                  "platform": "macOS",
+                  "architecture": "x64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/692b7280-cb00-4169-bded-184bd6ce2912/06df695fb6b29c95dc842fde380d6eb5/dotnet-sdk-2.1.805-osx-x64.tar.gz"
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "x64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/54b0b84a-f02e-4c7f-a055-417a072b7023/adea0c91aa0aa7a134295dbcb8d7f0c6/dotnet-sdk-2.1.805-win-x64.zip"
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "x86",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/ed8a38b7-efaa-41cc-bc9a-0a5b75ef4161/76b6fa52e8ece1fb8beb646bf80df7c0/dotnet-sdk-2.1.805-win-x86.zip"
+                }
+              ]
+            },
+            {
+              "name": "2.1.610",
+              "vs": "2019 (16.0)",
+              "packages": [
+                {
+                  "platform": "Linux",
+                  "architecture": "ARM32",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/8c788dcc-00c3-4c29-8742-0ae3b33cd539/dcbec11140886ae23f7c8d0e30880589/dotnet-sdk-2.1.610-linux-arm.tar.gz"
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "ARM64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/97aebdbe-fb0b-4f43-ba8a-f052c4e1ac73/314ca0f6669aeab69f49665246352145/dotnet-sdk-2.1.610-linux-arm64.tar.gz"
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "x64 Alpine",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/e78d9e7e-8686-4ff9-aa2c-c69b699b7f74/0ded3852429d6081e0b789883f35f026/dotnet-sdk-2.1.610-linux-musl-x64.tar.gz"
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "x64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/676ceb1a-b034-4358-b141-462592453357/c8b1efc16dccee8c043c0f4b11fb3688/dotnet-sdk-2.1.610-linux-x64.tar.gz"
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "RHEL 6 x64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/0a980967-5bff-434d-9a2b-1e69a567d50e/581ee74f495bfaf2d0cc81657ff3439d/dotnet-sdk-2.1.610-rhel.6-x64.tar.gz"
+                },
+                {
+                  "platform": "macOS",
+                  "architecture": "x64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/ca19f400-62c7-4a2b-9de0-27e173a0d4d8/520b0e5d5df7b4ade5a5e35c2a990bd3/dotnet-sdk-2.1.610-osx-x64.tar.gz"
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "x64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/abd40c9c-1b16-4cd7-b5d5-f1cabf65b361/6d8397e174b9984926bc9bc74b756aa4/dotnet-sdk-2.1.610-win-x64.zip"
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "x86",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/de5eb21e-7e0c-4f74-b0ec-0a3e0f580bf6/f59cabffac0e14c551caf2d4a102f66d/dotnet-sdk-2.1.610-win-x86.zip"
+                }
+              ]
+            },
+            {
+              "name": "2.1.513",
+              "vs": "2017 (15.9)",
+              "packages": [
+                {
+                  "platform": "Linux",
+                  "architecture": "ARM32",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/57f9cd18-9b8f-4a8e-8351-be2b99f916aa/bd11ada55334e5a2aec761de27d2014b/dotnet-sdk-2.1.513-linux-arm.tar.gz"
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "ARM64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/f5895a30-1e48-4efc-8706-c302928aa41c/7d0d6afcc387bb70215c1748e66aae87/dotnet-sdk-2.1.513-linux-arm64.tar.gz"
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "x64 Alpine",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/7544f5cd-02d2-4771-a423-405bee6179d5/3d38dae240c37c592f54690b9e3df71b/dotnet-sdk-2.1.513-linux-musl-x64.tar.gz"
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "x64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/8b5ae78f-c243-4289-a69f-c89e0446e236/7f3121df09b121f4ff68a301c4e7c754/dotnet-sdk-2.1.513-linux-x64.tar.gz"
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "RHEL 6 x64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/2b60f78c-c70c-4a44-99b3-cf1815aea56f/368a9fd593269ad4021eca6e4078548e/dotnet-sdk-2.1.513-rhel.6-x64.tar.gz"
+                },
+                {
+                  "platform": "macOS",
+                  "architecture": "x64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/0236c348-ce1d-4f62-a93f-91477b85a805/36748f94c071a800a46c58eb6a1ef835/dotnet-sdk-2.1.513-osx-x64.tar.gz"
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "x64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/d97936f1-c90f-48ce-b02e-7d74efa80f5a/170e7aa8ba67a6014438302076ed778c/dotnet-sdk-2.1.513-win-x64.zip"
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "x86",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/2c37816d-4e6e-4fe0-94c7-b921ec390abe/e3b4d7a26271fa90271b94b9b89023ff/dotnet-sdk-2.1.513-win-x86.zip"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": ".NET Core 2.0",
+      "status": "END_OF_LIFE",
+      "endOfSupport": "2018-10-01",
+      "releases": [
+        {
+          "name": "v2.0.9",
+          "released": "2018-07-10",
+          "securityFixes": true,
+          "sdks": [
+            {
+              "name": "2.1.202",
+              "vs": "2017 (15.7)",
+              "packages": [
+                {
+                  "platform": "Linux",
+                  "architecture": "x64",
+                  "url": "https://download.microsoft.com/download/f/c/1/fc16c864-b374-4668-83a2-f9f880928b2d/dotnet-sdk-2.1.202-linux-x64.tar.gz"
+                },
+                {
+                  "platform": "macOS",
+                  "architecture": "x64",
+                  "url": "https://download.microsoft.com/download/f/c/1/fc16c864-b374-4668-83a2-f9f880928b2d/dotnet-sdk-2.1.202-osx-x64.tar.gz"
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "x64",
+                  "url": "https://download.microsoft.com/download/f/c/1/fc16c864-b374-4668-83a2-f9f880928b2d/dotnet-sdk-2.1.202-win-x86.zip"
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "x86",
+                  "url": "https://download.microsoft.com/download/f/c/1/fc16c864-b374-4668-83a2-f9f880928b2d/dotnet-sdk-2.1.202-win-x64.zip"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": ".NET Core 1.1",
+      "status": "END_OF_LIFE",
+      "endOfSupport": "2019-06-27",
+      "releases": [
+        {
+          "name": "v1.1.13",
+          "released": "2019-05-14",
+          "securityFixes": true,
+          "sdks": [
+            {
+              "name": "1.1.14",
+              "vs": "2017 (15.0)",
+              "packages": [
+                {
+                  "platform": "Linux",
+                  "architecture": "CentOS x64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/1c984eff-52f0-455d-9af5-43c920428dd8/adf34b44adb99a42adbff95220f7adee/dotnet-dev-centos-x64.1.1.14.tar.gz"
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "Debian 9 x64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/6b5715fa-547a-419b-86bd-d41b834237bd/b80f01c6f7a777230a6f3d7fa5208210/dotnet-dev-debian.9-x64.1.1.14.tar.gz"
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "Fedora 27",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/0d9c2c12-7a5b-45b8-8423-c2a185fb9a98/2c6b2bf2df974169e8ed2bf8ab854eef/dotnet-dev-fedora.27-x64.1.1.14.tar.gz"
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "Fedora 28",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/c8639cf5-1431-4524-912d-9e8f5c3f5422/ebaccb07ada0f6f5c2db97b05760efe4/dotnet-dev-fedora.28-x64.1.1.14.tar.gz"
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "OpenSUSE 42.3",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/908eb263-3bcb-49f1-968b-fefa9f05cca7/49730839cd5062b18075ea9ddfc4a7d4/dotnet-dev-opensuse.42.3-x64.1.1.14.tar.gz"
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "RHEL 6 x64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/567838b3-55eb-4e76-8df7-81ebeb76d47a/e7e1869fc2431516f1f03fae1e546807/dotnet-dev-rhel-x64.1.1.14.tar.gz"
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "Ubuntu x64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/75a5d1ff-c9ba-425d-9b94-6f3e7c4da968/39903076672cf8dc7a4da715450b274e/dotnet-dev-ubuntu-x64.1.1.14.tar.gz"
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "Ubuntu 16.04 x64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/3aaaa9ad-577b-4127-bee8-3a25d447ac17/9259d8dbfef4dc85d65d0d08261ffacd/dotnet-dev-ubuntu.16.04-x64.1.1.14.tar.gz"
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "Ubuntu 18.04 x64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/2a2d1b85-9c49-4229-b47e-54dd58f9b3c2/c215ffdb98373689e4ae9655146ae85e/dotnet-dev-ubuntu.18.04-x64.1.1.14.tar.gz"
+                },
+                {
+                  "platform": "macOS",
+                  "architecture": "x64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/44a0d965-5635-41a6-9125-9fdd43892581/9d526c91b9e6f413157d1b21aef9396d/dotnet-dev-osx-x64.1.1.14.tar.gz"
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "x64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/c9419fcf-5756-454d-9a45-8b02c4afa2b3/b0f0621717365e7ecc68de9c51f6e69c/dotnet-dev-win-x64.1.1.14.zip"
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "x86",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/c5963b69-fd61-4bd0-b50a-2a1d618d1026/3133130512fe281d04023189ed7da2c9/dotnet-dev-win-x86.1.1.14.zip"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": ".NET Core 1.0",
+      "status": "END_OF_LIFE",
+      "endOfSupport": "2019-06-27",
+      "releases": [
+        {
+          "name": "v1.0.16",
+          "released": "2019-05-14",
+          "securityFixes": true,
+          "sdks": [
+            {
+              "name": "1.1.14",
+              "vs": "2017 (15.0)",
+              "packages": [
+                {
+                  "platform": "Linux",
+                  "architecture": "CentOS x64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/1c984eff-52f0-455d-9af5-43c920428dd8/adf34b44adb99a42adbff95220f7adee/dotnet-dev-centos-x64.1.1.14.tar.gz"
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "Debian 9 x64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/6b5715fa-547a-419b-86bd-d41b834237bd/b80f01c6f7a777230a6f3d7fa5208210/dotnet-dev-debian.9-x64.1.1.14.tar.gz"
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "Fedora 27",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/0d9c2c12-7a5b-45b8-8423-c2a185fb9a98/2c6b2bf2df974169e8ed2bf8ab854eef/dotnet-dev-fedora.27-x64.1.1.14.tar.gz"
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "Fedora 28",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/c8639cf5-1431-4524-912d-9e8f5c3f5422/ebaccb07ada0f6f5c2db97b05760efe4/dotnet-dev-fedora.28-x64.1.1.14.tar.gz"
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "OpenSUSE 42.3",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/908eb263-3bcb-49f1-968b-fefa9f05cca7/49730839cd5062b18075ea9ddfc4a7d4/dotnet-dev-opensuse.42.3-x64.1.1.14.tar.gz"
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "RHEL 6 x64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/567838b3-55eb-4e76-8df7-81ebeb76d47a/e7e1869fc2431516f1f03fae1e546807/dotnet-dev-rhel-x64.1.1.14.tar.gz"
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "Ubuntu x64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/75a5d1ff-c9ba-425d-9b94-6f3e7c4da968/39903076672cf8dc7a4da715450b274e/dotnet-dev-ubuntu-x64.1.1.14.tar.gz"
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "Ubuntu 16.04 x64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/3aaaa9ad-577b-4127-bee8-3a25d447ac17/9259d8dbfef4dc85d65d0d08261ffacd/dotnet-dev-ubuntu.16.04-x64.1.1.14.tar.gz"
+                },
+                {
+                  "platform": "Linux",
+                  "architecture": "Ubuntu 18.04 x64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/2a2d1b85-9c49-4229-b47e-54dd58f9b3c2/c215ffdb98373689e4ae9655146ae85e/dotnet-dev-ubuntu.18.04-x64.1.1.14.tar.gz"
+                },
+                {
+                  "platform": "macOS",
+                  "architecture": "x64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/44a0d965-5635-41a6-9125-9fdd43892581/9d526c91b9e6f413157d1b21aef9396d/dotnet-dev-osx-x64.1.1.14.tar.gz"
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "x64",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/c9419fcf-5756-454d-9a45-8b02c4afa2b3/b0f0621717365e7ecc68de9c51f6e69c/dotnet-dev-win-x64.1.1.14.zip"
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "x86",
+                  "url": "https://download.visualstudio.microsoft.com/download/pr/c5963b69-fd61-4bd0-b50a-2a1d618d1026/3133130512fe281d04023189ed7da2c9/dotnet-dev-win-x86.1.1.14.zip"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
