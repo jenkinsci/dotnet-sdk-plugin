@@ -3,9 +3,11 @@ package io.jenkins.plugins.dotnet;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.Util;
+import hudson.util.FormValidation;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
+import org.kohsuke.stapler.QueryParameter;
 
 import javax.annotation.CheckForNull;
 import java.util.List;
@@ -181,6 +183,55 @@ public final class DotNetListPackage extends DotNet {
 
     protected DescriptorImpl(Class<? extends DotNetListPackage> clazz) {
       super(clazz);
+    }
+
+    @SuppressWarnings("unused")
+    public FormValidation doCheckConfig(@QueryParameter String value, @QueryParameter boolean deprecated, @QueryParameter boolean outdated) {
+      if (Util.fixEmptyAndTrim(value) != null && !deprecated && !outdated)
+        return FormValidation.warning(Messages.DotNetListPackage_OnlyForPackageUpdateSearch());
+      return FormValidation.ok();
+    }
+
+    @SuppressWarnings("unused")
+    public FormValidation doCheckDeprecated(@QueryParameter boolean deprecated, @QueryParameter boolean outdated) {
+      if (deprecated && outdated)
+        return FormValidation.error(Messages.DotNetListPackage_EitherDeprecatedOrOutdated());
+      return FormValidation.ok();
+    }
+
+    @SuppressWarnings("unused")
+    public FormValidation doCheckHighestMinor(@QueryParameter boolean value, @QueryParameter boolean deprecated, @QueryParameter boolean outdated) {
+      if (value && !deprecated && !outdated)
+        return FormValidation.warning(Messages.DotNetListPackage_OnlyForPackageUpdateSearch());
+      return FormValidation.ok();
+    }
+
+    @SuppressWarnings("unused")
+    public FormValidation doCheckHighestPatch(@QueryParameter boolean value, @QueryParameter boolean deprecated, @QueryParameter boolean outdated) {
+      if (value && !deprecated && !outdated)
+        return FormValidation.warning(Messages.DotNetListPackage_OnlyForPackageUpdateSearch());
+      return FormValidation.ok();
+    }
+
+    @SuppressWarnings("unused")
+    public FormValidation doCheckIncludePreRelease(@QueryParameter boolean value, @QueryParameter boolean deprecated, @QueryParameter boolean outdated) {
+      if (value && !deprecated && !outdated)
+        return FormValidation.warning(Messages.DotNetListPackage_OnlyForPackageUpdateSearch());
+      return FormValidation.ok();
+    }
+
+    @SuppressWarnings("unused")
+    public FormValidation doCheckOutdated(@QueryParameter boolean deprecated, @QueryParameter boolean outdated) {
+      if (deprecated && outdated)
+        return FormValidation.error(Messages.DotNetListPackage_EitherDeprecatedOrOutdated());
+      return FormValidation.ok();
+    }
+
+    @SuppressWarnings("unused")
+    public FormValidation doCheckSources(@QueryParameter String value, @QueryParameter boolean deprecated, @QueryParameter boolean outdated) {
+      if (Util.fixEmptyAndTrim(value) != null && !deprecated && !outdated)
+        return FormValidation.warning(Messages.DotNetListPackage_OnlyForPackageUpdateSearch());
+      return FormValidation.ok();
     }
 
     @NonNull
