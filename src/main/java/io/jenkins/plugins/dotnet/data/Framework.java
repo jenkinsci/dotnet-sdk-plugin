@@ -5,6 +5,7 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Util;
 import hudson.model.AutoCompletionCandidates;
 import hudson.util.FormValidation;
+import io.jenkins.plugins.dotnet.Messages;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -51,7 +52,7 @@ public abstract class Framework {
     if (text != null) {
       Framework.loadMonikers();
       if (!Framework.monikers.contains(text))
-        return FormValidation.error("'%s' is not a valid .NET framework moniker", text);
+        return FormValidation.error(Messages.Framework_Invalid(text));
     }
     return FormValidation.ok();
   }
@@ -79,13 +80,13 @@ public abstract class Framework {
       }
     }
     catch (Throwable t) {
-      Framework.LOGGER.log(Level.FINE, "Failed to load the .NET framework monikers.", t);
+      Framework.LOGGER.log(Level.FINE, Messages.Framework_LoadFailed(), t);
     }
     finally {
       if (Framework.monikers == null)
         Framework.monikers = Collections.emptySet();
       if (Framework.monikers.isEmpty())
-        Framework.LOGGER.fine("No .NET framework monikers found.");
+        Framework.LOGGER.fine(Messages.Framework_NoData());
     }
   }
 

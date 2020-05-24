@@ -6,6 +6,7 @@ import hudson.Util;
 import hudson.model.AutoCompletionCandidates;
 import hudson.util.FormValidation;
 import io.jenkins.plugins.dotnet.DotNetUtils;
+import io.jenkins.plugins.dotnet.Messages;
 import net.sf.json.JSONObject;
 
 import java.util.ArrayList;
@@ -52,7 +53,7 @@ public abstract class Runtime {
     if (text != null) {
       Runtime.loadIdentifiers();
       if (!Runtime.identifiers.contains(text))
-        return FormValidation.error("'%s' is not a valid .NET runtime identifier", text);
+        return FormValidation.error(Messages.Runtime_Invalid(text));
     }
     return FormValidation.ok();
   }
@@ -92,12 +93,12 @@ public abstract class Runtime {
       }
     }
     catch (Throwable t) {
-      Runtime.LOGGER.log(Level.FINE, "Failed to load RID catalog.", t);
+      Runtime.LOGGER.log(Level.FINE, Messages.Runtime_LoadFailed(), t);
     }
     finally {
       if (Runtime.identifiers == null) {
         Runtime.identifiers = Collections.emptySet();
-        Runtime.LOGGER.fine("RID catalog is empty.");
+        Runtime.LOGGER.fine(Messages.Runtime_NoData());
       }
     }
   }
