@@ -146,17 +146,17 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
         final File dotnet_exe = new File(home, "dotnet.exe");
         final File dotnet = new File(home, "dotnet");
         if (!(dotnet_exe.exists() && dotnet_exe.isFile()) && !(dotnet.exists() && dotnet.isFile()))
-          return FormValidation.error("No 'dotnet' executable present.");
+          return FormValidation.error(Messages.DotNetSDK_Home_NoExecutable());
         if (!dotnet_exe.canExecute() && !dotnet.canExecute())
-          return FormValidation.error("A 'dotnet' executable is present but cannot be executed.");
+          return FormValidation.error(Messages.DotNetSDK_Home_NotExecutable());
       }
       { // Should have 'sdk' and 'shared/Microsoft.NETCore.App' subdirs
         final File sdk = new File(home, "sdk");
         if (!sdk.exists() || !sdk.isDirectory())
-          return FormValidation.error("No 'sdk' subdirectory present.");
+          return FormValidation.error(Messages.DotNetSDK_Home_NoSdkSubdir());
         final File sharedNetCoreApp = new File(home, "shared/Microsoft.NETCore.App");
         if (!sharedNetCoreApp.exists() || !sharedNetCoreApp.isDirectory())
-          return FormValidation.error("No 'shared/Microsoft.NETCore.App' subdirectory present.");
+          return FormValidation.error(Messages.DotNetSDK_Home_NoSharedNetCoreSubdir());
         // Potential further checks:
         // - at least one folder under 'sdk' should contain 'dotnet.dll'
         // - a folder of the same name must exist under shared/Microsoft.NETCore.App

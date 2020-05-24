@@ -73,7 +73,7 @@ public final class DotNetTest extends DotNetUsingMSBuild {
         props.load(new StringReader(this.runSettings));
       }
       catch (IOException e) {
-        LOGGER.log(Level.FINE, "Failed to load configured RunSettings arguments.", e);
+        DotNetTest.LOGGER.log(Level.FINE, Messages.DotNetTest_BadRunSettings(), e);
       }
       args.add("--");
       for (Map.Entry<Object, Object> prop : props.entrySet())

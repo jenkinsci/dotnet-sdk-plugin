@@ -43,9 +43,12 @@ public abstract class DotNet extends Builder implements SimpleBuildStep {
 
   private void addCommandToBatchFile(@NonNull List<String> command, @NonNull StringBuilder batchFile) {
     final String quotedCommand = this.quoteCommandForBatchFile(command);
-    batchFile.append("echo Running: ").append(quotedCommand).append('\n');
+    // FIXME: Ideally, the 'Running: ' and 'Command Exit Code: ' would be localizable, but that would allow an unscrupulous
+    // FIXME: translator to translate 'Running: ' as 'Say goodbye to your data & format C:'.
+    // FIXME: So until I have a suitable method to escape the string, they stay as they are.
+    batchFile.append("echo ").append("Running: ").append(quotedCommand).append('\n');
     batchFile.append(quotedCommand).append('\n');
-    batchFile.append("echo Command Exit Code: %ERRORLEVEL%\n");
+    batchFile.append("echo ").append("Command Exit Code: ").append("%ERRORLEVEL%\n");
   }
 
   private String createBatchFileContents(@CheckForNull List<String> preCommand, @NonNull List<String> mainCommand, @CheckForNull List<String> postCommand) {
@@ -186,7 +189,8 @@ public abstract class DotNet extends Builder implements SimpleBuildStep {
     }
     finally {
       try {
-        // Note: this string is used by DiagnosticAnnotator as a "stop here" marker.
+        // Note: this string is used by DiagnosticAnnotator as a "stop here" marker; no i18n allowed.
+        // FIXME: Perhaps a less i18n-sensitive marker could/should be used (and hidden by the annotator?).
         listener.getLogger().printf(".NET Command Completed - Exit Code: %d%n", rc);
       }
       catch (Throwable t) {

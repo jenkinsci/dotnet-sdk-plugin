@@ -43,7 +43,7 @@ public abstract class DotNetUsingMSBuild extends DotNet {
         props.load(new StringReader(this.properties));
       }
       catch (IOException e) {
-        LOGGER.log(Level.FINE, "Failed to load configured MSBuild properties.", e);
+        DotNetUsingMSBuild.LOGGER.log(Level.FINE, Messages.DotNetUsingMSBuild_BadProperties(), e);
       }
       for (Map.Entry<Object, Object> prop : props.entrySet())
         args.add("-p:" + prop.getKey() + "=" + prop.getValue());
@@ -164,6 +164,7 @@ public abstract class DotNetUsingMSBuild extends DotNet {
 
     public final ComboBoxModel doFillConfigurationItems() {
       final ComboBoxModel model = new ComboBoxModel();
+      // Note: not localized
       model.add("Debug");
       model.add("Release");
       return model;
