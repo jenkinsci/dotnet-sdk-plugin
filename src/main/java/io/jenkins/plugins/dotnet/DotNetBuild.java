@@ -141,7 +141,7 @@ public final class DotNetBuild extends DotNetUsingMSBuild {
   public static class DescriptorImpl extends DotNetUsingMSBuild.DescriptorImpl {
 
     public DescriptorImpl() {
-      load();
+      this.load();
     }
 
     protected DescriptorImpl(Class<? extends DotNetBuild> clazz) {

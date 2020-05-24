@@ -176,7 +176,7 @@ public final class DotNetListPackage extends DotNet {
   public static class DescriptorImpl extends DotNet.DescriptorImpl {
 
     public DescriptorImpl() {
-      load();
+      this.load();
     }
 
     protected DescriptorImpl(Class<? extends DotNetListPackage> clazz) {
