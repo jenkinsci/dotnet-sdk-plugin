@@ -236,21 +236,6 @@ public abstract class DotNet extends Builder implements SimpleBuildStep {
     this.sdk = Util.fixEmpty(sdk);
   }
 
-  protected String workDirectory = null;
-
-  public String getWorkDirectory() {
-    return this.workDirectory;
-  }
-
-  @DataBoundSetter
-  public void setWorkDirectory(@CheckForNull String workDirectory) {
-    this.workDirectory = Util.fixEmpty(workDirectory);
-  }
-
-  protected boolean shutDownBuildServers = false;
-
-  protected boolean unstableIfWarnings = false;
-
   protected boolean showSdkInfo = false;
 
   public boolean isShowSdkInfo() {
@@ -260,6 +245,21 @@ public abstract class DotNet extends Builder implements SimpleBuildStep {
   @DataBoundSetter
   public void setShowSdkInfo(boolean showSdkInfo) {
     this.showSdkInfo = showSdkInfo;
+  }
+
+  protected boolean shutDownBuildServers = false;
+
+  protected boolean unstableIfWarnings = false;
+
+  protected String workDirectory = null;
+
+  public String getWorkDirectory() {
+    return this.workDirectory;
+  }
+
+  @DataBoundSetter
+  public void setWorkDirectory(@CheckForNull String workDirectory) {
+    this.workDirectory = Util.fixEmpty(workDirectory);
   }
 
   //endregion
@@ -309,7 +309,7 @@ public abstract class DotNet extends Builder implements SimpleBuildStep {
     @SuppressWarnings("unused")
     public final ListBoxModel doFillSdkItems() {
       final ListBoxModel model = new ListBoxModel();
-      model.add(Messages.DotNet_DefaultSDK(), null);
+      model.add(Messages.DotNet_DefaultSDK(), "");
       DotNetSDK.addSdks(model);
       return model;
     }
@@ -317,7 +317,7 @@ public abstract class DotNet extends Builder implements SimpleBuildStep {
     @SuppressWarnings("unused")
     public final ListBoxModel doFillVerbosityItems() {
       final ListBoxModel model = new ListBoxModel();
-      model.add(Messages.DotNet_Verbosity_Default(), null);
+      model.add(Messages.DotNet_Verbosity_Default(), "");
       model.add(Messages.DotNet_Verbosity_Quiet(), "q");
       model.add(Messages.DotNet_Verbosity_Minimal(), "m");
       model.add(Messages.DotNet_Verbosity_Normal(), "n");
