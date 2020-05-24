@@ -15,6 +15,7 @@ import jenkins.model.Jenkins;
 import jenkins.security.MasterToSlaveCallable;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.DataBoundSetter;
 
 import javax.annotation.CheckForNull;
 import java.io.File;
@@ -26,16 +27,27 @@ import java.util.List;
 /** Information about .NET SDKs. */
 public final class DotNetSDK extends ToolInstallation implements NodeSpecific<DotNetSDK>, EnvironmentSpecific<DotNetSDK> {
 
-  private final boolean telemetryOptOut;
-
-  public DotNetSDK(String name, String home, boolean telemetryOptOut) {
+  public DotNetSDK(String name, String home) {
     super(name, home, Collections.emptyList());
-    this.telemetryOptOut = telemetryOptOut;
   }
 
   @DataBoundConstructor
-  public DotNetSDK(String name, String home, List<? extends ToolProperty<?>> properties, boolean telemetryOptOut) {
+  public DotNetSDK(String name, String home, List<? extends ToolProperty<?>> properties) {
     super(name, home, properties);
+  }
+
+  // FIXME: The 'telemetry opt-out' settings makes more sense as a global configuration option.
+  // FIXME: However, attempts at creating a GlobalConfiguration failed, with the checkbox not getting shown in/under the section
+  // FIXME: (despite using the same setup done by the GlobalMavenConfig.
+
+  private boolean telemetryOptOut = true;
+
+  public boolean isTelemetryOptOut() {
+    return this.telemetryOptOut;
+  }
+
+  @DataBoundSetter
+  public void setTelemetryOptOut(boolean telemetryOptOut) {
     this.telemetryOptOut = telemetryOptOut;
   }
 
@@ -63,12 +75,16 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
 
   @Override
   public DotNetSDK forEnvironment(EnvVars envVars) {
-    return new DotNetSDK(this.getName(), envVars.expand(this.getHome()), this.telemetryOptOut);
+    final DotNetSDK sdk = new DotNetSDK(this.getName(), envVars.expand(this.getHome()));
+    sdk.setTelemetryOptOut(this.telemetryOptOut);
+    return sdk;
   }
 
   @Override
   public DotNetSDK forNode(@NonNull Node node, TaskListener listener) throws IOException, InterruptedException {
-    return new DotNetSDK(this.getName(), this.translateFor(node, listener), this.telemetryOptOut);
+    final DotNetSDK sdk = new DotNetSDK(this.getName(), this.translateFor(node, listener));
+    sdk.setTelemetryOptOut(this.telemetryOptOut);
+    return sdk;
   }
 
   public static String getExecutableFileName(@NonNull Launcher launcher) {
