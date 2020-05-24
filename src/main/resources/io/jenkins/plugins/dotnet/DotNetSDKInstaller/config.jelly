@@ -5,8 +5,6 @@
     <f:textbox/>
   </f:entry>
 
-<!--  <t:label/>-->
-
   <f:entry title="${%.NET Version}" field="version">
     <f:select/>
     <f:checkbox title="${%Include Preview Versions}" field="includePreview"/>
@@ -21,7 +19,7 @@
     <f:select/>
   </f:entry>
 
-  <f:entry title="${%Package}" field="url">
+  <f:entry title="${%Platform}" field="url">
     <f:select/>
   </f:entry>
 
