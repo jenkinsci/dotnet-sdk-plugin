@@ -3,9 +3,11 @@ package io.jenkins.plugins.dotnet;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.Util;
+import hudson.util.FormValidation;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
+import org.kohsuke.stapler.QueryParameter;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -253,6 +255,17 @@ public final class DotNetTest extends DotNetUsingMSBuild {
 
     protected DescriptorImpl(Class<? extends DotNetTest> clazz) {
       super(clazz);
+    }
+
+    @SuppressWarnings("unused")
+    public FormValidation doCheckRunSettings(@QueryParameter String value) {
+      try {
+        new Properties().load(new StringReader(value));
+      }
+      catch (Throwable t) {
+        return FormValidation.error(t, Messages.DotNetTest_InvalidRunSettings());
+      }
+      return FormValidation.ok();
     }
 
     @NonNull

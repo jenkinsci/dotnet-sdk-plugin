@@ -3,8 +3,10 @@ package io.jenkins.plugins.dotnet;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Util;
 import hudson.util.ComboBoxModel;
+import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
 import org.kohsuke.stapler.DataBoundSetter;
+import org.kohsuke.stapler.QueryParameter;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -65,6 +67,17 @@ public abstract class DotNetUsingMSBuild extends DotNet {
     this.configuration = Util.fixEmptyAndTrim(configuration);
   }
 
+  protected boolean noLogo;
+
+  public boolean isNoLogo() {
+    return this.noLogo;
+  }
+
+  @DataBoundSetter
+  public void setNoLogo(boolean noLogo) {
+    this.noLogo = noLogo;
+  }
+
   protected String options;
 
   public String getOptions() {
@@ -74,6 +87,17 @@ public abstract class DotNetUsingMSBuild extends DotNet {
   @DataBoundSetter
   public void setOptions(String options) {
     this.options = Util.fixEmptyAndTrim(options);
+  }
+
+  protected String outputDirectory;
+
+  public String getOutputDirectory() {
+    return this.outputDirectory;
+  }
+
+  @DataBoundSetter
+  public void setOutputDirectory(String outputDirectory) {
+    this.outputDirectory = Util.fixEmptyAndTrim(outputDirectory);
   }
 
   protected String project;
@@ -96,28 +120,6 @@ public abstract class DotNetUsingMSBuild extends DotNet {
   @DataBoundSetter
   public void setProperties(String properties) {
     this.properties = Util.fixEmpty(properties);
-  }
-
-  protected boolean noLogo;
-
-  public boolean isNoLogo() {
-    return this.noLogo;
-  }
-
-  @DataBoundSetter
-  public void setNoLogo(boolean noLogo) {
-    this.noLogo = noLogo;
-  }
-
-  protected String outputDirectory;
-
-  public String getOutputDirectory() {
-    return this.outputDirectory;
-  }
-
-  @DataBoundSetter
-  public void setOutputDirectory(String outputDirectory) {
-    this.outputDirectory = Util.fixEmptyAndTrim(outputDirectory);
   }
 
   public boolean isShutDownBuildServers() {
@@ -162,6 +164,18 @@ public abstract class DotNetUsingMSBuild extends DotNet {
       super(clazz);
     }
 
+    @SuppressWarnings("unused")
+    public FormValidation doCheckProperties(@QueryParameter String value) {
+      try {
+        new Properties().load(new StringReader(value));
+      }
+      catch (Throwable t) {
+        return FormValidation.error(t, Messages.DotNetUsingMSBuild_InvalidProperties());
+      }
+      return FormValidation.ok();
+    }
+
+    @SuppressWarnings("unused")
     public final ComboBoxModel doFillConfigurationItems() {
       final ComboBoxModel model = new ComboBoxModel();
       // Note: not localized
