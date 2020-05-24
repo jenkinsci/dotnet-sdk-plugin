@@ -1,0 +1,11 @@
+<div>
+  Depending on the platform, the <code>dotnet</code> executable may use the most recent SDK available on the system, even when
+  <code>PATH</code> is set up to find an older SDK deployment first; see
+  <a href="https://docs.microsoft.com/en-us/dotnet/core/versions/selection#the-sdk-uses-the-latest-installed-version">this page</a>
+  for more information.<br/>
+  By enabling this option, the configured SDK home directory will be checked, and if it only includes a single SDK deployment, a
+  <code>global.json</code> file will be created in the current directory, referencing that SDK version and disabling roll-forward.
+</div>
+<div><em>
+  <strong>Note:</strong> This will silently overwrite any <code>global.json</code> already present in the current directory.
+</em></div>

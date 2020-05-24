@@ -170,8 +170,11 @@ public abstract class DotNet extends Builder implements SimpleBuildStep {
     new DiagnosticNote().encodeTo(listener.getLogger());
     final StatusScanner scanner = new StatusScanner(listener.getLogger(), cs);
     try {
-      if (sdkInstance != null)
+      if (sdkInstance != null) {
         sdkInstance.buildEnvVars(env);
+        if (this.specificSdkVersion)
+          sdkInstance.createGlobalJson(workDir, launcher, listener);
+      }
       rc = launcher.launch().cmds(cmdLine).envs(env).stdout(scanner).pwd(workDir).join();
       // TODO: Maybe also add configuration to set the build as either failed or unstable based on return code
       if (rc != 0)
@@ -197,6 +200,9 @@ public abstract class DotNet extends Builder implements SimpleBuildStep {
         DotNet.LOGGER.log(Level.FINE, Messages.DotNet_CompletionMessageFailed(), t);
         // the annotator won't stop, but an error serious enough to make that output line fail is going to abort the build anyway
       }
+      // FIXME: Perhaps this should be done more nicely - maybe using an AutoCloseable?
+      if (sdkInstance != null && this.specificSdkVersion)
+        sdkInstance.removeGlobalJson(workDir);
       try {
         script.delete();
       }
@@ -219,11 +225,6 @@ public abstract class DotNet extends Builder implements SimpleBuildStep {
   private static final Logger LOGGER = Logger.getLogger(DotNet.class.getName());
 
   //region Properties
-
-  // TODO: Add a "force exact version" flag; if set, the setup will create/update global.json in the workspace root to specify
-  // TODO: the exact SDK version (to be provided by DotNetSDK). Otherwise, on Windows running 'dotnet' from .NET Core 2 and up will
-  // TODO: use the highest version available, looking at both the SDK installed by Jenkins and the system-wide installed SDKs.
-  // TODO: https://docs.microsoft.com/en-us/dotnet/core/versions/selection#the-sdk-uses-the-latest-installed-version
 
   protected String sdk;
 
@@ -248,6 +249,17 @@ public abstract class DotNet extends Builder implements SimpleBuildStep {
   }
 
   protected boolean shutDownBuildServers = false;
+
+  private boolean specificSdkVersion = true;
+
+  public boolean isSpecificSdkVersion() {
+    return this.specificSdkVersion;
+  }
+
+  @DataBoundSetter
+  public void setSpecificSdkVersion(boolean specificSdkVersion) {
+    this.specificSdkVersion = specificSdkVersion;
+  }
 
   protected boolean unstableIfWarnings = false;
 

@@ -2,35 +2,33 @@ package io.jenkins.plugins.dotnet;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.*;
+import hudson.console.ConsoleLogFilter;
 import hudson.model.AbstractProject;
 import hudson.model.Run;
 import hudson.model.TaskListener;
 import hudson.tasks.BuildWrapperDescriptor;
+import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
 import jenkins.model.Jenkins;
 import jenkins.tasks.SimpleBuildWrapper;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
+import org.kohsuke.stapler.QueryParameter;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.Map;
 
 /** A .NET wrapper, for .NET pipeline steps. */
 public class DotNetWrapper extends SimpleBuildWrapper {
 
-  private String sdk;
-
-  // TODO: Add a "force exact version" flag; if set, the setup will create/update global.json in the workspace root to specify
-  // TODO: the exact SDK version (to be provided by DotNetSDK). Otherwise, on Windows running 'dotnet' will use the highest version
-  // TODO: available, looking at both the explict SDK installed by Jenkins and the system-wide installed SDKs.
-  // TODO: https://docs.microsoft.com/en-us/dotnet/core/versions/selection#the-sdk-uses-the-latest-installed-version
-
-  // TODO: Maybe add a global configuration setting to opt out of the telemetry.
-  // TODO: See https://docs.microsoft.com/en-us/dotnet/core/tools/telemetry
-
   @DataBoundConstructor
-  public DotNetWrapper() {}
+  public DotNetWrapper() {
+  }
+
+  private String sdk;
 
   public String getSdk() {
     return this.sdk;
@@ -41,9 +39,19 @@ public class DotNetWrapper extends SimpleBuildWrapper {
     this.sdk = Util.fixEmpty(sdk);
   }
 
+  private boolean specificSdkVersion;
+
+  public boolean isSpecificSdkVersion() {
+    return this.specificSdkVersion;
+  }
+
+  @DataBoundSetter
+  public void setSpecificSdkVersion(boolean specificSdkVersion) {
+    this.specificSdkVersion = specificSdkVersion;
+  }
+
   @Override
   public void setUp(Context context, Run<?, ?> build, FilePath workspace, Launcher launcher, TaskListener listener, EnvVars initialEnvironment) throws IOException, InterruptedException {
-    // FIXME: Or should the constructor have already stopped null from being assigned?
     if (this.sdk == null)
       throw new AbortException(String.format(Messages.DotNetWrapper_NoSDK(), this.sdk));
     final DotNetSDK sdkInstance = Jenkins.get().getDescriptorByType(DotNetSDK.DescriptorImpl.class).prepareAndValidateInstance(this.sdk, workspace, initialEnvironment, listener);
@@ -54,9 +62,33 @@ public class DotNetWrapper extends SimpleBuildWrapper {
       for (Map.Entry<String, String> entry : modified.entrySet())
         context.env(entry.getKey(), entry.getValue());
     }
+    if (this.specificSdkVersion) {
+      if (sdkInstance.createGlobalJson(workspace, launcher, listener))
+        context.setDisposer(new GlobalJsonRemover(sdkInstance));
+    }
   }
 
-  // TODO: Custom Logger Decorator?
+  private static class GlobalJsonRemover extends Disposer {
+
+    private final DotNetSDK sdk;
+
+    public GlobalJsonRemover(@NonNull DotNetSDK sdk) {
+      this.sdk = sdk;
+    }
+
+    @Override
+    public void tearDown(Run<?, ?> build, FilePath workspace, Launcher launcher, TaskListener listener) throws IOException, InterruptedException {
+      this.sdk.removeGlobalJson(workspace);
+    }
+
+  }
+
+  @CheckForNull
+  @Override
+  public ConsoleLogFilter createLoggerDecorator(@Nonnull Run<?, ?> build) {
+    // TODO: Rework the console processing, so that this could easily reuse the relevant bits.
+    return super.createLoggerDecorator(build);
+  }
 
   //region DescriptorImpl
 
@@ -75,6 +107,12 @@ public class DotNetWrapper extends SimpleBuildWrapper {
       return DotNetSDK.hasConfiguration();
     }
 
+    @SuppressWarnings("unused")
+    public FormValidation doCheckSdk(@QueryParameter String value) {
+      return FormValidation.validateRequired(value);
+    }
+
+    @SuppressWarnings("unused")
     public ListBoxModel doFillSdkItems() {
       final ListBoxModel model = new ListBoxModel();
       DotNetSDK.addSdks(model);

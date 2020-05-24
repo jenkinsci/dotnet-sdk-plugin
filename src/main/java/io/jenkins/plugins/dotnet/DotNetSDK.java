@@ -23,6 +23,8 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /** Information about .NET SDKs. */
 public final class DotNetSDK extends ToolInstallation implements NodeSpecific<DotNetSDK>, EnvironmentSpecific<DotNetSDK> {
@@ -65,12 +67,61 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
       env.put("DOTNET_CLI_TELEMETRY_OPTOUT", "1");
   }
 
+  public boolean createGlobalJson(@NonNull FilePath dir, @NonNull Launcher launcher, @NonNull TaskListener listener) {
+    final String version;
+    try {
+      final FilePath home = this.getHomePath(launcher);
+      if (home == null) {
+        listener.getLogger().println(Messages.DotNetSDK_GlobalJson_NoVersion(this.getName(), Messages.DotNetSDK_GlobalJson_NoHome()));
+        return false;
+      }
+      final FilePath sdkRoot = home.child("sdk");
+      if (sdkRoot.exists()) {
+        String singleSdkVersion = null;
+        for (final FilePath sdkDir : sdkRoot.listDirectories()) {
+          // Assumption: the presence of 'dotnet.dll' is a correct way of distinguishing between SDK dirs and things like the NuGet
+          //             fallback folder. So far this has been shown to be true (.NET Core 1.0 up to .NET 5.0 preview 4).
+          if (!sdkDir.child("dotnet.dll").exists())
+            continue;
+          if (singleSdkVersion != null)
+            listener.getLogger().println(Messages.DotNetSDK_GlobalJson_NoVersion(this.getName(), Messages.DotNetSDK_GlobalJson_MultiSdk(singleSdkVersion, sdkDir.getName())));
+          singleSdkVersion = sdkDir.getName();
+        }
+        version = singleSdkVersion;
+      }
+      else {
+        listener.getLogger().println(Messages.DotNetSDK_GlobalJson_NoVersion(this.getName(), Messages.DotNetSDK_GlobalJson_NoSdk()));
+        return false;
+      }
+    }
+    catch (Throwable t) {
+      listener.getLogger().println(Messages.DotNetSDK_GlobalJson_NoVersion(this.getName(), t));
+      return false;
+    }
+    try {
+      final String json = "{ \"sdk\": { \"version\": \"" + version + "\", \"rollback\": \"disable\" } }";
+      dir.child("global.json").write(json, "UTF-8");
+      listener.getLogger().println(Messages.DotNetSDK_GlobalJson_CreationDone(this.getName(), version));
+      return true;
+    }
+    catch (Throwable t) {
+      listener.getLogger().println(Messages.DotNetSDK_GlobalJson_CreationFailed(this.getName(), version, t));
+      return false;
+    }
+  }
+
   public String ensureExecutableExists(@NonNull Launcher launcher) throws IOException, InterruptedException {
-    final String executable = DotNetSDK.getExecutableFileName(launcher);
-    final String fullExecutablePath = this.getSdkFilePath(launcher, executable);
-    if (fullExecutablePath == null)
-      throw new AbortException(Messages.DotNetSDK_ExecutableNotFound(this.getName()));
-    return fullExecutablePath;
+    final FilePath homePath = this.getHomePath(launcher);
+    if (homePath == null || !homePath.exists())
+      throw new AbortException(Messages.DotNetSDK_NoHome(this.getName()));
+    final FilePath fullExecutablePath;
+    {
+      final String executable = DotNetSDK.getExecutableFileName(launcher);
+      fullExecutablePath = homePath.child(executable);
+      if (!fullExecutablePath.exists())
+        throw new AbortException(Messages.DotNetSDK_NoExecutable(this.getName(), executable));
+    }
+    return fullExecutablePath.getRemote();
   }
 
   @Override
@@ -91,32 +142,18 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
     return launcher.isUnix() ? "dotnet" : "dotnet.exe";
   }
 
-  public String getSdkFilePath(Launcher launcher, String name) throws IOException, InterruptedException {
-    final VirtualChannel channel = launcher.getChannel();
-    if (channel != null)
-      return channel.call(new GetSdkFilePath(this.getHome(), name));
-    return null;
-  }
-
-  private static final class GetSdkFilePath extends MasterToSlaveCallable<String, IOException> implements Serializable {
-
-    private final String home;
-    private final String name;
-
-    public GetSdkFilePath(String home, String name) {
-      this.home = home;
-      this.name = name;
-    }
-
-    @Override
-    public String call() {
-      final String expandedHome = Util.replaceMacro(this.home, EnvVars.masterEnvVars);
-      final File file = new File(expandedHome, this.name);
-      if (file.exists())
-        return file.getPath();
+  /**
+   * Determines the file path for this SDK's home directory.
+   *
+   * @param launcher The launcher to get the remote context from.
+   *
+   * @return A file path representing this SDK's home directory, or {@code null} if no home directory was set.
+   */
+  public FilePath getHomePath(@NonNull Launcher launcher) {
+    final String home = this.getHome();
+    if (home == null)
       return null;
-    }
-
+    return new FilePath(launcher.getChannel(), home);
   }
 
   /**
@@ -128,6 +165,18 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
     final DotNetSDK[] sdks = Jenkins.get().getDescriptorByType(DescriptorImpl.class).getInstallations();
     return sdks != null && sdks.length > 0;
   }
+
+  public void removeGlobalJson(@NonNull FilePath dir) {
+    final FilePath globalJson = dir.child("global.json");
+    try {
+      globalJson.delete();
+    }
+    catch (Throwable t) {
+      DotNetSDK.LOGGER.log(Level.FINE, String.format("Failed to delete %s", globalJson.getRemote()), t);
+    }
+  }
+
+  private static final Logger LOGGER = Logger.getLogger(DotNetSDK.class.getName());
 
   //region ConverterImpl
 
