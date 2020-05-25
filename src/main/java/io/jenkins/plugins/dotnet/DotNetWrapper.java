@@ -9,6 +9,7 @@ import hudson.model.TaskListener;
 import hudson.tasks.BuildWrapperDescriptor;
 import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
+import io.jenkins.plugins.dotnet.console.DiagnosticFilter;
 import jenkins.model.Jenkins;
 import jenkins.tasks.SimpleBuildWrapper;
 import org.jenkinsci.Symbol;
@@ -86,8 +87,7 @@ public class DotNetWrapper extends SimpleBuildWrapper {
   @CheckForNull
   @Override
   public ConsoleLogFilter createLoggerDecorator(@Nonnull Run<?, ?> build) {
-    // TODO: Rework the console processing, so that this could easily reuse the relevant bits.
-    return super.createLoggerDecorator(build);
+    return new DiagnosticFilter();
   }
 
   //region DescriptorImpl

@@ -1,0 +1,9 @@
+.dotnet-completed-line {
+  background-color: #f0f0ff;
+  font-style: italic;
+}
+
+.dotnet-exit-code {
+  font-weight: bold;
+  text-decoration: underline;
+}

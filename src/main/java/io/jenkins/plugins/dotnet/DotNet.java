@@ -11,8 +11,8 @@ import hudson.tools.ToolInstallation;
 import hudson.util.FormValidation;
 import hudson.util.LineEndingConversion;
 import hudson.util.ListBoxModel;
-import io.jenkins.plugins.dotnet.console.DiagnosticNote;
-import io.jenkins.plugins.dotnet.console.StatusScanner;
+import io.jenkins.plugins.dotnet.console.CompletionNote;
+import io.jenkins.plugins.dotnet.console.DiagnosticScanner;
 import io.jenkins.plugins.dotnet.data.Framework;
 import io.jenkins.plugins.dotnet.data.Runtime;
 import jenkins.tasks.SimpleBuildStep;
@@ -20,6 +20,7 @@ import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
 
 import java.io.IOException;
+import java.io.PrintStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -167,15 +168,20 @@ public abstract class DotNet extends Builder implements SimpleBuildStep {
       return Result.FAILURE;
     }
     int rc = -1;
-    new DiagnosticNote().encodeTo(listener.getLogger());
-    final StatusScanner scanner = new StatusScanner(listener.getLogger(), cs);
     try {
       if (sdkInstance != null) {
         sdkInstance.buildEnvVars(env);
         if (this.specificSdkVersion)
           sdkInstance.createGlobalJson(workDir, launcher, listener);
       }
-      rc = launcher.launch().cmds(cmdLine).envs(env).stdout(scanner).pwd(workDir).join();
+      // Note: this MUST NOT BE CLOSED, because that also closes the build listener, causing all further output to go bye-bye
+      final DiagnosticScanner scanner = new DiagnosticScanner(listener.getLogger(), cs);
+      try {
+        rc = launcher.launch().cmds(cmdLine).envs(env).stdout(scanner).pwd(workDir).join();
+      }
+      finally {
+        scanner.forceEol();
+      }
       // TODO: Maybe also add configuration to set the build as either failed or unstable based on return code
       if (rc != 0)
         return Result.FAILURE;
@@ -192,9 +198,13 @@ public abstract class DotNet extends Builder implements SimpleBuildStep {
     }
     finally {
       try {
-        // Note: this string is used by DiagnosticAnnotator as a "stop here" marker; no i18n allowed.
-        // FIXME: Perhaps a less i18n-sensitive marker could/should be used (and hidden by the annotator?).
-        listener.getLogger().printf(".NET Command Completed - Exit Code: %d%n", rc);
+        final PrintStream out = listener.getLogger();
+        out.print(Messages.DotNet_CommandCompleted());
+        // properties don't do trailing blanks, so this needs to be hardcoded text
+        out.print(" - ");
+        // by encoding it here, we don't need matching to decide how to style the exit code
+        new CompletionNote().encodeTo(out);
+        out.println(Messages.DotNet_CommandExitCode(rc));
       }
       catch (Throwable t) {
         DotNet.LOGGER.log(Level.FINE, Messages.DotNet_CompletionMessageFailed(), t);

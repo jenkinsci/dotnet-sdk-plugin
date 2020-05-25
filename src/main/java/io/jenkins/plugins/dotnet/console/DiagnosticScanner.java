@@ -10,20 +10,31 @@ import java.nio.charset.Charset;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public final class StatusScanner extends LineTransformationOutputStream {
+public final class DiagnosticScanner extends LineTransformationOutputStream {
 
   private final OutputStream out;
   private final Charset charset;
+  private final byte[] diagnosticNote;
 
-  public StatusScanner(@NonNull OutputStream out, @NonNull Charset charset) {
+  public DiagnosticScanner(@NonNull OutputStream out, @NonNull Charset charset) {
+    this(out, charset, DiagnosticNote.createEncoded());
+  }
+
+  public DiagnosticScanner(@NonNull OutputStream out, @NonNull Charset charset, byte[] diagnosticNote) {
     this.out = out;
     this.charset = charset;
+    this.diagnosticNote = diagnosticNote;
   }
 
   @Override
   public void close() throws IOException {
     super.close();
     this.out.close();
+  }
+
+  @Override
+  public void flush() throws IOException {
+    this.out.flush();
   }
 
   // FIXME: This will fail for non-English environments.
@@ -45,15 +56,15 @@ public final class StatusScanner extends LineTransformationOutputStream {
   protected void eol(byte[] lineBytes, int lineLength) throws IOException {
     final String line = this.trimEOL(this.charset.decode(ByteBuffer.wrap(lineBytes, 0, lineLength)).toString());
     {
-      Matcher m = StatusScanner.RE_ERROR_COUNT.matcher(line);
+      Matcher m = DiagnosticScanner.RE_ERROR_COUNT.matcher(line);
       if (m.matches())
         this.errors = Integer.parseInt(m.group(1));
-      else {
-        m = StatusScanner.RE_WARNING_COUNT.matcher(line);
-        if (m.matches())
-          this.warnings = Integer.parseInt(m.group(1));
-      }
+      m = DiagnosticScanner.RE_WARNING_COUNT.matcher(line);
+      if (m.matches())
+        this.warnings = Integer.parseInt(m.group(1));
     }
+    if (DiagnosticNote.scan(line).matches())
+      this.out.write(this.diagnosticNote);
     this.out.write(lineBytes, 0, lineLength);
   }
 
