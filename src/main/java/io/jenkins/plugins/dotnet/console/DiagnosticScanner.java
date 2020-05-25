@@ -10,41 +10,68 @@ import java.nio.charset.Charset;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Scanner to detect diagnostic messages (warnings and errors) in the output of .NET commands.
+ * Also sees the error/warning summary lines for MSBuild-based commands and sets properties to the respective counts.
+ * <p>
+ * It currently uses hardcoded 'Error(s)' and 'Warning(s)' strings, so if the node has a non-English language configured, the
+ * processing will likely fail. It may be enough to have a few well-known alternatives for these string, but assumptions about
+ * message format and word order may still cause problems.
+ */
 public final class DiagnosticScanner extends LineTransformationOutputStream {
 
+  /** The output stream being decorated by this scanner. */
   private final OutputStream out;
+
+  /** The character set to use when interpreting output as text. */
   private final Charset charset;
+
+  /** The encoded {@link DiagnosticNote} to use when marking diagnostic lines. */
   private final byte[] diagnosticNote;
 
+  /**
+   * Creates a new scanner.
+   *
+   * @param out     The output stream to decorate.
+   * @param charset The character set in use.
+   */
   public DiagnosticScanner(@NonNull OutputStream out, @NonNull Charset charset) {
     this(out, charset, DiagnosticNote.createEncoded());
   }
 
+  /**
+   * Creates a new scanner.
+   *
+   * @param out            The output stream to decorate.
+   * @param charset        The character set in use.
+   * @param diagnosticNote A specific encoded {@link DiagnosticNote} to use.
+   */
   public DiagnosticScanner(@NonNull OutputStream out, @NonNull Charset charset, byte[] diagnosticNote) {
     this.out = out;
     this.charset = charset;
     this.diagnosticNote = diagnosticNote;
   }
 
+  /**
+   * Closes this scanner; this forces end-of-line processing and then closes the wrapped output stream.
+   *
+   * @throws IOException When thrown by either {@link LineTransformationOutputStream#close()} or {@link OutputStream#close()}.
+   */
   @Override
   public void close() throws IOException {
     super.close();
     this.out.close();
   }
 
+  /**
+   * Flushes the wrapped output stream.
+   *
+   * @throws IOException When thrown by {@link OutputStream#flush()}.
+   */
   @Override
   public void flush() throws IOException {
     this.out.flush();
   }
-
-  // FIXME: This will fail for non-English environments.
-  // FIXME: A better approach might be to create a custom MSBuild logger which would emit special marker lines, which we then
-  // FIXME: replace by the appropriate note.
-  // FIXME: That could even allow marking all targets being executed, adding an overview at the end, including links to their
-  // FIXME: output (would only happen at an appropriate verbosity level).
-
-  // FIXME: In the shorter term, it may be enough to have a few well-known alternatives for 'error' and 'warning', but assumptions
-  // FIXME: about message format and word order will still cause problems.
 
   /** Regular expression pattern for the MSBuild error count line. */
   private static final Pattern RE_ERROR_COUNT = Pattern.compile("^ *(\\d+) Error\\(s\\)$");
@@ -52,6 +79,14 @@ public final class DiagnosticScanner extends LineTransformationOutputStream {
   /** Regular expression pattern for the MSBuild warning count line. */
   private static final Pattern RE_WARNING_COUNT = Pattern.compile("^ *(\\d+) Warning\\(s\\)$");
 
+  /**
+   * Scans a line of output, then forwards it to the wrapped output stream.
+   *
+   * @param lineBytes  The raw line contents, including any line terminator.
+   * @param lineLength The length of the line within {@code lineBytes}.
+   *
+   * @throws IOException When thrown by {@link OutputStream#write(byte[], int, int)}.
+   */
   @Override
   protected void eol(byte[] lineBytes, int lineLength) throws IOException {
     final String line = this.trimEOL(this.charset.decode(ByteBuffer.wrap(lineBytes, 0, lineLength)).toString());
@@ -63,19 +98,31 @@ public final class DiagnosticScanner extends LineTransformationOutputStream {
       if (m.matches())
         this.warnings = Integer.parseInt(m.group(1));
     }
-    if (DiagnosticNote.scan(line).matches())
+    if (DiagnosticNote.appliesTo(line))
       this.out.write(this.diagnosticNote);
     this.out.write(lineBytes, 0, lineLength);
   }
 
+  /** The number of errors reported by an MSBuild-based command in its build summary. */
   private int errors = 0;
 
+  /**
+   * Gets the number of errors reported by an MSBuild-based command in its build summary.
+   *
+   * @return The number of errors reported; 0 if no build summary was seen.
+   */
   public int getErrors() {
     return this.errors;
   }
 
+  /** The number of warnings reported by an MSBuild-based command in its build summary. */
   private int warnings = 0;
 
+  /**
+   * Gets the number of warnings reported by an MSBuild-based command in its build summary.
+   *
+   * @return The number of warnings reported; 0 if no build summary was seen.
+   */
   public int getWarnings() {
     return this.warnings;
   }

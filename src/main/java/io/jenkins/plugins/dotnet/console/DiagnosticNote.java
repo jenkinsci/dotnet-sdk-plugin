@@ -16,6 +16,20 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * A console note that applies styling to diagnostic messages (warnings and errors) in the output of .NET commands.
+ * <p>
+ * The detection is not exhaustive since not all .NET commands use clear markers for these messages. In addition, it currently uses
+ * hardcoded 'error' and 'warning' strings, so if the node has a non-English language configured, the decoration will likely fail.
+ * <p>
+ * A better approach might be to create a custom MSBuild logger which would emit special markers, which this scanner could then
+ * replace by the appropriate code. That would even allow clear marking of other things, like targets being executed.
+ * However, the question then is how to get and where to store that logger; plus, it needs to be specifically activated, so it would
+ * only be used by the builders, not the wrapper.
+ * <p>
+ * In the shorter term, it may be enough to have a few well-known alternatives for 'error' and 'warning', but assumptions about
+ * message format and word order may still cause problems.
+ */
 public final class DiagnosticNote extends ConsoleNote<Object> {
 
   private static final long serialVersionUID = 6450543178454017373L;
@@ -34,15 +48,6 @@ public final class DiagnosticNote extends ConsoleNote<Object> {
     DiagnosticNote.MESSAGE_PREFIX_URLS.put("FS", "https://docs.microsoft.com/en-us/dotnet/fsharp/language-reference/compiler-messages/"); // F#
     DiagnosticNote.MESSAGE_PREFIX_URLS.put("NU", "https://docs.microsoft.com/en-us/nuget/reference/errors-and-warnings/"); // NuGet
   }
-
-  // FIXME: This will fail for non-English environments.
-  // FIXME: A better approach might be to create a custom MSBuild logger which would emit special marker lines, which we then
-  // FIXME: replace by the appropriate note.
-  // FIXME: That could even allow marking all targets being executed, adding an overview at the end, including links to their
-  // FIXME: output (would only happen at an appropriate verbosity level).
-
-  // FIXME: In the shorter term, it may be enough to have a few well-known alternatives for 'error' and 'warning', but assumptions
-  // FIXME: about message format and word order will still cause problems.
 
   /** Regular expression for the 'error' label. */
   private static final String RE_ERROR = "error";
@@ -120,10 +125,22 @@ public final class DiagnosticNote extends ConsoleNote<Object> {
   }
 
   /**
+   * Scans a line of text to determine whether it would be styled by this note.
+   *
+   * @param text The text to scan.
+   *
+   * @return {@code true} if {@code text} contains a diagnostic line; {@code false} otherwise.
+   */
+  public static boolean appliesTo(@NonNull String text) {
+    return DiagnosticNote.RE_DIAGNOSTIC_LINE.matcher(text).matches();
+  }
+
+  /**
    * Creates an instance of this class and encodes it as bytes.
    *
    * @return A {@link DiagnosticNote}, encoded as a byte array.
    */
+  @NonNull
   public static byte[] createEncoded() {
     JenkinsJVM.checkJenkinsJVM();
     try (final ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
@@ -135,15 +152,12 @@ public final class DiagnosticNote extends ConsoleNote<Object> {
     }
   }
 
-  @NonNull
-  public static Matcher scan(@NonNull String s) {
-    return DiagnosticNote.RE_DIAGNOSTIC_LINE.matcher(s);
-  }
-
   @Extension
   @Symbol("dotnetDiagnostic")
   public static final class DescriptorImpl extends ConsoleAnnotationDescriptor {
 
+    @NonNull
+    @Override
     public String getDisplayName() {
       return ".NET Diagnostic Messages";
     }

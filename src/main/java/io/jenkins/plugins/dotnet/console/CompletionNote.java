@@ -7,6 +7,7 @@ import hudson.console.ConsoleAnnotator;
 import hudson.console.ConsoleNote;
 import org.jenkinsci.Symbol;
 
+/** A note inserted in the "command completed" line of output; applies styling. */
 public final class CompletionNote extends ConsoleNote<Object> {
 
   private static final long serialVersionUID = -203953808379356595L;
