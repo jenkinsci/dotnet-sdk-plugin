@@ -166,7 +166,7 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
     return sdks != null && sdks.length > 0;
   }
 
-  public void removeGlobalJson(@NonNull FilePath dir) {
+  public static void removeGlobalJson(@NonNull FilePath dir) {
     final FilePath globalJson = dir.child("global.json");
     try {
       globalJson.delete();

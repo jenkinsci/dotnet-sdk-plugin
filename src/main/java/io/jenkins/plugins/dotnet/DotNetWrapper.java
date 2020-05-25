@@ -65,21 +65,17 @@ public class DotNetWrapper extends SimpleBuildWrapper {
     }
     if (this.specificSdkVersion) {
       if (sdkInstance.createGlobalJson(workspace, launcher, listener))
-        context.setDisposer(new GlobalJsonRemover(sdkInstance));
+        context.setDisposer(new GlobalJsonRemover());
     }
   }
 
   private static class GlobalJsonRemover extends Disposer {
 
-    private final DotNetSDK sdk;
-
-    public GlobalJsonRemover(@NonNull DotNetSDK sdk) {
-      this.sdk = sdk;
-    }
+    private static final long serialVersionUID = 4748633873948298689L;
 
     @Override
     public void tearDown(Run<?, ?> build, FilePath workspace, Launcher launcher, TaskListener listener) throws IOException, InterruptedException {
-      this.sdk.removeGlobalJson(workspace);
+      DotNetSDK.removeGlobalJson(workspace);
     }
 
   }

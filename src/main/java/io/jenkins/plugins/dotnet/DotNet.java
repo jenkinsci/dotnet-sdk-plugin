@@ -212,7 +212,7 @@ public abstract class DotNet extends Builder implements SimpleBuildStep {
       }
       // FIXME: Perhaps this should be done more nicely - maybe using an AutoCloseable?
       if (sdkInstance != null && this.specificSdkVersion)
-        sdkInstance.removeGlobalJson(workDir);
+        DotNetSDK.removeGlobalJson(workDir);
       try {
         script.delete();
       }
