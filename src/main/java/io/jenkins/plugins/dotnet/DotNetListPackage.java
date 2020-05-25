@@ -9,7 +9,6 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
 
-import javax.annotation.CheckForNull;
 import java.util.List;
 
 /** A build step using the 'dotnet' executable to list all resolved package dependencies for a project. */
