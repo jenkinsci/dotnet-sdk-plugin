@@ -54,7 +54,7 @@ public final class DiagnosticScanner extends LineTransformationOutputStream {
    * @param charset        The character set in use.
    * @param diagnosticNote A specific encoded {@link DiagnosticNote} to use.
    */
-  public DiagnosticScanner(@NonNull OutputStream out, @NonNull Charset charset, @NonNull byte[] diagnosticNote) {
+  DiagnosticScanner(@NonNull OutputStream out, @NonNull Charset charset, @NonNull byte[] diagnosticNote) {
     this(out, charset, diagnosticNote, null);
   }
 
@@ -66,7 +66,7 @@ public final class DiagnosticScanner extends LineTransformationOutputStream {
    * @param diagnosticNote A specific encoded {@link DiagnosticNote} to use.
    * @param completionNote A specific encoded {@link CompletionNote} to use.
    */
-  public DiagnosticScanner(@NonNull OutputStream out, @NonNull Charset charset, @NonNull byte[] diagnosticNote, @CheckForNull byte[] completionNote) {
+  private DiagnosticScanner(@NonNull OutputStream out, @NonNull Charset charset, @NonNull byte[] diagnosticNote, @CheckForNull byte[] completionNote) {
     this.out = out;
     this.charset = charset;
     this.diagnosticNote = diagnosticNote;
