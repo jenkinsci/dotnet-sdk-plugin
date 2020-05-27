@@ -1,16 +1,13 @@
 package io.jenkins.plugins.dotnet.console;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.MarkupText;
 import hudson.console.ConsoleAnnotationDescriptor;
 import hudson.console.ConsoleAnnotator;
 import hudson.console.ConsoleNote;
-import jenkins.util.JenkinsJVM;
 import org.jenkinsci.Symbol;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -82,7 +79,7 @@ public final class DiagnosticNote extends ConsoleNote<Object> {
 
   @SuppressWarnings("rawtypes")
   @Override
-  public ConsoleAnnotator annotate(@NonNull Object context, MarkupText text, int charPos) {
+  public ConsoleAnnotator annotate(@Nonnull Object context, MarkupText text, int charPos) {
     final String t = text.getText().replaceAll("\r?\n$", "");
     {
       Matcher m = DiagnosticNote.RE_ERROR_LINE.matcher(t);
@@ -131,7 +128,7 @@ public final class DiagnosticNote extends ConsoleNote<Object> {
    *
    * @return {@code true} if {@code text} contains a diagnostic line; {@code false} otherwise.
    */
-  public static boolean appliesTo(@NonNull String text) {
+  public static boolean appliesTo(@Nonnull String text) {
     return DiagnosticNote.RE_DIAGNOSTIC_LINE.matcher(text).matches();
   }
 
@@ -139,7 +136,7 @@ public final class DiagnosticNote extends ConsoleNote<Object> {
   @Symbol("dotnetDiagnostic")
   public static final class DescriptorImpl extends ConsoleAnnotationDescriptor {
 
-    @NonNull
+    @Nonnull
     @Override
     public String getDisplayName() {
       return ".NET Diagnostic Messages";

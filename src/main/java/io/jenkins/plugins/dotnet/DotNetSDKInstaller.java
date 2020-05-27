@@ -1,6 +1,5 @@
 package io.jenkins.plugins.dotnet;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.Util;
@@ -17,6 +16,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.net.URL;
 
@@ -191,7 +191,7 @@ public final class DotNetSDKInstaller extends ToolInstaller {
       return Downloads.getInstance().addVersions(this.createList(), includePreview, includeEndOfLife);
     }
 
-    @NonNull
+    @Nonnull
     @Override
     public String getDisplayName() {
       return Messages.DotNetSDKInstaller_DisplayName();

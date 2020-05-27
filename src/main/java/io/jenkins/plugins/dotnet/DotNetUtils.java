@@ -1,12 +1,12 @@
 package io.jenkins.plugins.dotnet;
 
-import edu.umd.cs.findbugs.annotations.CheckForNull;
-import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Util;
 import hudson.console.ConsoleNote;
 import hudson.util.VariableResolver;
 import jenkins.util.JenkinsJVM;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.function.Supplier;
@@ -25,8 +25,8 @@ public interface DotNetUtils {
    *
    * @return An instance of a console note, encoded as a byte array.
    */
-  @NonNull
-  static <T extends ConsoleNote<?>> byte[] encodeNote(@NonNull Supplier<T> createInstance) {
+  @Nonnull
+  static <T extends ConsoleNote<?>> byte[] encodeNote(@Nonnull Supplier<T> createInstance) {
     JenkinsJVM.checkJenkinsJVM();
     try (final ByteArrayOutputStream bytes = new ByteArrayOutputStream()) {
       createInstance.get().encodeTo(bytes);

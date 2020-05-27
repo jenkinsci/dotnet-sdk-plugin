@@ -1,7 +1,5 @@
 package io.jenkins.plugins.dotnet.data;
 
-import edu.umd.cs.findbugs.annotations.CheckForNull;
-import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Util;
 import hudson.model.AutoCompletionCandidates;
 import hudson.util.FormValidation;
@@ -9,6 +7,8 @@ import io.jenkins.plugins.dotnet.DotNetUtils;
 import io.jenkins.plugins.dotnet.Messages;
 import net.sf.json.JSONObject;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -29,7 +29,7 @@ public abstract class Runtime {
    *
    * @return Suitable auto-completion candidates for {@code text}.
    */
-  @NonNull
+  @Nonnull
   public static AutoCompletionCandidates autoComplete(@CheckForNull String text) {
     Runtime.loadIdentifiers();
     final AutoCompletionCandidates candidates = new AutoCompletionCandidates();
@@ -47,7 +47,7 @@ public abstract class Runtime {
    *
    * @return The validation result.
    */
-  @NonNull
+  @Nonnull
   public static FormValidation checkIdentifier(@CheckForNull String text) {
     text = Util.fixEmptyAndTrim(text);
     if (text != null) {

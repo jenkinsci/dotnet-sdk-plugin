@@ -1,9 +1,9 @@
 package io.jenkins.plugins.dotnet.data;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
 import net.sf.json.JSONObject;
 
 import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -26,7 +26,7 @@ abstract class Data {
    * @return The loaded JSON object, or {@code null} when no data was loaded.
    */
   @CheckForNull
-  public static JSONObject loadJson(@NonNull Class<?> c) {
+  public static JSONObject loadJson(@Nonnull Class<?> c) {
     final String text = Data.loadText(c, StandardCharsets.UTF_8, ".json");
     if (text == null)
       return null;
@@ -45,7 +45,7 @@ abstract class Data {
    * @return The loaded JSON object, or {@code null} when no data was loaded.
    */
   @CheckForNull
-  public static <T> T loadJson(@NonNull Class<?> c, @NonNull Class<T> t) {
+  public static <T> T loadJson(@Nonnull Class<?> c, @Nonnull Class<T> t) {
     final String text = Data.loadText(c, StandardCharsets.UTF_8, ".json");
     if (text == null)
       return null;
@@ -63,7 +63,7 @@ abstract class Data {
    * @return The loaded text, or {@code null} when no data was loaded.
    */
   @CheckForNull
-  public static String loadText(@NonNull Class<?> c, @NonNull Charset cs) {
+  public static String loadText(@Nonnull Class<?> c, @Nonnull Charset cs) {
     return Data.loadText(c, cs, ".txt");
   }
 
@@ -77,7 +77,7 @@ abstract class Data {
    * @return The loaded text, or {@code null} when no data was loaded.
    */
   @CheckForNull
-  private static String loadText(@NonNull Class<?> c, @NonNull Charset cs, @NonNull String extension) {
+  private static String loadText(@Nonnull Class<?> c, @Nonnull Charset cs, @Nonnull String extension) {
     final String packagePath = c.getPackage().getName().replace('.', '/') + '/';
     final String name = packagePath + c.getSimpleName().toLowerCase() + extension;
     try (final InputStream is = c.getClassLoader().getResourceAsStream(name)) {

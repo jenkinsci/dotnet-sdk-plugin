@@ -1,6 +1,5 @@
 package io.jenkins.plugins.dotnet;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.Util;
 import hudson.util.ArgumentListBuilder;
@@ -9,6 +8,7 @@ import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
+import javax.annotation.Nonnull;
 import java.util.Set;
 
 /** A build step using the 'dotnet' executable to restore dependencies for a project. */
@@ -19,7 +19,7 @@ public final class DotNetRestore extends DotNet {
   }
 
   @Override
-  protected void addCommandLineArguments(@NonNull ArgumentListBuilder args, @NonNull VariableResolver<String> resolver, @NonNull Set<String> sensitive) {
+  protected void addCommandLineArguments(@Nonnull ArgumentListBuilder args, @Nonnull VariableResolver<String> resolver, @Nonnull Set<String> sensitive) {
     args.add("restore");
     args.add(this.project);
     if (this.disableParallel)
@@ -226,7 +226,7 @@ public final class DotNetRestore extends DotNet {
       super(clazz);
     }
 
-    @NonNull
+    @Nonnull
     public String getDisplayName() {
       return Messages.DotNetRestore_DisplayName();
     }

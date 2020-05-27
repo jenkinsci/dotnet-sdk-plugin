@@ -1,6 +1,5 @@
 package io.jenkins.plugins.dotnet;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.*;
 import hudson.console.ConsoleLogFilter;
 import hudson.model.AbstractProject;
@@ -93,7 +92,7 @@ public class DotNetWrapper extends SimpleBuildWrapper {
   public static class DescriptorImpl extends BuildWrapperDescriptor {
 
     @Override
-    @NonNull
+    @Nonnull
     public String getDisplayName() {
       return Messages.DotNetWrapper_DisplayName();
     }

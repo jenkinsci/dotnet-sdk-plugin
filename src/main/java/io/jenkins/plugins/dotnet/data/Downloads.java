@@ -1,6 +1,5 @@
 package io.jenkins.plugins.dotnet.data;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.util.ListBoxModel;
 import io.jenkins.plugins.dotnet.Messages;
@@ -8,6 +7,7 @@ import net.sf.ezmorph.Morpher;
 import net.sf.json.util.EnumMorpher;
 import net.sf.json.util.JSONUtils;
 
+import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -86,7 +86,7 @@ public final class Downloads {
 
   //region Listbox Methods
 
-  public ListBoxModel addPackages(@NonNull ListBoxModel model, String version, String release, String sdk) {
+  public ListBoxModel addPackages(@Nonnull ListBoxModel model, String version, String release, String sdk) {
     final Sdk s = this.getSdk(version, release, sdk);
     if (s != null && s.packages != null) {
       for (Package p : s.packages)
@@ -95,7 +95,7 @@ public final class Downloads {
     return model;
   }
 
-  public ListBoxModel addReleases(@NonNull ListBoxModel model, String version) {
+  public ListBoxModel addReleases(@Nonnull ListBoxModel model, String version) {
     final Version v = this.getVersion(version);
     if (v != null && v.releases != null) {
       for (Release r : v.releases)
@@ -104,7 +104,7 @@ public final class Downloads {
     return model;
   }
 
-  public ListBoxModel addSdks(@NonNull ListBoxModel model, String version, String release) {
+  public ListBoxModel addSdks(@Nonnull ListBoxModel model, String version, String release) {
     final Release r = this.getRelease(version, release);
     if (r != null && r.sdks != null) {
       for (Sdk s : r.sdks)
@@ -113,7 +113,7 @@ public final class Downloads {
     return model;
   }
 
-  public ListBoxModel addVersions(@NonNull ListBoxModel model, boolean includePreview, boolean includeEndOfLife) {
+  public ListBoxModel addVersions(@Nonnull ListBoxModel model, boolean includePreview, boolean includeEndOfLife) {
     if (this.versions != null) {
       for (Version v : this.versions) {
         if (v.status == Version.Status.PREVIEW && !includePreview)
@@ -207,7 +207,7 @@ public final class Downloads {
       }
     }
 
-    @NonNull
+    @Nonnull
     public String getDisplayName() {
       if (this.endOfSupport != null)
         return Messages.Downloads_Version_DisplayNameWithDate(this.name, this.status.getDisplayName(), this.endOfSupport);
@@ -256,7 +256,7 @@ public final class Downloads {
       }
     }
 
-    @NonNull
+    @Nonnull
     public String getDisplayName() {
       if (this.securityFixes)
         return Messages.Downloads_Release_DisplayNameWithSecurity(this.name, this.released);
@@ -302,7 +302,7 @@ public final class Downloads {
       }
     }
 
-    @NonNull
+    @Nonnull
     public String getDisplayName() {
       return Messages.Downloads_Sdk_DisplayName(this.name, this.vs);
     }
@@ -336,7 +336,7 @@ public final class Downloads {
         this.architecture = Messages.Downloads_Unknown();
     }
 
-    @NonNull
+    @Nonnull
     public String getDisplayName() {
       return Messages.Downloads_Package_DisplayName(this.platform, this.architecture);
     }

@@ -1,7 +1,5 @@
 package io.jenkins.plugins.dotnet;
 
-import edu.umd.cs.findbugs.annotations.CheckForNull;
-import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.*;
 import hudson.model.*;
 import hudson.tasks.BuildStepDescriptor;
@@ -18,6 +16,8 @@ import jenkins.tasks.SimpleBuildStep;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Collections;
@@ -32,7 +32,7 @@ public abstract class DotNet extends Builder implements SimpleBuildStep {
     return (DescriptorImpl) super.getDescriptor();
   }
 
-  protected abstract void addCommandLineArguments(@NonNull ArgumentListBuilder args, @NonNull VariableResolver<String> resolver, @NonNull Set<String> sensitive);
+  protected abstract void addCommandLineArguments(@Nonnull ArgumentListBuilder args, @Nonnull VariableResolver<String> resolver, @Nonnull Set<String> sensitive);
 
   @Override
   public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
@@ -49,14 +49,14 @@ public abstract class DotNet extends Builder implements SimpleBuildStep {
   }
 
   @Override
-  public void perform(@NonNull Run<?, ?> run, @NonNull FilePath wd, @NonNull Launcher launcher, @NonNull TaskListener listener) throws InterruptedException, IOException {
+  public void perform(@Nonnull Run<?, ?> run, @Nonnull FilePath wd, @Nonnull Launcher launcher, @Nonnull TaskListener listener) throws InterruptedException, IOException {
     final EnvVars env = run.getEnvironment(listener);
     final Result r = this.run(wd, env, launcher, listener, run.getCharset());
     if (r != Result.SUCCESS)
       run.setResult(r);
   }
 
-  private Result run(@NonNull FilePath wd, @NonNull EnvVars env, @NonNull Launcher launcher, @NonNull TaskListener listener, @NonNull Charset cs) throws InterruptedException, IOException {
+  private Result run(@Nonnull FilePath wd, @Nonnull EnvVars env, @Nonnull Launcher launcher, @Nonnull TaskListener listener, @Nonnull Charset cs) throws InterruptedException, IOException {
     final DotNetSDK sdkInstance;
     if (this.sdk == null)
       sdkInstance = null;

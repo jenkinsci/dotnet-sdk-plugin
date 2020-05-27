@@ -1,11 +1,11 @@
 package io.jenkins.plugins.dotnet.console;
 
-import edu.umd.cs.findbugs.annotations.CheckForNull;
-import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.console.LineTransformationOutputStream;
 import io.jenkins.plugins.dotnet.DotNetUtils;
 import io.jenkins.plugins.dotnet.Messages;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
@@ -43,7 +43,7 @@ public final class DiagnosticScanner extends LineTransformationOutputStream {
    * @param out     The output stream to decorate.
    * @param charset The character set in use.
    */
-  public DiagnosticScanner(@NonNull OutputStream out, @NonNull Charset charset) {
+  public DiagnosticScanner(@Nonnull OutputStream out, @Nonnull Charset charset) {
     this(out, charset, DotNetUtils.encodeNote(DiagnosticNote::new), DotNetUtils.encodeNote(CompletionNote::new));
   }
 
@@ -54,7 +54,7 @@ public final class DiagnosticScanner extends LineTransformationOutputStream {
    * @param charset        The character set in use.
    * @param diagnosticNote A specific encoded {@link DiagnosticNote} to use.
    */
-  DiagnosticScanner(@NonNull OutputStream out, @NonNull Charset charset, @NonNull byte[] diagnosticNote) {
+  DiagnosticScanner(@Nonnull OutputStream out, @Nonnull Charset charset, @Nonnull byte[] diagnosticNote) {
     this(out, charset, diagnosticNote, null);
   }
 
@@ -66,7 +66,7 @@ public final class DiagnosticScanner extends LineTransformationOutputStream {
    * @param diagnosticNote A specific encoded {@link DiagnosticNote} to use.
    * @param completionNote A specific encoded {@link CompletionNote} to use.
    */
-  private DiagnosticScanner(@NonNull OutputStream out, @NonNull Charset charset, @NonNull byte[] diagnosticNote, @CheckForNull byte[] completionNote) {
+  private DiagnosticScanner(@Nonnull OutputStream out, @Nonnull Charset charset, @Nonnull byte[] diagnosticNote, @CheckForNull byte[] completionNote) {
     this.out = out;
     this.charset = charset;
     this.diagnosticNote = diagnosticNote;
