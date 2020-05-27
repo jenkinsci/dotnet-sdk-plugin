@@ -1,6 +1,7 @@
 package io.jenkins.plugins.dotnet.data;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.util.ListBoxModel;
 import io.jenkins.plugins.dotnet.Messages;
 import net.sf.ezmorph.Morpher;
@@ -177,8 +178,16 @@ public final class Downloads {
 
     public Status status;
 
+    @SuppressFBWarnings(
+      value = "UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD",
+      justification = "Set by JSON deserialization."
+    )
     public String endOfSupport;
 
+    @SuppressFBWarnings(
+      value = "UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD",
+      justification = "Set by JSON deserialization."
+    )
     public Release[] releases;
 
     private final Map<String, Release> releaseMap = new HashMap<>();
@@ -224,6 +233,10 @@ public final class Downloads {
 
     public boolean securityFixes;
 
+    @SuppressFBWarnings(
+      value = "UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD",
+      justification = "Set by JSON deserialization."
+    )
     public Sdk[] sdks;
 
     private final Map<String, Sdk> sdkMap = new HashMap<>();
@@ -266,6 +279,10 @@ public final class Downloads {
 
     public String vs;
 
+    @SuppressFBWarnings(
+      value = "UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD",
+      justification = "Set by JSON deserialization."
+    )
     public Package[] packages;
 
     private final Map<String, Package> packageMap = new HashMap<>();
@@ -306,6 +323,10 @@ public final class Downloads {
 
     public String architecture;
 
+    @SuppressFBWarnings(
+      value = "UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD",
+      justification = "Set by JSON deserialization."
+    )
     public String url;
 
     private void finish() {
