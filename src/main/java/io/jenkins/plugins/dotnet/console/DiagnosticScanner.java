@@ -1,12 +1,17 @@
 package io.jenkins.plugins.dotnet.console;
 
+import edu.umd.cs.findbugs.annotations.CheckForNull;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.console.LineTransformationOutputStream;
+import io.jenkins.plugins.dotnet.DotNetUtils;
+import io.jenkins.plugins.dotnet.Messages;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -29,6 +34,9 @@ public final class DiagnosticScanner extends LineTransformationOutputStream {
   /** The encoded {@link DiagnosticNote} to use when marking diagnostic lines. */
   private final byte[] diagnosticNote;
 
+  /** The encoded {@link CompletionNote} to use when marking command completion lines. */
+  private final byte[] completionNote;
+
   /**
    * Creates a new scanner.
    *
@@ -36,7 +44,7 @@ public final class DiagnosticScanner extends LineTransformationOutputStream {
    * @param charset The character set in use.
    */
   public DiagnosticScanner(@NonNull OutputStream out, @NonNull Charset charset) {
-    this(out, charset, DiagnosticNote.createEncoded());
+    this(out, charset, DotNetUtils.encodeNote(DiagnosticNote::new), DotNetUtils.encodeNote(CompletionNote::new));
   }
 
   /**
@@ -46,10 +54,47 @@ public final class DiagnosticScanner extends LineTransformationOutputStream {
    * @param charset        The character set in use.
    * @param diagnosticNote A specific encoded {@link DiagnosticNote} to use.
    */
-  public DiagnosticScanner(@NonNull OutputStream out, @NonNull Charset charset, byte[] diagnosticNote) {
+  public DiagnosticScanner(@NonNull OutputStream out, @NonNull Charset charset, @NonNull byte[] diagnosticNote) {
+    this(out, charset, diagnosticNote, null);
+  }
+
+  /**
+   * Creates a new scanner.
+   *
+   * @param out            The output stream to decorate.
+   * @param charset        The character set in use.
+   * @param diagnosticNote A specific encoded {@link DiagnosticNote} to use.
+   * @param completionNote A specific encoded {@link CompletionNote} to use.
+   */
+  public DiagnosticScanner(@NonNull OutputStream out, @NonNull Charset charset, @NonNull byte[] diagnosticNote, @CheckForNull byte[] completionNote) {
     this.out = out;
     this.charset = charset;
     this.diagnosticNote = diagnosticNote;
+    this.completionNote = completionNote;
+  }
+
+  /** The number of errors reported by an MSBuild-based command in its build summary. */
+  private int errors = 0;
+
+  /**
+   * Gets the number of errors reported by an MSBuild-based command in its build summary.
+   *
+   * @return The number of errors reported; 0 if no build summary was seen.
+   */
+  public int getErrors() {
+    return this.errors;
+  }
+
+  /** The number of warnings reported by an MSBuild-based command in its build summary. */
+  private int warnings = 0;
+
+  /**
+   * Gets the number of warnings reported by an MSBuild-based command in its build summary.
+   *
+   * @return The number of warnings reported; 0 if no build summary was seen.
+   */
+  public int getWarnings() {
+    return this.warnings;
   }
 
   /**
@@ -103,28 +148,32 @@ public final class DiagnosticScanner extends LineTransformationOutputStream {
     this.out.write(lineBytes, 0, lineLength);
   }
 
-  /** The number of errors reported by an MSBuild-based command in its build summary. */
-  private int errors = 0;
+  /** The marker that a completion message should contain, to indicate where exit code information starts. */
+  private static final String COMPLETION_MESSAGE_EXIT_CODE_MARKER = "<!>";
 
-  /**
-   * Gets the number of errors reported by an MSBuild-based command in its build summary.
-   *
-   * @return The number of errors reported; 0 if no build summary was seen.
-   */
-  public int getErrors() {
-    return this.errors;
+  public void writeCompletionMessage(int rc) {
+    try {
+      this.forceEol();
+      final String message = Messages.DiagnosticScanner_CompletionMessage(rc);
+      final String marker = DiagnosticScanner.COMPLETION_MESSAGE_EXIT_CODE_MARKER;
+      // FIXME: This assumes the exit code will always be in the second half of the sentence.
+      final int idx = message.indexOf(marker);
+      if (idx < 0) // just write the entire line
+        this.out.write(message.getBytes(this.charset));
+      else
+        this.out.write(message.substring(0, idx).getBytes(this.charset));
+      if (this.completionNote != null)
+        this.out.write(this.completionNote);
+      if (idx >= 0)
+        this.out.write(message.substring(idx + marker.length()).getBytes(this.charset));
+      this.out.write(System.lineSeparator().getBytes(this.charset));
+    }
+    catch (Throwable t) {
+      DiagnosticScanner.LOGGER.log(Level.FINE, Messages.DiagnosticScanner_CompletionMessageFailed(), t);
+      // the annotator won't stop, but an error serious enough to make that output line fail is going to abort the build anyway
+    }
   }
 
-  /** The number of warnings reported by an MSBuild-based command in its build summary. */
-  private int warnings = 0;
-
-  /**
-   * Gets the number of warnings reported by an MSBuild-based command in its build summary.
-   *
-   * @return The number of warnings reported; 0 if no build summary was seen.
-   */
-  public int getWarnings() {
-    return this.warnings;
-  }
+  private static final Logger LOGGER = Logger.getLogger(DiagnosticScanner.class.getName());
 
 }

@@ -3,11 +3,13 @@ package io.jenkins.plugins.dotnet;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.Util;
+import hudson.util.ArgumentListBuilder;
+import hudson.util.VariableResolver;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
-import java.util.List;
+import java.util.Set;
 
 /** A build step using the 'dotnet' executable to create a NuGet package for a project. */
 public final class DotNetPack extends DotNetUsingMSBuild {
@@ -17,9 +19,9 @@ public final class DotNetPack extends DotNetUsingMSBuild {
   }
 
   @Override
-  protected void addCommandLineArguments(@NonNull List<String> args) {
+  protected void addCommandLineArguments(@NonNull ArgumentListBuilder args, @NonNull VariableResolver<String> resolver, @NonNull Set<String> sensitive) {
     args.add("pack");
-    super.addCommandLineArguments(args);
+    super.addCommandLineArguments(args, resolver, sensitive);
     if (this.force)
       args.add("--force");
     if (this.noBuild)
@@ -34,10 +36,8 @@ public final class DotNetPack extends DotNetUsingMSBuild {
       args.add("--include-source");
     if (this.includeSymbols)
       args.add("--include-symbols");
-    if (this.versionSuffix != null) {
-      args.add("--version-suffix");
-      args.add(this.versionSuffix);
-    }
+    if (this.versionSuffix != null)
+      args.add("--version-suffix", this.versionSuffix);
   }
 
   //region Properties

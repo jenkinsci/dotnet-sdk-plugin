@@ -2,6 +2,7 @@ package io.jenkins.plugins.dotnet.console;
 
 import hudson.console.ConsoleLogFilter;
 import hudson.model.Run;
+import io.jenkins.plugins.dotnet.DotNetUtils;
 
 import java.io.OutputStream;
 import java.io.Serializable;
@@ -12,7 +13,7 @@ public final class DiagnosticFilter extends ConsoleLogFilter implements Serializ
 
   private static final long serialVersionUID = 5093823694192317972L;
 
-  private final byte[] diagnosticNote = DiagnosticNote.createEncoded();
+  private final byte[] diagnosticNote = DotNetUtils.encodeNote(DiagnosticNote::new);
 
   /**
    * Creates a {@link DiagnosticScanner} to preprocess output going to the specified stream.

@@ -28,6 +28,8 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
 
   private static final long serialVersionUID = 1834789641052956539L;
 
+  public static final String HOME_ENVIRONMENT_VARIABLE = "DOTNET_SDK_JENKINS_TOOL_HOME";
+
   public DotNetSDK(String name, String home) {
     super(name, home, Collections.emptyList());
   }
@@ -60,7 +62,7 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
 
   @Override
   public void buildEnvVars(EnvVars env) {
-    env.put("DOTNET_HOME", this.getHome());
+    env.put(DotNetSDK.HOME_ENVIRONMENT_VARIABLE, this.getHome());
     env.put("PATH+DOTNET", this.getHome());
     if (this.telemetryOptOut)
       env.put("DOTNET_CLI_TELEMETRY_OPTOUT", "1");
@@ -165,17 +167,16 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
     return sdks != null && sdks.length > 0;
   }
 
-  public static void removeGlobalJson(@NonNull FilePath dir) {
+  public static void removeGlobalJson(@NonNull FilePath dir, @NonNull TaskListener listener) {
     final FilePath globalJson = dir.child("global.json");
     try {
       globalJson.delete();
+      listener.getLogger().println(Messages.DotNetSDK_GlobalJson_DeletionDone(globalJson.getRemote()));
     }
     catch (Throwable t) {
-      DotNetSDK.LOGGER.log(Level.FINE, String.format("Failed to delete %s", globalJson.getRemote()), t);
+      listener.getLogger().println(Messages.DotNetSDK_GlobalJson_DeletionFailed(globalJson.getRemote(), t));
     }
   }
-
-  private static final Logger LOGGER = Logger.getLogger(DotNetSDK.class.getName());
 
   //region ConverterImpl
 

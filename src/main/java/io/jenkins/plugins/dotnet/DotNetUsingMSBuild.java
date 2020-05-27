@@ -2,23 +2,24 @@ package io.jenkins.plugins.dotnet;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Util;
+import hudson.util.ArgumentListBuilder;
 import hudson.util.ComboBoxModel;
 import hudson.util.FormValidation;
+import hudson.util.VariableResolver;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.List;
-import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public abstract class DotNetUsingMSBuild extends DotNet {
 
   @Override
-  protected void addCommandLineArguments(@NonNull List<String> args) {
+  protected void addCommandLineArguments(@NonNull ArgumentListBuilder args, @NonNull VariableResolver<String> resolver, @NonNull Set<String> sensitive) {
     if (this.options != null) {
       for (String option : Util.tokenize(this.options)) {
         option = Util.fixEmptyAndTrim(option);
@@ -30,24 +31,16 @@ public abstract class DotNetUsingMSBuild extends DotNet {
       args.add("--nologo");
     if (this.verbosity != null)
       args.add("-v:" + this.verbosity);
-    if (this.project != null)
-      args.add(this.project);
-    if (this.outputDirectory != null) {
-      args.add("--output");
-      args.add(this.outputDirectory);
-    }
+    args.add(this.project);
+    if (this.outputDirectory != null)
+      args.add("--output", this.outputDirectory);
     if (this.configuration != null)
       args.add("-c:" + this.configuration);
-    if (this.properties != null) {
-      Properties props = new Properties();
-      try {
-        props.load(new StringReader(this.properties));
-      }
-      catch (IOException e) {
-        DotNetUsingMSBuild.LOGGER.log(Level.FINE, Messages.DotNetUsingMSBuild_BadProperties(), e);
-      }
-      for (Map.Entry<Object, Object> prop : props.entrySet())
-        args.add("-p:" + prop.getKey() + "=" + prop.getValue());
+    try {
+      args.addKeyValuePairsFromPropertyString("-p:", this.properties, resolver, sensitive);
+    }
+    catch (IOException e) {
+      DotNetUsingMSBuild.LOGGER.log(Level.FINE, Messages.DotNetUsingMSBuild_BadProperties(), e);
     }
   }
 

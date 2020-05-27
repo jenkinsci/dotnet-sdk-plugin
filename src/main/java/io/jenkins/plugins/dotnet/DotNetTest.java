@@ -3,7 +3,9 @@ package io.jenkins.plugins.dotnet;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.Util;
+import hudson.util.ArgumentListBuilder;
 import hudson.util.FormValidation;
+import hudson.util.VariableResolver;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
@@ -11,9 +13,8 @@ import org.kohsuke.stapler.QueryParameter;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.List;
-import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -25,61 +26,44 @@ public final class DotNetTest extends DotNetUsingMSBuild {
   }
 
   @Override
-  protected void addCommandLineArguments(@NonNull List<String> args) {
+  protected void addCommandLineArguments(@NonNull ArgumentListBuilder args, @NonNull VariableResolver<String> resolver, @NonNull Set<String> sensitive) {
     args.add("test");
-    super.addCommandLineArguments(args);
+    super.addCommandLineArguments(args, resolver, sensitive);
     if (this.framework != null)
       args.add("-f:" + this.framework);
     if (this.runtime != null)
       args.add("-r:" + this.runtime);
     if (this.blame)
       args.add("--blame");
-    if (this.collect != null) {
-      args.add("--collect");
-      args.add(this.collect);
-    }
-    if (this.diag != null) {
-      args.add("--diag");
-      args.add(this.diag);
-    }
-    if (this.filter != null) {
-      args.add("--filter");
-      args.add(this.filter);
-    }
+    if (this.collect != null)
+      args.add("--collect", this.collect);
+    if (this.diag != null)
+      args.add("--diag", this.diag);
+    if (this.filter != null)
+      args.add("--filter", this.filter);
     if (this.listTests)
       args.add("--list-tests");
-    if (this.logger != null) {
-      args.add("--logger");
-      args.add(this.logger);
-    }
+    if (this.logger != null)
+      args.add("--logger", this.logger);
     if (this.noBuild)
       args.add("--no-build");
     if (this.noRestore)
       args.add("--no-restore");
-    if (this.resultsDirectory != null) {
-      args.add("--results-directory");
-      args.add(this.resultsDirectory);
-    }
-    if (this.settings != null) {
-      args.add("--settings");
-      args.add(this.settings);
-    }
-    if (this.testAdapterPath != null) {
-      args.add("--test-adapter-path");
-      args.add(this.testAdapterPath);
-    }
+    if (this.resultsDirectory != null)
+      args.add("--results-directory", this.resultsDirectory);
+    if (this.settings != null)
+      args.add("--settings", this.settings);
+    if (this.testAdapterPath != null)
+      args.add("--test-adapter-path", this.testAdapterPath);
     // This has to be at the end
     if (this.runSettings != null) {
-      final Properties props = new Properties();
+      args.add("--");
       try {
-        props.load(new StringReader(this.runSettings));
+        args.addKeyValuePairsFromPropertyString("", this.runSettings, resolver, sensitive);
       }
       catch (IOException e) {
         DotNetTest.LOGGER.log(Level.FINE, Messages.DotNetTest_BadRunSettings(), e);
       }
-      args.add("--");
-      for (Map.Entry<Object, Object> prop : props.entrySet())
-        args.add(prop.getKey() + "=" + prop.getValue());
     }
   }
 

@@ -3,11 +3,13 @@ package io.jenkins.plugins.dotnet;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.Util;
+import hudson.util.ArgumentListBuilder;
+import hudson.util.VariableResolver;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
-import java.util.List;
+import java.util.Set;
 
 /** A build step using the 'dotnet' executable to restore dependencies for a project. */
 public final class DotNetRestore extends DotNet {
@@ -17,10 +19,9 @@ public final class DotNetRestore extends DotNet {
   }
 
   @Override
-  protected void addCommandLineArguments(@NonNull List<String> args) {
+  protected void addCommandLineArguments(@NonNull ArgumentListBuilder args, @NonNull VariableResolver<String> resolver, @NonNull Set<String> sensitive) {
     args.add("restore");
-    if (this.project != null)
-      args.add(this.project);
+    args.add(this.project);
     if (this.disableParallel)
       args.add("--disable-parallel");
     if (this.force)
@@ -29,20 +30,16 @@ public final class DotNetRestore extends DotNet {
       args.add("--force-evaluate");
     if (this.ignoreFailedSources)
       args.add("--ignore-failed-sources");
-    if (this.lockFilePath != null) {
-      args.add("--lock-file-path");
-      args.add(this.lockFilePath);
-    }
+    if (this.lockFilePath != null)
+      args.add("--lock-file-path", this.lockFilePath);
     if (this.lockedMode)
       args.add("--locked-mode");
     if (this.noCache)
       args.add("--no-cache");
     if (this.noDependencies)
       args.add("--no-dependencies");
-    if (this.packages != null) {
-      args.add("--packages");
-      args.add(this.packages);
-    }
+    if (this.packages != null)
+      args.add("--packages", this.packages);
     if (this.runtimes != null) {
       for (final String runtime : this.runtimes.split(" "))
         args.add("-r:" + runtime);

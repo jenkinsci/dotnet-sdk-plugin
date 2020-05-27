@@ -135,23 +135,6 @@ public final class DiagnosticNote extends ConsoleNote<Object> {
     return DiagnosticNote.RE_DIAGNOSTIC_LINE.matcher(text).matches();
   }
 
-  /**
-   * Creates an instance of this class and encodes it as bytes.
-   *
-   * @return A {@link DiagnosticNote}, encoded as a byte array.
-   */
-  @NonNull
-  public static byte[] createEncoded() {
-    JenkinsJVM.checkJenkinsJVM();
-    try (final ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-      new DiagnosticNote().encodeTo(baos);
-      return baos.toByteArray();
-    }
-    catch (IOException e) {
-      throw new RuntimeException(e);
-    }
-  }
-
   @Extension
   @Symbol("dotnetDiagnostic")
   public static final class DescriptorImpl extends ConsoleAnnotationDescriptor {

@@ -3,13 +3,15 @@ package io.jenkins.plugins.dotnet;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.Util;
+import hudson.util.ArgumentListBuilder;
 import hudson.util.FormValidation;
+import hudson.util.VariableResolver;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
 
-import java.util.List;
+import java.util.Set;
 
 /** A build step using the 'dotnet' executable to list all resolved package dependencies for a project. */
 public final class DotNetListPackage extends DotNet {
@@ -19,20 +21,17 @@ public final class DotNetListPackage extends DotNet {
   }
 
   @Override
-  protected void addCommandLineArguments(@NonNull List<String> args) {
+  protected void addCommandLineArguments(@NonNull ArgumentListBuilder args, @NonNull VariableResolver<String> resolver, @NonNull Set<String> sensitive) {
     args.add("list");
-    if (this.project != null)
-      args.add(this.project);
+    args.add(this.project);
     args.add("package");
     if (this.deprecated)
       args.add("--deprecated");
     if (this.outdated)
       args.add("--outdated");
     if (this.frameworks != null) {
-      for (String fmw : this.frameworks.split(" ")) {
-        args.add("--framework");
-        args.add(fmw);
-      }
+      for (String fmw : this.frameworks.split(" "))
+        args.add("--framework", fmw);
     }
     if (this.includeTransitive)
       args.add("--include-transitive");
@@ -43,15 +42,11 @@ public final class DotNetListPackage extends DotNet {
         args.add("--highest-minor");
       if (this.highestPatch)
         args.add("--highest-patch");
-      if (this.config != null) {
-        args.add("--config");
-        args.add(this.config);
-      }
+      if (this.config != null)
+        args.add("--config", this.config);
       if (this.sources != null) {
-        for (String src : this.sources.split(" ")) {
-          args.add("--source");
-          args.add(src);
-        }
+        for (String src : this.sources.split(" "))
+          args.add("--source", src);
       }
     }
   }

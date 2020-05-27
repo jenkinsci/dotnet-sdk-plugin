@@ -40,7 +40,7 @@ public class DotNetWrapper extends SimpleBuildWrapper {
     this.sdk = Util.fixEmpty(sdk);
   }
 
-  private boolean specificSdkVersion;
+  private boolean specificSdkVersion = false;
 
   public boolean isSpecificSdkVersion() {
     return this.specificSdkVersion;
@@ -74,8 +74,8 @@ public class DotNetWrapper extends SimpleBuildWrapper {
     private static final long serialVersionUID = 4748633873948298689L;
 
     @Override
-    public void tearDown(Run<?, ?> build, FilePath workspace, Launcher launcher, TaskListener listener) throws IOException, InterruptedException {
-      DotNetSDK.removeGlobalJson(workspace);
+    public void tearDown(Run<?, ?> build, FilePath workspace, Launcher launcher, TaskListener listener) {
+      DotNetSDK.removeGlobalJson(workspace, listener);
     }
 
   }
