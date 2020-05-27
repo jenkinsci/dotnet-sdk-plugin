@@ -7,13 +7,13 @@
   <groupId>io.jenkins.plugins</groupId>
   <name>.NET SDK Support</name>
   <packaging>hpi</packaging>
-  <url>https://github.com/Zastai/${project.artifactId}-plugin</url>
+  <url>https://github.com/jenkinsci/${project.artifactId}-plugin</url>
   <version>${revision}${changelist}</version>
 
   <scm>
-    <connection>scm:git:git://github.com/${github.host}/${project.artifactId}-plugin.git</connection>
-    <developerConnection>scm:git:git@github.com:${github.host}/${project.artifactId}-plugin.git</developerConnection>
-    <url>https://github.com/${github.host}/${project.artifactId}-plugin</url>
+    <connection>scm:git:git://github.com/jenkinsci/${project.artifactId}-plugin.git</connection>
+    <developerConnection>scm:git:git@github.com:jenkinsci/${project.artifactId}-plugin.git</developerConnection>
+    <url>https://github.com/jenkinsci/${project.artifactId}-plugin</url>
   </scm>
 
   <developers>
@@ -25,7 +25,6 @@
   </developers>
 
   <properties>
-    <github.host>Zastai</github.host>
     <revision>1.0</revision>
     <changelist>-SNAPSHOT</changelist>
     <jenkins.version>2.164.3</jenkins.version>
