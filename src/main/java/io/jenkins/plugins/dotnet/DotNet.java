@@ -12,7 +12,6 @@ import hudson.util.VariableResolver;
 import io.jenkins.plugins.dotnet.console.DiagnosticScanner;
 import io.jenkins.plugins.dotnet.data.Framework;
 import io.jenkins.plugins.dotnet.data.Runtime;
-import jenkins.tasks.SimpleBuildStep;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
 
@@ -25,7 +24,7 @@ import java.util.Map;
 import java.util.Set;
 
 /** A builder using a .NET SDK. */
-public abstract class DotNet extends Builder implements SimpleBuildStep {
+public abstract class DotNet extends Builder {
 
   @Override
   public DescriptorImpl getDescriptor() {
@@ -48,15 +47,7 @@ public abstract class DotNet extends Builder implements SimpleBuildStep {
     return true;
   }
 
-  @Override
-  public void perform(@Nonnull Run<?, ?> run, @Nonnull FilePath wd, @Nonnull Launcher launcher, @Nonnull TaskListener listener) throws InterruptedException, IOException {
-    final EnvVars env = run.getEnvironment(listener);
-    final Result r = this.run(wd, env, launcher, listener, run.getCharset());
-    if (r != Result.SUCCESS)
-      run.setResult(r);
-  }
-
-  private Result run(@Nonnull FilePath wd, @Nonnull EnvVars env, @Nonnull Launcher launcher, @Nonnull TaskListener listener, @Nonnull Charset cs) throws InterruptedException, IOException {
+  public Result run(@Nonnull FilePath wd, @Nonnull EnvVars env, @Nonnull Launcher launcher, @Nonnull TaskListener listener, @Nonnull Charset cs) throws InterruptedException, IOException {
     final DotNetSDK sdkInstance;
     if (this.sdk == null)
       sdkInstance = null;
