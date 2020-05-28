@@ -31,7 +31,11 @@ public final class DotNetStep extends Step {
 
   private final DotNet builder;
 
-  /** Creates a new step, wrapping the specific .NET builder. */
+  /**
+   * Creates a new step, wrapping the specified .NET builder.
+   *
+   * @param builder The .NET builder to wrap as a pipeline step.
+   */
   @DataBoundConstructor
   @SuppressWarnings("unused")
   public DotNetStep(@Nonnull DotNet builder) {
