@@ -9,6 +9,7 @@
         {
           "name": "v5.0.0-preview.4",
           "released": "2020-05-19",
+          "preview": true,
           "sdks": [
             {
               "name": "5.0.100-preview.4",
@@ -66,6 +67,7 @@
         {
           "name": "v5.0.0-preview.3",
           "released": "2020-04-23",
+          "preview": true,
           "sdks": [
             {
               "name": "5.0.100-preview.3",
@@ -118,6 +120,7 @@
         {
           "name": "v5.0.0-preview.2",
           "released": "2020-04-02",
+          "preview": true,
           "sdks": [
             {
               "name": "5.0.100-preview.2",
@@ -170,6 +173,7 @@
         {
           "name": "v5.0.0-preview.1",
           "released": "2020-03-16",
+          "preview": true,
           "sdks": [
             {
               "name": "5.0.100-preview.1",
@@ -720,6 +724,7 @@
         {
           "name": "v3.1.0-preview3",
           "released": "2019-11-14",
+          "preview": true,
           "sdks": [
             {
               "name": "3.1.100-preview3",
@@ -772,6 +777,7 @@
         {
           "name": "v3.1.0-preview2",
           "released": "2019-11-04",
+          "preview": true,
           "sdks": [
             {
               "name": "3.1.100-preview2",
@@ -829,6 +835,7 @@
         {
           "name": "v3.1.0-preview1",
           "released": "2019-10-15",
+          "preview": true,
           "sdks": [
             {
               "name": "3.1.100-preview1",
@@ -1174,6 +1181,7 @@
         {
           "name": "v3.0.0-preview9",
           "released": "2019-09-04",
+          "preview": true,
           "sdks": [
             {
               "name": "3.0.100-preview9",
@@ -1231,6 +1239,7 @@
         {
           "name": "v3.0.0-preview8",
           "released": "2019-08-13",
+          "preview": true,
           "sdks": [
             {
               "name": "3.0.100-preview8",
@@ -1288,6 +1297,7 @@
         {
           "name": "v3.0.0-preview7",
           "released": "2019-07-23",
+          "preview": true,
           "sdks": [
             {
               "name": "3.0.100-preview7",
@@ -1345,6 +1355,7 @@
         {
           "name": "v3.0.0-preview6",
           "released": "2019-06-12",
+          "preview": true,
           "sdks": [
             {
               "name": "3.0.100-preview6",
@@ -1402,6 +1413,7 @@
         {
           "name": "v3.0.0-preview5",
           "released": "2019-05-06",
+          "preview": true,
           "sdks": [
             {
               "name": "3.0.100-preview5",
@@ -1459,6 +1471,7 @@
         {
           "name": "v3.0.0-preview4",
           "released": "2019-04-18",
+          "preview": true,
           "sdks": [
             {
               "name": "3.0.100-preview4",
@@ -1516,6 +1529,7 @@
         {
           "name": "v3.0.0-preview3",
           "released": "2019-03-06",
+          "preview": true,
           "sdks": [
             {
               "name": "3.0.100-preview3",
@@ -1573,6 +1587,7 @@
         {
           "name": "v3.0.0-preview2",
           "released": "2019-01-29",
+          "preview": true,
           "sdks": [
             {
               "name": "3.0.100-preview2",
@@ -1630,6 +1645,7 @@
         {
           "name": "v3.0.0-preview1",
           "released": "2018-12-04",
+          "preview": true,
           "sdks": [
             {
               "name": "3.0.100-preview1",
@@ -2803,6 +2819,7 @@
         {
           "name": "v2.2.200-preview",
           "released": "2019-11-19",
+          "preview": true,
           "sdks": [
             {
               "name": "2.2.200-review",
@@ -2907,6 +2924,7 @@
         {
           "name": "v2.2.0-preview3",
           "released": "2018-10-17",
+          "preview": true,
           "sdks": [
             {
               "name": "2.2.100-preview3",
@@ -2959,6 +2977,7 @@
         {
           "name": "v2.2.0-preview2",
           "released": "2018-09-12",
+          "preview": true,
           "sdks": [
             {
               "name": "2.2.100-preview2",
@@ -3011,6 +3030,7 @@
         {
           "name": "v2.2.0-preview1",
           "released": "2018-08-22",
+          "preview": true,
           "sdks": [
             {
               "name": "2.2.100-preview1",

@@ -95,11 +95,14 @@ public final class Downloads {
     return model;
   }
 
-  public ListBoxModel addReleases(@Nonnull ListBoxModel model, String version) {
+  public ListBoxModel addReleases(@Nonnull ListBoxModel model, String version, boolean includePreview) {
     final Version v = this.getVersion(version);
     if (v != null && v.releases != null) {
-      for (Release r : v.releases)
+      for (Release r : v.releases) {
+        if (r.preview && !includePreview)
+          continue;
         model.add(r.getDisplayName(), r.name);
+      }
     }
     return model;
   }
@@ -230,6 +233,8 @@ public final class Downloads {
     public String name;
 
     public String released;
+
+    public boolean preview;
 
     public boolean securityFixes;
 

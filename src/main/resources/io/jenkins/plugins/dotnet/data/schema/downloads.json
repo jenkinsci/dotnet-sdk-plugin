@@ -43,6 +43,9 @@
                   "type": "string",
                   "format": "date"
                 },
+                "preview": {
+                  "type": "boolean"
+                },
                 "securityFixes": {
                   "type": "boolean"
                 },
