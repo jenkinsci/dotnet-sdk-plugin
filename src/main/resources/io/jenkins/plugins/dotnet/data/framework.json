@@ -1,4 +1,5 @@
 {
+  "$schema": "framework.schema.json",
   "targetFrameworkMonikers": [
     "net11",
     "net20",
