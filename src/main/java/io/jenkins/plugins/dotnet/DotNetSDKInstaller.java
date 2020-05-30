@@ -175,8 +175,8 @@ public final class DotNetSDKInstaller extends ToolInstaller {
       return FormValidation.ok();
     }
 
-    public ListBoxModel doFillUrlItems(@QueryParameter String version, @QueryParameter String release, @QueryParameter String sdk) {
-      return Downloads.getInstance().addPackages(this.createList(), version, release, sdk);
+    public ListBoxModel doFillUrlItems(@QueryParameter String sdk) {
+      return Downloads.getInstance().addPackages(this.createList(), sdk);
     }
 
     public ListBoxModel doFillReleaseItems(@QueryParameter String version, @QueryParameter boolean includePreview) {

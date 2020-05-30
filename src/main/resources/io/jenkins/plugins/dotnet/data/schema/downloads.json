@@ -4,6 +4,49 @@
   "description": "All available installation packages from https://aka.ms/dotnet-download",
   "type": "object",
   "properties": {
+    "sdks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "vs": {
+            "type": "string"
+          },
+          "packages": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "properties": {
+                "platform": {
+                  "type": "string"
+                },
+                "architecture": {
+                  "type": "string"
+                },
+                "url": {
+                  "type": "string",
+                  "format": "uri"
+                }
+              },
+              "required": [
+                "platform",
+                "architecture",
+                "url"
+              ]
+            }
+          }
+        },
+        "required": [
+          "name",
+          "vs",
+          "packages"
+        ]
+      }
+    },
     "versions": {
       "type": "array",
       "minItems": 1,
@@ -53,44 +96,7 @@
                   "type": "array",
                   "minItems": 1,
                   "items": {
-                    "type": "object",
-                    "properties": {
-                      "name": {
-                        "type": "string"
-                      },
-                      "vs": {
-                        "type": "string"
-                      },
-                      "packages": {
-                        "type": "array",
-                        "minItems": 1,
-                        "items": {
-                          "type": "object",
-                          "properties": {
-                            "platform": {
-                              "type": "string"
-                            },
-                            "architecture": {
-                              "type": "string"
-                            },
-                            "url": {
-                              "type": "string",
-                              "format": "uri"
-                            }
-                          },
-                          "required": [
-                            "platform",
-                            "architecture",
-                            "url"
-                          ]
-                        }
-                      }
-                    },
-                    "required": [
-                      "name",
-                      "vs",
-                      "packages"
-                    ]
+                    "type": "string"
                   }
                 }
               },
@@ -110,5 +116,6 @@
         ]
       }
     }
-  }
+  },
+  "required": [ "sdks", "versions" ]
 }

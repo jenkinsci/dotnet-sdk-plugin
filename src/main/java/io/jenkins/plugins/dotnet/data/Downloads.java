@@ -8,7 +8,9 @@ import net.sf.json.util.EnumMorpher;
 import net.sf.json.util.JSONUtils;
 
 import javax.annotation.Nonnull;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public final class Downloads {
@@ -31,51 +33,65 @@ public final class Downloads {
     return Downloads.instance;
   }
 
+  public Sdk[] sdks = null;
+
+  private final Map<String, Sdk> sdkMap = new HashMap<>();
+
   public Version[] versions = null;
 
   private final Map<String, Version> versionMap = new HashMap<>();
 
   private void finish() {
+    if (!this.sdkMap.isEmpty())
+      this.sdkMap.clear();
+    if (this.sdks != null) {
+      for (final Sdk s : this.sdks) {
+        s.finish();
+        this.sdkMap.put(s.name, s);
+      }
+    }
     if (!this.versionMap.isEmpty())
       this.versionMap.clear();
-    if (this.versions == null)
-      return;
-    for (final Version v : this.versions) {
-      v.finish();
-      this.versionMap.put(v.name, v);
+    if (this.versions != null) {
+      for (final Version v : this.versions) {
+        v.finish();
+        this.versionMap.put(v.name, v);
+      }
     }
   }
 
   //region Lookup Methods
 
-  public Package getPackage(String version, String release, String sdk, String url) {
-    final Version v = this.getVersion(version);
-    if (v == null)
-      return null;
-    final Release r = v.getRelease(release);
-    if (r == null)
-      return null;
-    final Sdk s = r.getSdk(sdk);
+  private static Package getPackage(Sdk s, String url) {
     if (s == null)
       return null;
     return s.getPackage(url);
   }
 
-  public Release getRelease(String version, String release) {
-    final Version v = this.getVersion(version);
-    if (v == null)
-      return null;
-    return v.getRelease(release);
+  public Package getPackage(String sdk, String url) {
+    return Downloads.getPackage(this.getSdk(sdk), url);
   }
 
-  public Sdk getSdk(String version, String release, String sdk) {
+  public Package getPackage(String version, String release, String sdk, String url) {
+    return Downloads.getPackage(this.getSdk(version, release, sdk), url);
+  }
+
+  public Release getRelease(String version, String name) {
     final Version v = this.getVersion(version);
     if (v == null)
       return null;
-    final Release r = v.getRelease(release);
-    if (r == null)
+    return v.getRelease(name);
+  }
+
+  public Sdk getSdk(String name) {
+    return this.sdkMap.get(name);
+  }
+
+  public Sdk getSdk(String version, String release, String name) {
+    final Release r = this.getRelease(version, release);
+    if (r == null || r.sdks == null || !r.sdks.contains(name))
       return null;
-    return r.getSdk(sdk);
+    return this.getSdk(name);
   }
 
   public Version getVersion(String name) {
@@ -86,8 +102,8 @@ public final class Downloads {
 
   //region Listbox Methods
 
-  public ListBoxModel addPackages(@Nonnull ListBoxModel model, String version, String release, String sdk) {
-    final Sdk s = this.getSdk(version, release, sdk);
+  public ListBoxModel addPackages(@Nonnull ListBoxModel model, String sdk) {
+    final Sdk s = this.getSdk(sdk);
     if (s != null && s.packages != null) {
       for (Package p : s.packages)
         model.add(p.getDisplayName(), p.url);
@@ -110,8 +126,11 @@ public final class Downloads {
   public ListBoxModel addSdks(@Nonnull ListBoxModel model, String version, String release) {
     final Release r = this.getRelease(version, release);
     if (r != null && r.sdks != null) {
-      for (Sdk s : r.sdks)
-        model.add(s.getDisplayName(), s.name);
+      for (String sdk : r.sdks) {
+        final Sdk s = this.getSdk(sdk);
+        if (s != null)
+          model.add(s.getDisplayName(), s.name);
+      }
     }
     return model;
   }
@@ -242,23 +261,15 @@ public final class Downloads {
       value = "UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD",
       justification = "Set by JSON deserialization."
     )
-    public Sdk[] sdks;
-
-    private final Map<String, Sdk> sdkMap = new HashMap<>();
+    public List<String> sdks;
 
     private void finish() {
       if (this.name == null)
         this.name = Messages.Downloads_Unknown();
       if (this.released == null)
         this.released = Messages.Downloads_Unknown();
-      if (!this.sdkMap.isEmpty())
-        this.sdkMap.clear();
       if (this.sdks == null)
-        return;
-      for (final Sdk s : this.sdks) {
-        s.finish();
-        this.sdkMap.put(s.name, s);
-      }
+        this.sdks = Collections.emptyList();
     }
 
     @Nonnull
@@ -266,10 +277,6 @@ public final class Downloads {
       if (this.securityFixes)
         return Messages.Downloads_Release_DisplayNameWithSecurity(this.name, this.released);
       return Messages.Downloads_Release_DisplayName(this.name, this.released);
-    }
-
-    public Sdk getSdk(String name) {
-      return this.sdkMap.get(name);
     }
 
   }
