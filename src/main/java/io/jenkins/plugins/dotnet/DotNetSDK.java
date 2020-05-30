@@ -5,6 +5,7 @@ import hudson.model.*;
 import hudson.slaves.NodeSpecific;
 import hudson.tools.ToolDescriptor;
 import hudson.tools.ToolInstallation;
+import hudson.tools.ToolInstaller;
 import hudson.tools.ToolProperty;
 import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
@@ -39,7 +40,7 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
 
   // FIXME: The 'telemetry opt-out' settings makes more sense as a global configuration option.
   // FIXME: However, attempts at creating a GlobalConfiguration failed, with the checkbox not getting shown in/under the section
-  // FIXME: (despite using the same setup done by the GlobalMavenConfig.
+  // FIXME: (despite using the same setup done by the GlobalMavenConfig).
 
   private boolean telemetryOptOut = true;
 
@@ -225,6 +226,11 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
         // - a folder of the same name must exist under shared/Microsoft.NETCore.App
       }
       return FormValidation.ok();
+    }
+
+    @Override
+    public List<? extends ToolInstaller> getDefaultInstallers() {
+      return Collections.singletonList(new DotNetSDKInstaller(""));
     }
 
     @Nonnull
