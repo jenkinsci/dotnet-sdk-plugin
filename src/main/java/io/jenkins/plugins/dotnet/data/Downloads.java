@@ -295,6 +295,12 @@ public final class Downloads {
       value = "UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD",
       justification = "Set by JSON deserialization."
     )
+    public String urlPrefix;
+
+    @SuppressFBWarnings(
+      value = "UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD",
+      justification = "Set by JSON deserialization."
+    )
     public Package[] packages;
 
     private final Map<String, Package> packageMap = new HashMap<>();
@@ -309,7 +315,7 @@ public final class Downloads {
       if (this.packages == null)
         return;
       for (final Package p : this.packages) {
-        p.finish();
+        p.finish(this.urlPrefix);
         this.packageMap.put(p.url, p);
       }
     }
@@ -341,11 +347,13 @@ public final class Downloads {
     )
     public String url;
 
-    private void finish() {
+    private void finish(String urlPrefix) {
       if (this.platform == null)
         this.platform = Messages.Downloads_Unknown();
       if (this.architecture == null)
         this.architecture = Messages.Downloads_Unknown();
+      if (urlPrefix != null && this.url != null)
+        this.url = urlPrefix + this.url;
     }
 
     @Nonnull

@@ -15,6 +15,10 @@
           "vs": {
             "type": "string"
           },
+          "urlPrefix": {
+            "type": "string",
+            "format": "url"
+          },
           "packages": {
             "type": "array",
             "minItems": 1,
@@ -29,7 +33,7 @@
                 },
                 "url": {
                   "type": "string",
-                  "format": "uri"
+                  "format": "uri-reference"
                 }
               },
               "required": [
@@ -117,5 +121,8 @@
       }
     }
   },
-  "required": [ "sdks", "versions" ]
+  "required": [
+    "sdks",
+    "versions"
+  ]
 }
