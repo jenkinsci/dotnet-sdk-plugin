@@ -3405,12 +3405,489 @@
                 {
                   "platform": "Windows",
                   "architecture": "x64",
-                  "url": "https://download.microsoft.com/download/f/c/1/fc16c864-b374-4668-83a2-f9f880928b2d/dotnet-sdk-2.1.202-win-x86.zip"
+                  "url": "https://download.microsoft.com/download/f/c/1/fc16c864-b374-4668-83a2-f9f880928b2d/dotnet-sdk-2.1.202-win-x64.zip"
                 },
                 {
                   "platform": "Windows",
                   "architecture": "x86",
-                  "url": "https://download.microsoft.com/download/f/c/1/fc16c864-b374-4668-83a2-f9f880928b2d/dotnet-sdk-2.1.202-win-x64.zip"
+                  "url": "https://download.microsoft.com/download/f/c/1/fc16c864-b374-4668-83a2-f9f880928b2d/dotnet-sdk-2.1.202-win-x86.zip"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "v2.1.201.",
+          "released": "2018-05-21",
+          "sdks": [
+            {
+              "name": "2.1.201",
+              "vs": "2017 (15.7)",
+              "packages": [
+                {
+                  "platform": "Linux",
+                  "architecture": "x64",
+                  "url": "https://download.microsoft.com/download/C/7/D/C7DCA2DE-7163-45D1-A05A-5112DAF51445/dotnet-sdk-2.1.201-linux-x64.tar.gz"
+                },
+                {
+                  "platform": "macOS",
+                  "architecture": "x64",
+                  "url": "https://download.microsoft.com/download/C/7/D/C7DCA2DE-7163-45D1-A05A-5112DAF51445/dotnet-sdk-2.1.201-osx-x64.tar.gz"
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "x64",
+                  "url": "https://download.microsoft.com/download/C/7/D/C7DCA2DE-7163-45D1-A05A-5112DAF51445/dotnet-sdk-2.1.201-win-x64.zip"
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "x86",
+                  "url": "https://download.microsoft.com/download/C/7/D/C7DCA2DE-7163-45D1-A05A-5112DAF51445/dotnet-sdk-2.1.201-win-x86.zip"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "v2.0.8",
+          "released": "2018-05-08",
+          "securityFixes": true,
+          "sdks": [
+            {
+              "name": "2.1.200",
+              "vs": "2017 (15.7)",
+              "packages": [
+                {
+                  "platform": "Linux",
+                  "architecture": "x64",
+                  "url": "https://download.microsoft.com/download/3/7/1/37189942-C91D-46E9-907B-CF2B2DE584C7/dotnet-sdk-2.1.200-linux-x64.tar.gz"
+                },
+                {
+                  "platform": "macOS",
+                  "architecture": "x64",
+                  "url": "https://download.microsoft.com/download/3/7/1/37189942-C91D-46E9-907B-CF2B2DE584C7/dotnet-sdk-2.1.200-osx-x64.tar.gz"
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "x64",
+                  "url": "https://download.microsoft.com/download/3/7/1/37189942-C91D-46E9-907B-CF2B2DE584C7/dotnet-sdk-2.1.200-win-x64.zip"
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "x86",
+                  "url": "https://download.microsoft.com/download/3/7/1/37189942-C91D-46E9-907B-CF2B2DE584C7/dotnet-sdk-2.1.200-win-x86.zip"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "v2.0.7",
+          "released": "2018-04-17",
+          "sdks": [
+            {
+              "name": "2.1.105",
+              "vs": "2017",
+              "packages": [
+                {
+                  "platform": "Linux",
+                  "architecture": "x64",
+                  "url": "https://download.microsoft.com/download/2/E/C/2EC018A0-A0FC-40A2-849D-AA692F68349E/dotnet-sdk-2.1.105-linux-x64.tar.gz"
+                },
+                {
+                  "platform": "macOS",
+                  "architecture": "x64",
+                  "url": "https://download.microsoft.com/download/2/E/C/2EC018A0-A0FC-40A2-849D-AA692F68349E/dotnet-sdk-2.1.105-osx-x64.tar.gz"
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "x64",
+                  "url": "https://download.microsoft.com/download/2/E/C/2EC018A0-A0FC-40A2-849D-AA692F68349E/dotnet-sdk-2.1.105-win-x64.zip"
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "x86",
+                  "url": "https://download.microsoft.com/download/2/E/C/2EC018A0-A0FC-40A2-849D-AA692F68349E/dotnet-sdk-2.1.105-win-x86.zip"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "v2.1.104",
+          "released": "2018-04-04",
+          "sdks": [
+            {
+              "name": "2.1.104",
+              "vs": "2017",
+              "packages": [
+                {
+                  "platform": "Linux",
+                  "architecture": "x64",
+                  "url": "https://download.microsoft.com/download/D/8/1/D8131218-F121-4E13-8C5F-39B09A36E406/dotnet-sdk-2.1.104-linux-x64.tar.gz"
+                },
+                {
+                  "platform": "macOS",
+                  "architecture": "x64",
+                  "url": "https://download.microsoft.com/download/D/8/1/D8131218-F121-4E13-8C5F-39B09A36E406/dotnet-sdk-2.1.104-osx-x64.tar.gz"
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "x64",
+                  "url": "https://download.microsoft.com/download/D/8/1/D8131218-F121-4E13-8C5F-39B09A36E406/dotnet-sdk-2.1.104-win-x64.zip"
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "x86",
+                  "url": "https://download.microsoft.com/download/D/8/1/D8131218-F121-4E13-8C5F-39B09A36E406/dotnet-sdk-2.1.104-win-x86.zip"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "v2.1.103",
+          "released": "2018-03-22",
+          "sdks": [
+            {
+              "name": "2.1.103",
+              "vs": "2017 (15.6)",
+              "packages": [
+                {
+                  "platform": "Linux",
+                  "architecture": "x64",
+                  "url": "https://download.microsoft.com/download/E/2/6/E266C257-F7AF-4E79-8EA2-DF26031C84E2/dotnet-sdk-2.1.103-linux-x64.tar.gz"
+                },
+                {
+                  "platform": "macOS",
+                  "architecture": "x64",
+                  "url": "https://download.microsoft.com/download/E/2/6/E266C257-F7AF-4E79-8EA2-DF26031C84E2/dotnet-sdk-2.1.103-osx-x64.tar.gz"
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "x64",
+                  "url": "https://download.microsoft.com/download/E/2/6/E266C257-F7AF-4E79-8EA2-DF26031C84E2/dotnet-sdk-2.1.103-win-x64.zip"
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "x86",
+                  "url": "https://download.microsoft.com/download/E/2/6/E266C257-F7AF-4E79-8EA2-DF26031C84E2/dotnet-sdk-2.1.103-win-x86.zip"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "v2.1.102",
+          "released": "2018-03-19",
+          "sdks": [
+            {
+              "name": "2.1.102",
+              "vs": "2017",
+              "packages": [
+                {
+                  "platform": "Linux",
+                  "architecture": "x64",
+                  "url": "https://download.microsoft.com/download/1/2/E/12E2BC14-7A9F-4497-A351-02B7C2DDD599/dotnet-sdk-2.1.102-linux-x64.tar.gz"
+                },
+                {
+                  "platform": "macOS",
+                  "architecture": "x64",
+                  "url": "https://download.microsoft.com/download/1/2/E/12E2BC14-7A9F-4497-A351-02B7C2DDD599/dotnet-sdk-2.1.102-osx-x64.tar.gz"
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "x64",
+                  "url": "https://download.microsoft.com/download/1/2/E/12E2BC14-7A9F-4497-A351-02B7C2DDD599/dotnet-sdk-2.1.102-win-x64.zip"
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "x86",
+                  "url": "https://download.microsoft.com/download/1/2/E/12E2BC14-7A9F-4497-A351-02B7C2DDD599/dotnet-sdk-2.1.102-win-x86.zip"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "v2.0.6",
+          "released": "2018-03-13",
+          "securityFixes": true,
+          "sdks": [
+            {
+              "name": "2.1.101",
+              "vs": "2017 (15.6)",
+              "packages": [
+                {
+                  "platform": "Linux",
+                  "architecture": "x64",
+                  "url": "https://download.microsoft.com/download/D/C/F/DCFA73BE-93CE-4DA0-AB76-98972FD6E475/dotnet-sdk-2.1.101-linux-x64.tar.gz"
+                },
+                {
+                  "platform": "macOS",
+                  "architecture": "x64",
+                  "url": "https://download.microsoft.com/download/D/C/F/DCFA73BE-93CE-4DA0-AB76-98972FD6E475/dotnet-sdk-2.1.101-osx-x64.tar.gz"
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "x64",
+                  "url": "https://download.microsoft.com/download/D/C/F/DCFA73BE-93CE-4DA0-AB76-98972FD6E475/dotnet-sdk-2.1.101-win-x64.zip"
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "x86",
+                  "url": "https://download.microsoft.com/download/D/C/F/DCFA73BE-93CE-4DA0-AB76-98972FD6E475/dotnet-sdk-2.1.101-win-x86.zip"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "v2.1.100",
+          "released": "2018-03-13",
+          "sdks": [
+            {
+              "name": "2.1.100",
+              "vs": "2017 (15.6)",
+              "packages": [
+                {
+                  "platform": "Linux",
+                  "architecture": "x64",
+                  "url": "https://download.microsoft.com/download/2/A/2/2A21B61D-4D08-4E25-AB4A-7B9859300B0C/dotnet-sdk-2.1.100-linux-x64.tar.gz"
+                },
+                {
+                  "platform": "macOS",
+                  "architecture": "x64",
+                  "url": "https://download.microsoft.com/download/2/A/2/2A21B61D-4D08-4E25-AB4A-7B9859300B0C/dotnet-sdk-2.1.100-osx-x64.tar.gz"
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "x64",
+                  "url": "https://download.microsoft.com/download/2/A/2/2A21B61D-4D08-4E25-AB4A-7B9859300B0C/dotnet-sdk-2.1.100-win-x64.zip"
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "x86",
+                  "url": "https://download.microsoft.com/download/2/A/2/2A21B61D-4D08-4E25-AB4A-7B9859300B0C/dotnet-sdk-2.1.100-win-x86.zip"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "v2.0.5",
+          "released": "2018-01-09",
+          "securityFixes": true,
+          "sdks": [
+            {
+              "name": "2.1.4",
+              "vs": "2017 (15.5)",
+              "packages": [
+                {
+                  "platform": "Linux",
+                  "architecture": "x64",
+                  "url": "https://download.microsoft.com/download/1/1/5/115B762D-2B41-4AF3-9A63-92D9680B9409/dotnet-sdk-2.1.4-linux-x64.tar.gz"
+                },
+                {
+                  "platform": "macOS",
+                  "architecture": "x64",
+                  "url": "https://download.microsoft.com/download/1/1/5/115B762D-2B41-4AF3-9A63-92D9680B9409/dotnet-sdk-2.1.4-osx-x64.tar.gz"
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "x64",
+                  "url": "https://download.microsoft.com/download/1/1/5/115B762D-2B41-4AF3-9A63-92D9680B9409/dotnet-sdk-2.1.4-win-x64.zip"
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "x86",
+                  "url": "https://download.microsoft.com/download/1/1/5/115B762D-2B41-4AF3-9A63-92D9680B9409/dotnet-sdk-2.1.4-win-x86.zip"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "v2.0.4",
+          "released": "2017-12-04",
+          "sdks": [
+            {
+              "name": "2.1.3",
+              "vs": "2017",
+              "packages": [
+                {
+                  "platform": "Linux",
+                  "architecture": "x64",
+                  "url": "https://download.microsoft.com/download/2/9/3/293BC432-348C-4D1C-B628-5AC8AB7FA162/dotnet-sdk-2.1.3-linux-x64.tar.gz"
+                },
+                {
+                  "platform": "macOS",
+                  "architecture": "x64",
+                  "url": "https://download.microsoft.com/download/2/9/3/293BC432-348C-4D1C-B628-5AC8AB7FA162/dotnet-sdk-2.1.3-osx-x64.tar.gz"
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "x64",
+                  "url": "https://download.microsoft.com/download/2/9/3/293BC432-348C-4D1C-B628-5AC8AB7FA162/dotnet-sdk-2.1.3-win-x64.zip"
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "x86",
+                  "url": "https://download.microsoft.com/download/5/D/F/5DF4B836-7DFD-4CCF-AC96-101E2A4C7421/dotnet-sdk-2.1.3-win-x86.zip"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "v2.0.3",
+          "released": "2017-12-04",
+          "securityFixes": true,
+          "sdks": [
+            {
+              "name": "2.1.2",
+              "vs": "2017 (15.5)",
+              "packages": [
+                {
+                  "platform": "Linux",
+                  "architecture": "x64",
+                  "url": "https://download.microsoft.com/download/5/D/F/5DF4B836-7DFD-4CCF-AC96-101E2A4C7421/dotnet-sdk-2.1.2-linux-x64.tar.gz"
+                },
+                {
+                  "platform": "macOS",
+                  "architecture": "x64",
+                  "url": "https://download.microsoft.com/download/5/D/F/5DF4B836-7DFD-4CCF-AC96-101E2A4C7421/dotnet-sdk-2.1.2-osx-x64.tar.gz"
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "x64",
+                  "url": "https://download.microsoft.com/download/5/D/F/5DF4B836-7DFD-4CCF-AC96-101E2A4C7421/dotnet-sdk-2.1.2-win-x64.zip"
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "x86",
+                  "url": "https://download.microsoft.com/download/5/D/F/5DF4B836-7DFD-4CCF-AC96-101E2A4C7421/dotnet-sdk-2.1.2-win-x86.zip"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "v2.0.3",
+          "released": "2017-11-14",
+          "securityFixes": true,
+          "sdks": [
+            {
+              "name": "2.0.3",
+              "vs": "2017 (15.5)",
+              "packages": [
+                {
+                  "platform": "Linux",
+                  "architecture": "x64",
+                  "url": "https://download.microsoft.com/download/D/7/2/D725E47F-A4F1-4285-8935-A91AE2FCC06A/dotnet-sdk-2.0.3-linux-x64.tar.gz"
+                },
+                {
+                  "platform": "macOS",
+                  "architecture": "x64",
+                  "url": "https://download.microsoft.com/download/D/7/2/D725E47F-A4F1-4285-8935-A91AE2FCC06A/dotnet-sdk-2.0.3-osx-x64.tar.gz"
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "x64",
+                  "url": "https://download.microsoft.com/download/D/7/2/D725E47F-A4F1-4285-8935-A91AE2FCC06A/dotnet-sdk-2.0.3-win-x64.zip"
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "x86",
+                  "url": "https://download.microsoft.com/download/D/7/2/D725E47F-A4F1-4285-8935-A91AE2FCC06A/dotnet-sdk-2.0.3-win-x86.zip"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "v2.0.0",
+          "released": "2017-08-14",
+          "sdks": [
+            {
+              "name": "2.0.0",
+              "vs": "2017",
+              "packages": [
+                {
+                  "platform": "Linux",
+                  "architecture": "x64",
+                  "url": "https://download.microsoft.com/download/1/B/4/1B4DE605-8378-47A5-B01B-2C79D6C55519/dotnet-sdk-2.0.0-linux-x64.tar.gz"
+                },
+                {
+                  "platform": "macOS",
+                  "architecture": "x64",
+                  "url": "https://download.microsoft.com/download/1/B/4/1B4DE605-8378-47A5-B01B-2C79D6C55519/dotnet-sdk-2.0.0-osx-x64.tar.gz"
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "x64",
+                  "url": "https://download.microsoft.com/download/1/B/4/1B4DE605-8378-47A5-B01B-2C79D6C55519/dotnet-sdk-2.0.0-win-x64.zip"
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "x86",
+                  "url": "https://download.microsoft.com/download/1/B/4/1B4DE605-8378-47A5-B01B-2C79D6C55519/dotnet-sdk-2.0.0-win-x86.zip"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "v2.0.0-preview2",
+          "released": "2017-06-28",
+          "preview": true,
+          "sdks": [
+            {
+              "name": "2.0.0-preview2",
+              "vs": "2017",
+              "packages": [
+                {
+                  "platform": "Linux",
+                  "architecture": "x64",
+                  "url": "https://download.microsoft.com/download/F/A/A/FAAE9280-F410-458E-8819-279C5A68EDCF/dotnet-sdk-2.0.0-preview2-006497-linux-x64.tar.gz"
+                },
+                {
+                  "platform": "macOS",
+                  "architecture": "x64",
+                  "url": "https://download.microsoft.com/download/F/A/A/FAAE9280-F410-458E-8819-279C5A68EDCF/dotnet-sdk-2.0.0-preview2-006497-osx-x64.tar.gz"
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "x64",
+                  "url": "https://download.microsoft.com/download/F/A/A/FAAE9280-F410-458E-8819-279C5A68EDCF/dotnet-sdk-2.0.0-preview2-006497-win-x64.zip"
+                },
+                {
+                  "platform": "Windows",
+                  "architecture": "x86",
+                  "url": "https://download.microsoft.com/download/F/A/A/FAAE9280-F410-458E-8819-279C5A68EDCF/dotnet-sdk-2.0.0-preview2-006497-win-x86.zip"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "v2.0.0-preview-1",
+          "released": "2017-05-10",
+          "preview": true,
+          "sdks": [
+            {
+              "name": "2.0.0-preview1",
+              "vs": "2017",
+              "packages": [
+                {
+                  "platform": "Linux",
+                  "architecture": "x64",
+                  "url": "https://download.microsoft.com/download/0/6/5/0656B047-5F2F-4281-A851-F30776F8616D/dotnet-dev-linux-x64.2.0.0-preview1-005977.tar.gz"
+                },
+                {
+                  "platform": "macOS",
+                  "architecture": "x64",
+                  "url": "https://download.microsoft.com/download/0/6/5/0656B047-5F2F-4281-A851-F30776F8616D/dotnet-dev-osx-x64.2.0.0-preview1-005977.tar.gz"
                 }
               ]
             }
