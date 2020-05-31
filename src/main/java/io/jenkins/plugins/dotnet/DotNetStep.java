@@ -29,7 +29,7 @@ import java.util.*;
  */
 public final class DotNetStep extends Step {
 
-  private final DotNet builder;
+  public final DotNet builder;
 
   /**
    * Creates a new step, wrapping the specified .NET builder.
