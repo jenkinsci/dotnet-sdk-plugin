@@ -20,7 +20,6 @@ The first release will include:
 The builders are just for convenience; when using the build wrapper, any dotnet command line can
 be executed using a batch or shell step, as applicable.
 
-
 ## Release Notes
 
-No releases yet.
+Available in the [Change Log](ChangeLog.md).
