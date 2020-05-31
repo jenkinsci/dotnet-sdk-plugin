@@ -1,0 +1,46 @@
+<div>
+  Additional MSBuild properties to set. These should be specified one per line, in Java
+  <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Properties.html#load(java.io.Reader)">
+    properties syntax
+  </a>.
+</div>
+<div>
+  Properties of particular interest to <code>dotnet publish</code>:
+  <!-- Adapted From: https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-publish -->
+  <ul>
+    <li>
+      <code>PublishProfile=Properties\PublishProfiles\profile.pubxml</code>: Use a <em>.pubxml</em> to set publish-related
+      properties. See
+      <a href="https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/visual-studio-publish-profiles">
+        Visual Studio publish profiles (.pubxml) for ASP.NET Core app deployment
+      </a> for more information.
+    </li>
+    <li>
+      <code>PublishReadyToRun=true</code>: Compiles application assemblies as ReadyToRun (R2R) format. R2R is a form of
+      ahead-of-time (AOT) compilation. For more information, see
+      <a href="https://docs.microsoft.com/en-us/dotnet/core/whats-new/dotnet-core-3-0#readytorun-images">ReadyToRun images</a>.<br/>
+      Available since .NET Core 3.0 SDK.
+    </li>
+    <li>
+      <code>PublishSingleFile=true</code>: Packages the app into a platform-specific single-file executable. The executable is
+      self-extracting and contains all dependencies (including native) that are required to run the app. When the app is first run,
+      the application is extracted to a directory based on the app name and build identifier. Startup is faster when the application
+      is run again. The application doesn't need to extract itself a second time unless a new version is used.<br/>
+      For more information about single-file publishing, see the
+      <a href="https://github.com/dotnet/designs/blob/master/accepted/2020/single-file/design.md">
+        single-file bundler design document
+      </a>.<br/>
+      Available since .NET Core 3.0 SDK.
+    </li>
+    <li>
+      <code>PublishTrimmed=true</code>: Trims unused libraries to reduce the deployment size of an app when publishing a
+      self-contained executable. For more information, see
+      <a href="https://docs.microsoft.com/en-us/dotnet/core/deploying/trim-self-contained">
+        Trim self-contained deployments and executables
+      </a>.<br/>
+      Available since .NET Core 3.0 SDK.
+    </li>
+  </ul>
+  Note that it is recommended to specify all of these, other than <code>PublishProfile</code>, in a publish profile rather than
+  here.
+</div>

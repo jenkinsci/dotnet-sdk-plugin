@@ -1,0 +1,32 @@
+<div>
+  <!-- Adapted From: https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-publish#options -->
+  Specifies the path for the output directory.<br/>
+  If not specified, it defaults to <em>[project_file_folder]./bin/[configuration]/[framework]/publish/</em> for a runtime-dependent
+  executable and cross-platform binaries.
+  It defaults to <em>[project_file_folder]/bin/[configuration]/[framework]/[runtime]/publish/</em> for a self-contained executable.
+  <br/>
+  In a web project, if the output folder is in the project folder, successive <code>dotnet publish</code> commands result in nested
+  output folders. For example, if the project folder is <em>myproject</em>, and the publish output folder is
+  <em>myproject/publish</em>, and you run <code>dotnet publish</code> twice, the second run puts content files such as
+  <em>.config</em> and <em>.json</em> files in <em>myproject/publish/publish</em>. To avoid nesting publish folders, specify a
+  publish folder that is not <strong>directly</strong> under the project folder, or exclude the publish folder from the project.
+</div>
+<div>
+  Some behaviour depends on the SDK version:
+  <ul>
+    <li>
+      .NET Core 3.x SDK and later: If a relative path is specified when publishing a project, the output directory generated is
+      relative to the current working directory, not to the project file location.<br/>
+      If a relative path is specified when publishing a solution, all output for all projects goes into the specified folder
+      relative to the current working directory. To make publish output go to separate folders for each project, specify a relative
+      path by using the msbuild <code>PublishDir</code> property instead of this option.
+    </li>
+    <li>
+      .NET Core 2.x SDK: If a relative path is specified when publishing a project, the output directory generated is relative to
+      the project file location, not to the current working directory.<br/>
+      If a relative path is specified when publishing a solution, each project's output goes into a separate folder relative to the
+      project file location. If an absolute path is specified when publishing a solution, all publish output for all projects goes
+      into the specified folder.
+    </li>
+  </ul>
+</div>
