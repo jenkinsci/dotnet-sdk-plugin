@@ -159,7 +159,7 @@ public final class Downloads {
 
       CURRENT,
 
-      END_OF_LIFE,
+      EOL,
 
       LTS,
 
@@ -175,8 +175,8 @@ public final class Downloads {
         switch (this) {
           case CURRENT:
             return Messages.Downloads_Version_Status_Current();
-          case END_OF_LIFE:
-            return Messages.Downloads_Version_Status_EndOfLife();
+          case EOL:
+            return Messages.Downloads_Version_Status_EOL();
           case LTS:
             return Messages.Downloads_Version_Status_LTS();
           case MAINTENANCE:

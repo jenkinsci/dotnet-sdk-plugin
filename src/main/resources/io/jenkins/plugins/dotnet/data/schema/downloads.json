@@ -64,7 +64,7 @@
             "type": "string",
             "enum": [
               "CURRENT",
-              "END_OF_LIFE",
+              "EOL",
               "LTS",
               "MAINTENANCE",
               "PREVIEW"
