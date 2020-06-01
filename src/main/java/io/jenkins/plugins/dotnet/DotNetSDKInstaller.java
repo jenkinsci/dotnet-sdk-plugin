@@ -50,17 +50,6 @@ public final class DotNetSDKInstaller extends ToolInstaller {
 
   //region Properties
 
-  private boolean includeEndOfLife;
-
-  public boolean isIncludeEndOfLife() {
-    return this.includeEndOfLife;
-  }
-
-  @DataBoundSetter
-  public void setIncludeEndOfLife(boolean includeEndOfLife) {
-    this.includeEndOfLife = includeEndOfLife;
-  }
-
   private boolean includePreview;
 
   public boolean isIncludePreview() {
@@ -187,8 +176,8 @@ public final class DotNetSDKInstaller extends ToolInstaller {
       return Downloads.getInstance().addSdks(this.createList(), version, release);
     }
 
-    public ListBoxModel doFillVersionItems(@QueryParameter boolean includePreview, @QueryParameter boolean includeEndOfLife) {
-      return Downloads.getInstance().addVersions(this.createList(), includePreview, includeEndOfLife);
+    public ListBoxModel doFillVersionItems() {
+      return Downloads.getInstance().addVersions(this.createList());
     }
 
     @Nonnull

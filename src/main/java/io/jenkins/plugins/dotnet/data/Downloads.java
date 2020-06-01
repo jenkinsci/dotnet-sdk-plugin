@@ -1,6 +1,8 @@
 package io.jenkins.plugins.dotnet.data;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import hudson.Util;
+import hudson.model.ModelObject;
 import hudson.util.ListBoxModel;
 import io.jenkins.plugins.dotnet.Messages;
 import net.sf.ezmorph.Morpher;
@@ -106,7 +108,7 @@ public final class Downloads {
     final Sdk s = this.getSdk(sdk);
     if (s != null && s.packages != null) {
       for (Package p : s.packages)
-        model.add(p.getDisplayName(), p.url);
+        model.add(p, p.url);
     }
     return model;
   }
@@ -117,7 +119,7 @@ public final class Downloads {
       for (Release r : v.releases) {
         if (r.preview && !includePreview)
           continue;
-        model.add(r.getDisplayName(), r.name);
+        model.add(r, r.name);
       }
     }
     return model;
@@ -129,21 +131,16 @@ public final class Downloads {
       for (String sdk : r.sdks) {
         final Sdk s = this.getSdk(sdk);
         if (s != null)
-          model.add(s.getDisplayName(), s.name);
+          model.add(s, s.name);
       }
     }
     return model;
   }
 
-  public ListBoxModel addVersions(@Nonnull ListBoxModel model, boolean includePreview, boolean includeEndOfLife) {
+  public ListBoxModel addVersions(@Nonnull ListBoxModel model) {
     if (this.versions != null) {
-      for (Version v : this.versions) {
-        if (v.status == Version.Status.PREVIEW && !includePreview)
-          continue;
-        if (v.status == Version.Status.END_OF_LIFE && !includeEndOfLife)
-          continue;
-        model.add(v.getDisplayName(), v.name);
-      }
+      for (Version v : this.versions)
+        model.add(v, v.name);
     }
     return model;
   }
@@ -154,7 +151,7 @@ public final class Downloads {
 
   //region Version
 
-  public static final class Version {
+  public static final class Version implements ModelObject {
 
     //region Status Enum
 
@@ -247,7 +244,7 @@ public final class Downloads {
 
   //region Release
 
-  public static final class Release {
+  public static final class Release implements ModelObject {
 
     public String name;
 
@@ -285,7 +282,7 @@ public final class Downloads {
 
   //region Sdk
 
-  public static final class Sdk {
+  public static final class Sdk implements ModelObject {
 
     public String name;
 
@@ -335,7 +332,7 @@ public final class Downloads {
 
   //region Package
 
-  public static final class Package {
+  public static final class Package implements ModelObject {
 
     public String platform;
 

@@ -7,12 +7,11 @@
 
   <f:entry title="${%.NET Version}" field="version">
     <f:select/>
-    <f:checkbox title="${%Include Preview Versions}" field="includePreview"/>
-    <f:checkbox title="${%Include End-of-Life Versions}" field="includeEndOfLife"/>
   </f:entry>
 
   <f:entry title="${%Release}" field="release">
     <f:select/>
+    <f:checkbox title="${%Include Previews}" field="includePreview"/>
   </f:entry>
 
   <f:entry title="${%SDK}" field="sdk">
