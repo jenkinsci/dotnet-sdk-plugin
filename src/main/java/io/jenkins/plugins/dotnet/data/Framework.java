@@ -61,19 +61,12 @@ public abstract class Framework {
   private static synchronized void loadMonikers() {
     if (Framework.monikers != null)
       return;
-    // FIXME: This should probably come from a file on Jenkins Update Central.
-    // FIXME: There seems to be no master JSON file to take the list from, just documentation at
-    // FIXME:   https://docs.microsoft.com/en-us/dotnet/standard/frameworks
-    // FIXME: which is generated from
-    // FIXME:  https://github.com/dotnet/docs/blob/master/docs/standard/frameworks.md
     try {
+      // TODO: Switch this to using a Downloadable once the crawler PR is submitted and approved.
       final JSONObject json = Data.loadJson(Framework.class);
       if (json != null) {
-        final JSONArray array = json.getJSONArray("targetFrameworkMonikers");
         Framework.monikers = new TreeSet<>();
-        for (Object tfm : array) {
-          if (tfm == null)
-            continue;
+        for (Object tfm : json.getJSONArray("targetFrameworkMonikers")) {
           if (tfm instanceof String)
             Framework.monikers.add((String) tfm);
         }

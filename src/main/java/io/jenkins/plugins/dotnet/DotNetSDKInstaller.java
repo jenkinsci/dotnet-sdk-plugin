@@ -137,8 +137,11 @@ public final class DotNetSDKInstaller extends ToolInstaller {
         return FormValidation.error(Messages.DotNetSDKInstaller_ReleaseRequired());
       if (Util.fixEmpty(value) == null)
         return FormValidation.error(Messages.DotNetSDKInstaller_Required());
-      if (Downloads.getInstance().getSdk(version, release, value) == null)
+      final Downloads.Sdk sdk = Downloads.getInstance().getSdk(version, release, value);
+      if (sdk == null)
         return FormValidation.error(Messages.DotNetSDKInstaller_InvalidSdk(value, version, release));
+      if (sdk.info != null)
+        return FormValidation.ok(sdk.info);
       return FormValidation.ok();
     }
 

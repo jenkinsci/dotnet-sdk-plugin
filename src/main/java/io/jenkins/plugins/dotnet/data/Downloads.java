@@ -286,7 +286,11 @@ public final class Downloads {
 
     public String name;
 
-    public String vs;
+    @SuppressFBWarnings(
+      value = "UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD",
+      justification = "Set by JSON deserialization."
+    )
+    public String info;
 
     @SuppressFBWarnings(
       value = "UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD",
@@ -305,8 +309,6 @@ public final class Downloads {
     private void finish() {
       if (this.name == null)
         this.name = Messages.Downloads_Unknown();
-      if (this.vs == null)
-        this.vs = Messages.Downloads_Unknown();
       if (!this.packageMap.isEmpty())
         this.packageMap.clear();
       if (this.packages == null)
@@ -319,7 +321,7 @@ public final class Downloads {
 
     @Nonnull
     public String getDisplayName() {
-      return Messages.Downloads_Sdk_DisplayName(this.name, this.vs);
+      return Messages.Downloads_Sdk_DisplayName(this.name);
     }
 
     public Package getPackage(String url) {
@@ -334,9 +336,13 @@ public final class Downloads {
 
   public static final class Package implements ModelObject {
 
-    public String platform;
+    @SuppressFBWarnings(
+      value = "UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD",
+      justification = "Set by JSON deserialization."
+    )
+    public String rid;
 
-    public String architecture;
+    public String platform;
 
     @SuppressFBWarnings(
       value = "UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD",
@@ -347,15 +353,13 @@ public final class Downloads {
     private void finish(String urlPrefix) {
       if (this.platform == null)
         this.platform = Messages.Downloads_Unknown();
-      if (this.architecture == null)
-        this.architecture = Messages.Downloads_Unknown();
       if (urlPrefix != null && this.url != null)
         this.url = urlPrefix + this.url;
     }
 
     @Nonnull
     public String getDisplayName() {
-      return Messages.Downloads_Package_DisplayName(this.platform, this.architecture);
+      return Messages.Downloads_Package_DisplayName(this.rid, this.platform);
     }
 
   }

@@ -5,16 +5,15 @@ import hudson.model.AutoCompletionCandidates;
 import hudson.util.FormValidation;
 import io.jenkins.plugins.dotnet.DotNetUtils;
 import io.jenkins.plugins.dotnet.Messages;
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /** Utility methods related to runtime identifiers. */
 public abstract class Runtime {
@@ -82,14 +81,15 @@ public abstract class Runtime {
   private static synchronized void loadIdentifiers() {
     if (Runtime.identifiers != null)
       return;
-    // FIXME: This should probably either come from
-    // FIXME:   https://github.com/dotnet/runtime/blob/master/src/libraries/pkg/Microsoft.NETCore.Platforms/runtime.json
-    // FIXME: or a mirrored version on the Jenkins Update Central.
     try {
-      final JSONObject ridCatalog = Data.loadJson(Runtime.class);
-      if (ridCatalog != null) {
-        @SuppressWarnings("unchecked") final Set<String> rids = ridCatalog.getJSONObject("runtimes").keySet();
-        Runtime.identifiers = rids;
+      // TODO: Switch this to using a Downloadable once the crawler PR is submitted and approved.
+      final JSONObject json = Data.loadJson(Runtime.class);
+      if (json != null) {
+        Runtime.identifiers = new TreeSet<>();
+        for (Object rid : json.getJSONArray("ridCatalog")) {
+          if (rid instanceof String)
+            Runtime.identifiers.add((String) rid);
+        }
       }
     }
     catch (Throwable t) {
