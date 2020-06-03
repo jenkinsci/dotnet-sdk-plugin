@@ -1,7 +1,17 @@
 package io.jenkins.plugins.dotnet;
 
-import hudson.*;
-import hudson.model.*;
+import hudson.AbortException;
+import hudson.EnvVars;
+import hudson.FilePath;
+import hudson.Functions;
+import hudson.Launcher;
+import hudson.Util;
+import hudson.model.AbstractBuild;
+import hudson.model.AbstractProject;
+import hudson.model.AutoCompletionCandidates;
+import hudson.model.BuildListener;
+import hudson.model.Result;
+import hudson.model.TaskListener;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.tools.ToolInstallation;
@@ -186,6 +196,11 @@ public abstract class DotNet extends Builder {
     }
 
     @SuppressWarnings("unused")
+    public final AutoCompletionCandidates doAutoCompleteFrameworks(@QueryParameter String value) {
+      return Framework.autoCompleteMoniker(value);
+    }
+
+    @SuppressWarnings("unused")
     public final AutoCompletionCandidates doAutoCompleteRuntime(@QueryParameter String value) {
       return Runtime.autoComplete(value);
     }
@@ -199,6 +214,11 @@ public abstract class DotNet extends Builder {
     @SuppressWarnings("unused")
     public FormValidation doCheckFramework(@QueryParameter String value) {
       return Framework.checkMoniker(value);
+    }
+
+    @SuppressWarnings("unused")
+    public FormValidation doCheckFrameworks(@QueryParameter String value) {
+      return Framework.checkMonikers(value);
     }
 
     @SuppressWarnings("unused")

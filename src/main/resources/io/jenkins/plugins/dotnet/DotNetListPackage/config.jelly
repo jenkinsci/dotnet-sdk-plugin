@@ -10,7 +10,7 @@
   <f:advanced title="${descriptor.moreOptions}">
 
     <f:entry title="${%Frameworks}" field="frameworks">
-      <f:textbox/>
+      <f:textbox autoCompleteDelimChar=" "/>
     </f:entry>
 
     <f:entry title="${%Include Transitive Packages}" field="includeTransitive">

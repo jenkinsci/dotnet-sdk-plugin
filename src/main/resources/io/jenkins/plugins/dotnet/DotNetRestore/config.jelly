@@ -58,7 +58,7 @@
     </f:entry>
 
     <f:entry title="${%Runtimes}" field="runtimes">
-      <f:textbox/>
+      <f:textbox autoCompleteDelimChar=" "/>
     </f:entry>
 
     <f:entry title="${%Verbosity}" field="verbosity">

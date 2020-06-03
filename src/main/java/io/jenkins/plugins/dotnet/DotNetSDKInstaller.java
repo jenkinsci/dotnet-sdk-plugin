@@ -3,6 +3,9 @@ package io.jenkins.plugins.dotnet;
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.Util;
+import hudson.model.AbstractProject;
+import hudson.model.AutoCompletionCandidates;
+import hudson.model.FreeStyleProject;
 import hudson.model.Node;
 import hudson.model.TaskListener;
 import hudson.tools.ToolInstallation;
@@ -120,6 +123,18 @@ public final class DotNetSDKInstaller extends ToolInstaller {
       return model;
     }
 
+    @SuppressWarnings("unused")
+    public AutoCompletionCandidates doAutoCompleteLabel(@QueryParameter String value) {
+      // JENKINS-26097: There is no available static method for Label completion
+      return new FreeStyleProject.DescriptorImpl().doAutoCompleteLabel(value);
+    }
+
+    @SuppressWarnings("unused")
+    public FormValidation doCheckLabel(@QueryParameter String value) {
+      return AbstractProject.AbstractProjectDescriptor.validateLabelExpression(value, null);
+    }
+
+    @SuppressWarnings("unused")
     public FormValidation doCheckRelease(@QueryParameter String version, @QueryParameter String release, @QueryParameter String value) {
       if (Util.fixEmpty(version) == null)
         return FormValidation.error(Messages.DotNetSDKInstaller_VersionRequired());
@@ -130,6 +145,7 @@ public final class DotNetSDKInstaller extends ToolInstaller {
       return FormValidation.ok();
     }
 
+    @SuppressWarnings("unused")
     public FormValidation doCheckSdk(@QueryParameter String version, @QueryParameter String release, @QueryParameter String value) {
       if (Util.fixEmpty(version) == null)
         return FormValidation.error(Messages.DotNetSDKInstaller_VersionRequired());
@@ -145,6 +161,7 @@ public final class DotNetSDKInstaller extends ToolInstaller {
       return FormValidation.ok();
     }
 
+    @SuppressWarnings("unused")
     public FormValidation doCheckUrl(@QueryParameter String version, @QueryParameter String release, @QueryParameter String sdk, @QueryParameter String value) {
       if (Util.fixEmpty(version) == null)
         return FormValidation.error(Messages.DotNetSDKInstaller_VersionRequired());
@@ -159,6 +176,7 @@ public final class DotNetSDKInstaller extends ToolInstaller {
       return FormValidation.ok();
     }
 
+    @SuppressWarnings("unused")
     public FormValidation doCheckVersion(@QueryParameter String value) {
       if (Util.fixEmpty(value) == null)
         return FormValidation.error(Messages.DotNetSDKInstaller_Required());
@@ -167,18 +185,22 @@ public final class DotNetSDKInstaller extends ToolInstaller {
       return FormValidation.ok();
     }
 
+    @SuppressWarnings("unused")
     public ListBoxModel doFillUrlItems(@QueryParameter String sdk) {
       return Downloads.getInstance().addPackages(this.createList(), sdk);
     }
 
+    @SuppressWarnings("unused")
     public ListBoxModel doFillReleaseItems(@QueryParameter String version, @QueryParameter boolean includePreview) {
       return Downloads.getInstance().addReleases(this.createList(), version, includePreview);
     }
 
+    @SuppressWarnings("unused")
     public ListBoxModel doFillSdkItems(@QueryParameter String version, @QueryParameter String release) {
       return Downloads.getInstance().addSdks(this.createList(), version, release);
     }
 
+    @SuppressWarnings("unused")
     public ListBoxModel doFillVersionItems() {
       return Downloads.getInstance().addVersions(this.createList());
     }
