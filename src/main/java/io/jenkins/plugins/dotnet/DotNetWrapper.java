@@ -1,6 +1,11 @@
 package io.jenkins.plugins.dotnet;
 
-import hudson.*;
+import hudson.AbortException;
+import hudson.EnvVars;
+import hudson.Extension;
+import hudson.FilePath;
+import hudson.Launcher;
+import hudson.Util;
 import hudson.console.ConsoleLogFilter;
 import hudson.model.AbstractProject;
 import hudson.model.Run;

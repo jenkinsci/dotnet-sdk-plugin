@@ -5,15 +5,17 @@ import hudson.model.AutoCompletionCandidates;
 import hudson.util.FormValidation;
 import io.jenkins.plugins.dotnet.DotNetUtils;
 import io.jenkins.plugins.dotnet.Messages;
-import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 /** Utility methods related to runtime identifiers. */
 public abstract class Runtime {

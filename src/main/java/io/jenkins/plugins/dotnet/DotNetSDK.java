@@ -1,7 +1,15 @@
 package io.jenkins.plugins.dotnet;
 
-import hudson.*;
-import hudson.model.*;
+import hudson.AbortException;
+import hudson.EnvVars;
+import hudson.Extension;
+import hudson.FilePath;
+import hudson.Launcher;
+import hudson.model.Computer;
+import hudson.model.EnvironmentSpecific;
+import hudson.model.Node;
+import hudson.model.PersistentDescriptor;
+import hudson.model.TaskListener;
 import hudson.slaves.NodeSpecific;
 import hudson.tools.ToolDescriptor;
 import hudson.tools.ToolInstallation;

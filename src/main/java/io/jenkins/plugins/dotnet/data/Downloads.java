@@ -1,7 +1,6 @@
 package io.jenkins.plugins.dotnet.data;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import hudson.Util;
 import hudson.model.ModelObject;
 import hudson.util.ListBoxModel;
 import io.jenkins.plugins.dotnet.Messages;
