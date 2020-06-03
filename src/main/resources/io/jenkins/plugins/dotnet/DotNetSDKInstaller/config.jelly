@@ -9,9 +9,12 @@
     <f:select/>
   </f:entry>
 
+  <f:entry title="${%Include Previews}" field="includePreview">
+    <f:checkbox/>
+  </f:entry>
+
   <f:entry title="${%Release}" field="release">
     <f:select/>
-    <f:checkbox title="${%Include Previews}" field="includePreview"/>
   </f:entry>
 
   <f:entry title="${%SDK}" field="sdk">

@@ -135,13 +135,17 @@ public final class DotNetSDKInstaller extends ToolInstaller {
     }
 
     @SuppressWarnings("unused")
-    public FormValidation doCheckRelease(@QueryParameter String version, @QueryParameter String release, @QueryParameter String value) {
+    public FormValidation doCheckRelease(@QueryParameter String version, @QueryParameter String value) {
       if (Util.fixEmpty(version) == null)
         return FormValidation.error(Messages.DotNetSDKInstaller_VersionRequired());
       if (Util.fixEmpty(value) == null)
         return FormValidation.error(Messages.DotNetSDKInstaller_Required());
-      if (Downloads.getInstance().getRelease(version, value) == null)
+      final Downloads.Release release = Downloads.getInstance().getRelease(version, value);
+      if (release == null)
         return FormValidation.error(Messages.DotNetSDKInstaller_InvalidRelease(value, version));
+      final String releaseNotes = release.getReleaseNotesLink();
+      if (releaseNotes != null)
+        return FormValidation.okWithMarkup(releaseNotes);
       return FormValidation.ok();
     }
 
@@ -171,9 +175,10 @@ public final class DotNetSDKInstaller extends ToolInstaller {
         return FormValidation.error(Messages.DotNetSDKInstaller_SdkRequired());
       if (Util.fixEmpty(value) == null)
         return FormValidation.error(Messages.DotNetSDKInstaller_Required());
-      if (Downloads.getInstance().getPackage(version, release, sdk, value) == null)
+      final Downloads.Package pkg = Downloads.getInstance().getPackage(version, release, sdk, value);
+      if (pkg == null)
         return FormValidation.error(Messages.DotNetSDKInstaller_InvalidPlatform(version, release, sdk));
-      return FormValidation.ok();
+      return FormValidation.okWithMarkup(pkg.getDirectDownloadLink());
     }
 
     @SuppressWarnings("unused")

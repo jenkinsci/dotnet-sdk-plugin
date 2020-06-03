@@ -8,6 +8,7 @@ import net.sf.ezmorph.Morpher;
 import net.sf.json.util.EnumMorpher;
 import net.sf.json.util.JSONUtils;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.HashMap;
@@ -257,6 +258,12 @@ public final class Downloads {
       value = "UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD",
       justification = "Set by JSON deserialization."
     )
+    public String releaseNotes;
+
+    @SuppressFBWarnings(
+      value = "UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD",
+      justification = "Set by JSON deserialization."
+    )
     public List<String> sdks;
 
     private void finish() {
@@ -273,6 +280,13 @@ public final class Downloads {
       if (this.securityFixes)
         return Messages.Downloads_Release_DisplayNameWithSecurity(this.name, this.released);
       return Messages.Downloads_Release_DisplayName(this.name, this.released);
+    }
+
+    @CheckForNull
+    public String getReleaseNotesLink() {
+      if (this.releaseNotes == null)
+        return null;
+      return Messages.Downloads_Release_ReleaseNotesLink(this.releaseNotes);
     }
 
   }
@@ -343,6 +357,8 @@ public final class Downloads {
 
     public String platform;
 
+    public String hash;
+
     @SuppressFBWarnings(
       value = "UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD",
       justification = "Set by JSON deserialization."
@@ -350,6 +366,8 @@ public final class Downloads {
     public String url;
 
     private void finish(String urlPrefix) {
+      if (this.hash == null)
+        this.hash = Messages.Downloads_Unknown();
       if (this.platform == null)
         this.platform = Messages.Downloads_Unknown();
       if (urlPrefix != null && this.url != null)
@@ -359,6 +377,12 @@ public final class Downloads {
     @Nonnull
     public String getDisplayName() {
       return Messages.Downloads_Package_DisplayName(this.rid, this.platform);
+    }
+
+    @Nonnull
+    public String getDirectDownloadLink() {
+      // For now, this does not include the file hash (it's a bit long)
+      return Messages.Downloads_Package_DirectDownloadLink(this.url);
     }
 
   }
