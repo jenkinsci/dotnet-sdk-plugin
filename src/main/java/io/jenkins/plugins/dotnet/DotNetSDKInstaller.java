@@ -39,15 +39,13 @@ public final class DotNetSDKInstaller extends ToolInstaller {
       if (marker.exists() && marker.readToString().equals(this.url))
         return dir;
     }
+    // Unfortunately this processing does not include a means of checking a hash of the archive
     if (dir.installIfNecessaryFrom(new URL(this.url), log, Messages.DotNetSDKInstaller_Installing(this.url, dir, node.getDisplayName()))) {
       dir.child(".timestamp").delete();
       dir.child(".installedFrom").write(this.url,"UTF-8");
       // For now, this does no include ZipExtractionInstaller's behaviour of making everything executable (in part because it's
       // not exposed, so I can't directly reuse it).
-      // TODO: Maybe save the sdk name, so that it does not need to be looked up (in the context of creating/updating global.json
-      // TODO: to force the use of an exact SDK version).
     }
-    // For the time being, this does not replicate
     return dir;
   }
 
@@ -222,10 +220,6 @@ public final class DotNetSDKInstaller extends ToolInstaller {
     }
 
   }
-
-  //endregion
-
-  //region SDK Downloads Data Structure
 
   //endregion
 
