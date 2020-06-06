@@ -1,65 +1,32 @@
 package io.jenkins.plugins.dotnet.data;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import hudson.Extension;
+import hudson.model.DownloadService;
 import hudson.model.ModelObject;
 import hudson.util.ListBoxModel;
 import io.jenkins.plugins.dotnet.Messages;
 import net.sf.ezmorph.Morpher;
+import net.sf.json.JSONObject;
 import net.sf.json.util.EnumMorpher;
 import net.sf.json.util.JSONUtils;
+import org.kohsuke.stapler.DataBoundConstructor;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-public final class Downloads {
+@Extension
+public final class Downloads extends DownloadService.Downloadable {
 
-  private static Downloads instance = null;
-
-  public static synchronized Downloads getInstance() {
-    if (Downloads.instance == null) {
-      { // Explicit morpher fiddling to avoid a warning being logged
-        final Morpher statusMorpher = new EnumMorpher(Version.Status.class);
-        JSONUtils.getMorpherRegistry().registerMorpher(statusMorpher);
-        Downloads.instance = Data.loadJson(Downloads.class, Downloads.class);
-        JSONUtils.getMorpherRegistry().deregisterMorpher(statusMorpher);
-      }
-      if (Downloads.instance == null)
-        Downloads.instance = new Downloads();
-      else
-        Downloads.instance.finish();
-    }
-    return Downloads.instance;
-  }
-
-  public Sdk[] sdks = null;
-
-  private final Map<String, Sdk> sdkMap = new HashMap<>();
-
-  public Version[] versions = null;
-
-  private final Map<String, Version> versionMap = new HashMap<>();
-
-  private void finish() {
-    if (!this.sdkMap.isEmpty())
-      this.sdkMap.clear();
-    if (this.sdks != null) {
-      for (final Sdk s : this.sdks) {
-        s.finish();
-        this.sdkMap.put(s.name, s);
-      }
-    }
-    if (!this.versionMap.isEmpty())
-      this.versionMap.clear();
-    if (this.versions != null) {
-      for (final Version v : this.versions) {
-        v.finish();
-        this.versionMap.put(v.name, v);
-      }
-    }
+  @DataBoundConstructor
+  public Downloads() {
   }
 
   //region Lookup Methods
@@ -86,7 +53,7 @@ public final class Downloads {
   }
 
   public Sdk getSdk(String name) {
-    return this.sdkMap.get(name);
+    return this.sdks.get(name);
   }
 
   public Sdk getSdk(String version, String release, String name) {
@@ -97,7 +64,7 @@ public final class Downloads {
   }
 
   public Version getVersion(String name) {
-    return this.versionMap.get(name);
+    return this.versions.get(name);
   }
 
   //endregion
@@ -138,10 +105,8 @@ public final class Downloads {
   }
 
   public ListBoxModel addVersions(@Nonnull ListBoxModel model) {
-    if (this.versions != null) {
-      for (Version v : this.versions)
-        model.add(v, v.name);
-    }
+    for (Version v : this.versions.values())
+      model.add(v, v.name);
     return model;
   }
 
@@ -388,6 +353,86 @@ public final class Downloads {
   }
 
   //endregion
+
+  //endregion
+
+  //region Internals
+
+  private Map<String, Sdk> sdks;
+
+  private Map<String, Version> versions;
+
+  public static synchronized Downloads getInstance() {
+    // JENKINS-62572: would be simpler to pass just the class
+    final DownloadService.Downloadable instance = DownloadService.Downloadable.get(Downloads.class.getName());
+    if (instance instanceof Downloads)
+      return ((Downloads) instance).loadData();
+    else { // No such downloadable (should be impossible).
+      final Downloads empty = new Downloads();
+      empty.sdks = Collections.emptyMap();
+      empty.versions = Collections.emptyMap();
+      return empty;
+    }
+  }
+
+  private Downloads loadData() {
+    if (this.sdks != null && this.versions != null)
+      return this;
+    try {
+      final JSONObject json = this.getData();
+      if (json != null) {
+        // TODO: Use custom deserialization
+        this.sdks = new LinkedHashMap<>();
+        for (Object item : json.getJSONArray("sdks")) {
+          if (item instanceof JSONObject) {
+            final JSONObject jobj = (JSONObject) item;
+            if (!jobj.isNullObject() && !jobj.isArray()) {
+              final Sdk sdk = (Sdk) JSONObject.toBean(jobj, Sdk.class);
+              sdk.finish();
+              this.sdks.put(sdk.name, sdk);
+            }
+          }
+        }
+        this.versions = new LinkedHashMap<>();
+        { // Explicit morpher fiddling to avoid a warning being logged
+          final Morpher statusMorpher = new EnumMorpher(Version.Status.class);
+          JSONUtils.getMorpherRegistry().registerMorpher(statusMorpher);
+          try {
+            for (Object item : json.getJSONArray("versions")) {
+              if (item instanceof JSONObject) {
+                final JSONObject jobj = (JSONObject) item;
+                if (!jobj.isNullObject() && !jobj.isArray()) {
+                  final Version v = (Version) JSONObject.toBean(jobj, Version.class);
+                  v.finish();
+                  this.versions.put(v.name, v);
+                }
+              }
+            }
+          }
+          finally {
+            JSONUtils.getMorpherRegistry().deregisterMorpher(statusMorpher);
+          }
+        }
+      }
+    }
+    catch (Throwable t) {
+      Downloads.LOGGER.log(Level.FINE, Messages.Framework_LoadFailed(), t);
+    }
+    finally {
+      if (this.sdks == null)
+        this.sdks = Collections.emptyMap();
+      if (this.sdks.isEmpty())
+        Downloads.LOGGER.fine(Messages.Downloads_NoSdks());
+      if (this.versions == null)
+        this.versions = Collections.emptyMap();
+      if (this.versions.isEmpty())
+        Downloads.LOGGER.fine(Messages.Downloads_NoVersions());
+    }
+    return this;
+  }
+
+  /** A logger to use for trace messages. */
+  private static final Logger LOGGER = Logger.getLogger(Downloads.class.getName());
 
   //endregion
 

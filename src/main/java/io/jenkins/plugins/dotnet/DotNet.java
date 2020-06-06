@@ -192,43 +192,43 @@ public abstract class DotNet extends Builder {
 
     @SuppressWarnings("unused")
     public final AutoCompletionCandidates doAutoCompleteFramework(@QueryParameter String value) {
-      return Framework.autoCompleteMoniker(value);
+      return Framework.getInstance().autoCompleteMoniker(value);
     }
 
     @SuppressWarnings("unused")
     public final AutoCompletionCandidates doAutoCompleteFrameworks(@QueryParameter String value) {
-      return Framework.autoCompleteMoniker(value);
+      return Framework.getInstance().autoCompleteMoniker(value);
     }
 
     @SuppressWarnings("unused")
     public final AutoCompletionCandidates doAutoCompleteRuntime(@QueryParameter String value) {
-      return Runtime.autoComplete(value);
+      return Runtime.getInstance().autoComplete(value);
     }
 
     @SuppressWarnings("unused")
     public final AutoCompletionCandidates doAutoCompleteRuntimes(@QueryParameter String value) {
       // FIXME: How to handle autocompletion of a space-separated list?
-      return Runtime.autoComplete(value);
+      return Runtime.getInstance().autoComplete(value);
     }
 
     @SuppressWarnings("unused")
     public FormValidation doCheckFramework(@QueryParameter String value) {
-      return Framework.checkMoniker(value);
+      return Framework.getInstance().checkMoniker(value);
     }
 
     @SuppressWarnings("unused")
     public FormValidation doCheckFrameworks(@QueryParameter String value) {
-      return Framework.checkMonikers(value);
+      return Framework.getInstance().checkMonikers(value);
     }
 
     @SuppressWarnings("unused")
     public FormValidation doCheckRuntime(@QueryParameter String value) {
-      return Runtime.checkIdentifier(value);
+      return Runtime.getInstance().checkIdentifier(value);
     }
 
     @SuppressWarnings("unused")
     public FormValidation doCheckRuntimes(@QueryParameter String value) {
-      return Runtime.checkIdentifiers(value);
+      return Runtime.getInstance().checkIdentifiers(value);
     }
 
     @SuppressWarnings("unused")

@@ -1,11 +1,14 @@
 package io.jenkins.plugins.dotnet.data;
 
+import hudson.Extension;
 import hudson.Util;
 import hudson.model.AutoCompletionCandidates;
+import hudson.model.DownloadService;
 import hudson.util.FormValidation;
 import io.jenkins.plugins.dotnet.DotNetUtils;
 import io.jenkins.plugins.dotnet.Messages;
 import net.sf.json.JSONObject;
+import org.kohsuke.stapler.DataBoundConstructor;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -17,11 +20,14 @@ import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/** Utility methods related to framework monikers. */
-public abstract class Framework {
+/** A data file containing the list of valid .NET target framework monikers. */
+@Extension
+public final class Framework extends DownloadService.Downloadable {
 
-  /** The loaded framework monikers. */
-  private static Set<String> monikers = null;
+  /** Creates a new {@link Framework} instance. */
+  @DataBoundConstructor
+  public Framework() {
+  }
 
   /**
    * Performs auto-completion for a partial framework moniker.
@@ -31,10 +37,9 @@ public abstract class Framework {
    * @return Suitable auto-completion candidates for {@code text}.
    */
   @Nonnull
-  public static AutoCompletionCandidates autoCompleteMoniker(@CheckForNull String text) {
-    Framework.loadMonikers();
+  public AutoCompletionCandidates autoCompleteMoniker(@CheckForNull String text) {
     final AutoCompletionCandidates candidates = new AutoCompletionCandidates();
-    for (final String tfm : Framework.monikers) {
+    for (final String tfm : this.monikers) {
       if (text == null || tfm.startsWith(text))
         candidates.add(tfm);
     }
@@ -49,11 +54,10 @@ public abstract class Framework {
    * @return The validation result.
    */
   @Nonnull
-  public static FormValidation checkMoniker(@CheckForNull String text) {
+  public FormValidation checkMoniker(@CheckForNull String text) {
     text = Util.fixEmptyAndTrim(text);
     if (text != null) {
-      Framework.loadMonikers();
-      if (!Framework.monikers.contains(text))
+      if (!this.monikers.contains(text))
         return FormValidation.error(Messages.Framework_Invalid(text));
     }
     return FormValidation.ok();
@@ -66,31 +70,52 @@ public abstract class Framework {
    *
    * @return The validation result.
    */
-  public static FormValidation checkMonikers(@CheckForNull String text) {
+  public FormValidation checkMonikers(@CheckForNull String text) {
     text = DotNetUtils.normalizeList(text);
     if (text == null)
       return FormValidation.ok();
     final List<FormValidation> result = new ArrayList<>();
     for (final String runtime : text.split(" ")) {
-      final FormValidation fv = Framework.checkMoniker(runtime);
+      final FormValidation fv = this.checkMoniker(runtime);
       if (fv.kind != FormValidation.Kind.OK)
         result.add(fv);
     }
     return FormValidation.aggregate(result);
   }
 
+  //region Internals
+
+  /** The loaded framework monikers. */
+  private Set<String> monikers = null;
+
+  /**
+   * Gets the (single) instance of {@link Framework}.
+   *
+   * @return An instance of {@link Framework}, loaded with the available .NET target framework monikers.
+   */
+  public static synchronized Framework getInstance() {
+    // JENKINS-62572: would be simpler to pass just the class
+    final DownloadService.Downloadable instance = DownloadService.Downloadable.get(Framework.class.getName());
+    if (instance instanceof Framework)
+      return ((Framework) instance).loadMonikers();
+    else { // No such downloadable (should be impossible).
+      final Framework empty = new Framework();
+      empty.monikers = Collections.emptySet();
+      return empty;
+    }
+  }
+
   /** Loads the framework moniker data (if not already done). */
-  private static synchronized void loadMonikers() {
-    if (Framework.monikers != null)
-      return;
+  private Framework loadMonikers() {
+    if (this.monikers != null)
+      return this;
     try {
-      // TODO: Switch this to using a Downloadable once the crawler PR is submitted and approved.
-      final JSONObject json = Data.loadJson(Framework.class);
+      final JSONObject json = this.getData();
       if (json != null) {
-        Framework.monikers = new TreeSet<>();
+        this.monikers = new TreeSet<>();
         for (Object tfm : json.getJSONArray("targetFrameworkMonikers")) {
           if (tfm instanceof String)
-            Framework.monikers.add((String) tfm);
+            this.monikers.add((String) tfm);
         }
       }
     }
@@ -98,14 +123,17 @@ public abstract class Framework {
       Framework.LOGGER.log(Level.FINE, Messages.Framework_LoadFailed(), t);
     }
     finally {
-      if (Framework.monikers == null)
-        Framework.monikers = Collections.emptySet();
-      if (Framework.monikers.isEmpty())
+      if (this.monikers == null)
+        this.monikers = Collections.emptySet();
+      if (this.monikers.isEmpty())
         Framework.LOGGER.fine(Messages.Framework_NoData());
     }
+    return this;
   }
 
   /** A logger to use for trace messages. */
   private static final Logger LOGGER = Logger.getLogger(Framework.class.getName());
+
+  //endregion
 
 }

@@ -1,11 +1,14 @@
 package io.jenkins.plugins.dotnet.data;
 
+import hudson.Extension;
 import hudson.Util;
 import hudson.model.AutoCompletionCandidates;
+import hudson.model.DownloadService;
 import hudson.util.FormValidation;
 import io.jenkins.plugins.dotnet.DotNetUtils;
 import io.jenkins.plugins.dotnet.Messages;
 import net.sf.json.JSONObject;
+import org.kohsuke.stapler.DataBoundConstructor;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -17,11 +20,14 @@ import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/** Utility methods related to runtime identifiers. */
-public abstract class Runtime {
+/** A data file containing the list of valid .NET runtime identifiers. */
+@Extension
+public final class Runtime extends DownloadService.Downloadable {
 
-  /** The loaded runtime identifiers. */
-  private static Set<String> identifiers = null;
+  /** Creates a new {@link Runtime} instance. */
+  @DataBoundConstructor
+  public Runtime() {
+  }
 
   /**
    * Performs auto-completion for a partial runtime identifier.
@@ -31,10 +37,9 @@ public abstract class Runtime {
    * @return Suitable auto-completion candidates for {@code text}.
    */
   @Nonnull
-  public static AutoCompletionCandidates autoComplete(@CheckForNull String text) {
-    Runtime.loadIdentifiers();
+  public AutoCompletionCandidates autoComplete(@CheckForNull String text) {
     final AutoCompletionCandidates candidates = new AutoCompletionCandidates();
-    for (final String rid : Runtime.identifiers) {
+    for (final String rid : this.identifiers) {
       if (text == null || rid.startsWith(text))
         candidates.add(rid);
     }
@@ -49,11 +54,10 @@ public abstract class Runtime {
    * @return The validation result.
    */
   @Nonnull
-  public static FormValidation checkIdentifier(@CheckForNull String text) {
+  public FormValidation checkIdentifier(@CheckForNull String text) {
     text = Util.fixEmptyAndTrim(text);
     if (text != null) {
-      Runtime.loadIdentifiers();
-      if (!Runtime.identifiers.contains(text))
+      if (!this.identifiers.contains(text))
         return FormValidation.error(Messages.Runtime_Invalid(text));
     }
     return FormValidation.ok();
@@ -66,31 +70,52 @@ public abstract class Runtime {
    *
    * @return The validation result.
    */
-  public static FormValidation checkIdentifiers(@CheckForNull String text) {
+  public FormValidation checkIdentifiers(@CheckForNull String text) {
     text = DotNetUtils.normalizeList(text);
     if (text == null)
       return FormValidation.ok();
     final List<FormValidation> result = new ArrayList<>();
     for (final String runtime : text.split(" ")) {
-      final FormValidation fv = Runtime.checkIdentifier(runtime);
+      final FormValidation fv = this.checkIdentifier(runtime);
       if (fv.kind != FormValidation.Kind.OK)
         result.add(fv);
     }
     return FormValidation.aggregate(result);
   }
 
+  //region Internals
+
+  /** The loaded runtime identifiers. */
+  private Set<String> identifiers = null;
+
+  /**
+   * Gets the (single) instance of {@link Runtime}.
+   *
+   * @return An instance of {@link Runtime}, loaded with the available .NET runtime identifiers.
+   */
+  public static synchronized Runtime getInstance() {
+    // JENKINS-62572: would be simpler to pass just the class
+    final DownloadService.Downloadable instance = DownloadService.Downloadable.get(Runtime.class.getName());
+    if (instance instanceof Runtime)
+      return ((Runtime) instance).loadIdentifiers();
+    else { // No such downloadable (should be impossible).
+      final Runtime empty = new Runtime();
+      empty.identifiers = Collections.emptySet();
+      return empty;
+    }
+  }
+
   /** Loads the runtime identifier data (if not already done). */
-  private static synchronized void loadIdentifiers() {
-    if (Runtime.identifiers != null)
-      return;
+  private Runtime loadIdentifiers() {
+    if (this.identifiers != null)
+      return this;
     try {
-      // TODO: Switch this to using a Downloadable once the crawler PR is submitted and approved.
-      final JSONObject json = Data.loadJson(Runtime.class);
+      final JSONObject json = this.getData();
       if (json != null) {
-        Runtime.identifiers = new TreeSet<>();
+        this.identifiers = new TreeSet<>();
         for (Object rid : json.getJSONArray("ridCatalog")) {
           if (rid instanceof String)
-            Runtime.identifiers.add((String) rid);
+            this.identifiers.add((String) rid);
         }
       }
     }
@@ -98,14 +123,17 @@ public abstract class Runtime {
       Runtime.LOGGER.log(Level.FINE, Messages.Runtime_LoadFailed(), t);
     }
     finally {
-      if (Runtime.identifiers == null) {
-        Runtime.identifiers = Collections.emptySet();
+      if (this.identifiers == null)
+        this.identifiers = Collections.emptySet();
+      if (this.identifiers.isEmpty())
         Runtime.LOGGER.fine(Messages.Runtime_NoData());
-      }
     }
+    return this;
   }
 
   /** A logger to use for trace messages. */
   private static final Logger LOGGER = Logger.getLogger(Runtime.class.getName());
+
+  //endregion
 
 }
