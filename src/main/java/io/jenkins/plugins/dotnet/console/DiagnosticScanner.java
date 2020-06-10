@@ -151,6 +151,13 @@ public final class DiagnosticScanner extends LineTransformationOutputStream {
   /** The marker that a completion message should contain, to indicate where exit code information starts. */
   private static final String COMPLETION_MESSAGE_EXIT_CODE_MARKER = "<!>";
 
+  /**
+   * Writes the command completion message to the stream wrapped by this scanner.
+   * This uses a specific marker ({@link #COMPLETION_MESSAGE_EXIT_CODE_MARKER}) in order to add separate markup for the message text
+   * and the return code information.
+   *
+   * @param rc The command's return code.
+   */
   public void writeCompletionMessage(int rc) {
     try {
       this.forceEol();

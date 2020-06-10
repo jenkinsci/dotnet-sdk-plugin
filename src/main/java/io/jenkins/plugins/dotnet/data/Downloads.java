@@ -22,56 +22,131 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/** A data file containing the available .NET SDK installer packages. */
 @Extension
 public final class Downloads extends DownloadService.Downloadable {
 
+  /** Creates a new {@link Downloads} downloadable. */
   @DataBoundConstructor
   public Downloads() {
   }
 
   //region Lookup Methods
 
-  private static Package getPackage(Sdk s, String url) {
-    if (s == null)
+  /**
+   * Gets a package for a particular SDK, via its download link.
+   *
+   * @param sdk The SDK to which the package belongs.
+   * @param url The download link for the package.
+   *
+   * @return The requested package, or {@code null} if it was not found.
+   */
+  @CheckForNull
+  private static Package getPackage(@CheckForNull Sdk sdk, @CheckForNull String url) {
+    if (sdk == null)
       return null;
-    return s.getPackage(url);
+    return sdk.getPackage(url);
   }
 
-  public Package getPackage(String sdk, String url) {
+  /**
+   * Gets a package for a particular SDK, via its download link.
+   *
+   * @param sdk The name of the SDK to which the package belongs.
+   * @param url The download link for the package.
+   *
+   * @return The requested package, or {@code null} if it was not found.
+   */
+  @CheckForNull
+  public Package getPackage(@CheckForNull String sdk, @CheckForNull String url) {
     return Downloads.getPackage(this.getSdk(sdk), url);
   }
 
-  public Package getPackage(String version, String release, String sdk, String url) {
+  /**
+   * Gets a package for a particular SDK, via its download link.
+   *
+   * @param version The name of the version containing the release to which the package belongs.
+   * @param release The name of the release containing the SDK to which the package belongs.
+   * @param sdk     The name of the SDK to which the package belongs.
+   * @param url     The download link for the package.
+   *
+   * @return The requested package, or {@code null} if it was not found.
+   */
+  @CheckForNull
+  public Package getPackage(@CheckForNull String version, @CheckForNull String release, @CheckForNull String sdk, @CheckForNull String url) {
     return Downloads.getPackage(this.getSdk(version, release, sdk), url);
   }
 
-  public Release getRelease(String version, String name) {
+  /**
+   * Gets a release, via its name.
+   *
+   * @param version The name of the version containing the release.
+   * @param name    The name of the release.
+   *
+   * @return The requested release, or {@code null} if it was not found.
+   */
+  @CheckForNull
+  public Release getRelease(@CheckForNull String version, @CheckForNull String name) {
     final Version v = this.getVersion(version);
     if (v == null)
       return null;
     return v.getRelease(name);
   }
 
-  public Sdk getSdk(String name) {
+  /**
+   * Gets an SDK, via its name.
+   *
+   * @param name The name of the SDK.
+   *
+   * @return The requested SDK, or {@code null} if it was not found.
+   */
+  @CheckForNull
+  public Sdk getSdk(@CheckForNull String name) {
     return this.sdks.get(name);
   }
 
-  public Sdk getSdk(String version, String release, String name) {
+  /**
+   * Gets a release-specific SDK, via its name.
+   *
+   * @param version The name of the version containing the release to which the SDK belongs.
+   * @param release The name of the release containing the SDK.
+   * @param name    The name of the SDK.
+   *
+   * @return The requested SDK, or {@code null} if it was not found.
+   */
+  @CheckForNull
+  public Sdk getSdk(@CheckForNull String version, @CheckForNull String release, @CheckForNull String name) {
     final Release r = this.getRelease(version, release);
     if (r == null || r.sdks == null || !r.sdks.contains(name))
       return null;
     return this.getSdk(name);
   }
 
-  public Version getVersion(String name) {
+  /**
+   * Gets a version, via its name.
+   *
+   * @param name The name of the version.
+   *
+   * @return The requested version, or {@code null} if it was not found.
+   */
+  @CheckForNull
+  public Version getVersion(@CheckForNull String name) {
     return this.versions.get(name);
   }
 
   //endregion
 
-  //region Listbox Methods
+  //region List Box Methods
 
-  public ListBoxModel addPackages(@Nonnull ListBoxModel model, String sdk) {
+  /**
+   * Adds the available packages for a specific SDK to a list box.
+   *
+   * @param model The list box to add the packages to.
+   * @param sdk   The name of the SDK containing the packages to add.
+   *
+   * @return The updated list box.
+   */
+  @Nonnull
+  public ListBoxModel addPackages(@Nonnull ListBoxModel model, @CheckForNull String sdk) {
     final Sdk s = this.getSdk(sdk);
     if (s != null && s.packages != null) {
       for (Package p : s.packages)
@@ -80,7 +155,17 @@ public final class Downloads extends DownloadService.Downloadable {
     return model;
   }
 
-  public ListBoxModel addReleases(@Nonnull ListBoxModel model, String version, boolean includePreview) {
+  /**
+   * Adds the available releases for a specific version to a list box.
+   *
+   * @param model          The list box to add the releases to.
+   * @param version        The name of the version containing the releases to add.
+   * @param includePreview Indicates whether or not preview releases should be included.
+   *
+   * @return The updated list box.
+   */
+  @Nonnull
+  public ListBoxModel addReleases(@Nonnull ListBoxModel model, @CheckForNull String version, boolean includePreview) {
     final Version v = this.getVersion(version);
     if (v != null && v.releases != null) {
       for (Release r : v.releases) {
@@ -92,7 +177,17 @@ public final class Downloads extends DownloadService.Downloadable {
     return model;
   }
 
-  public ListBoxModel addSdks(@Nonnull ListBoxModel model, String version, String release) {
+  /**
+   * Adds the available SDKs for a specific release to a list box.
+   *
+   * @param model   The list box to add the SDKs to.
+   * @param version The name of the version containing the release.
+   * @param release The name of the release containing the SDKs to add.
+   *
+   * @return The updated list box.
+   */
+  @Nonnull
+  public ListBoxModel addSdks(@Nonnull ListBoxModel model, @CheckForNull String version, @CheckForNull String release) {
     final Release r = this.getRelease(version, release);
     if (r != null && r.sdks != null) {
       for (String sdk : r.sdks) {
@@ -104,6 +199,14 @@ public final class Downloads extends DownloadService.Downloadable {
     return model;
   }
 
+  /**
+   * Adds the available .NET versions to a list box.
+   *
+   * @param model The list box to add the versions to.
+   *
+   * @return The updated list box.
+   */
+  @Nonnull
   public ListBoxModel addVersions(@Nonnull ListBoxModel model) {
     for (Version v : this.versions.values())
       model.add(v, v.name);
@@ -116,26 +219,40 @@ public final class Downloads extends DownloadService.Downloadable {
 
   //region Version
 
+  /** A .NET version. */
   public static final class Version implements ModelObject {
 
     //region Status Enum
 
+    /** The support status of a .NET version. */
     public enum Status {
 
+      /** This version is current and supported. */
       CURRENT,
 
+      /** This version has reached end-of-life. */
       EOL,
 
+      /** This is a version with long-term support. */
       LTS,
 
+      /** The version is no longer current, and will only get security fixes before reaching end-of-life. */
       MAINTENANCE,
 
+      /** This is a preview of the next version of .NET. */
       PREVIEW,
 
+      /** The status of the version is unknown. */
       UNKNOWN,
 
       ;
 
+      /**
+       * Maps this status to a descriptive string.
+       *
+       * @return A string describing this status.
+       */
+      @Nonnull
       public String getDisplayName() {
         switch (this) {
           case CURRENT:
@@ -158,16 +275,20 @@ public final class Downloads extends DownloadService.Downloadable {
 
     //endregion
 
+    /** The name of the version. */
     public String name;
 
+    /** The status of the version. */
     public Status status;
 
+    /** The date on which support for this version ends (or ended), if known. */
     @SuppressFBWarnings(
       value = "UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD",
       justification = "Set by JSON deserialization."
     )
     public String endOfSupport;
 
+    /** The releases for this version. */
     @SuppressFBWarnings(
       value = "UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD",
       justification = "Set by JSON deserialization."
@@ -191,6 +312,12 @@ public final class Downloads extends DownloadService.Downloadable {
       }
     }
 
+    /**
+     * Maps this version to a descriptive string.
+     *
+     * @return A string describing this version.
+     */
+    @Override
     @Nonnull
     public String getDisplayName() {
       if (this.endOfSupport != null)
@@ -199,7 +326,15 @@ public final class Downloads extends DownloadService.Downloadable {
         return Messages.Downloads_Version_DisplayName(this.name, this.status.getDisplayName());
     }
 
-    public Release getRelease(String name) {
+    /**
+     * Gets a release, via its name.
+     *
+     * @param name The name of the release.
+     *
+     * @return The release, or {@code null} if it was not found.
+     */
+    @CheckForNull
+    public Release getRelease(@CheckForNull String name) {
       return this.releaseMap.get(name);
     }
 
@@ -209,22 +344,29 @@ public final class Downloads extends DownloadService.Downloadable {
 
   //region Release
 
+  /** A .NET release. */
   public static final class Release implements ModelObject {
 
+    /** The name of the release. */
     public String name;
 
+    /** The date of release. */
     public String released;
 
+    /** Indicates whether or not this release is a preview. */
     public boolean preview;
 
+    /** Indicates whether or not this release contains security fixes. */
     public boolean securityFixes;
 
+    /** A link to the release notes for this release. */
     @SuppressFBWarnings(
       value = "UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD",
       justification = "Set by JSON deserialization."
     )
     public String releaseNotes;
 
+    /** The SDKs included in this release. */
     @SuppressFBWarnings(
       value = "UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD",
       justification = "Set by JSON deserialization."
@@ -240,6 +382,12 @@ public final class Downloads extends DownloadService.Downloadable {
         this.sdks = Collections.emptyList();
     }
 
+    /**
+     * Maps this release to a descriptive string.
+     *
+     * @return A string describing this release.
+     */
+    @Override
     @Nonnull
     public String getDisplayName() {
       if (this.securityFixes)
@@ -247,6 +395,11 @@ public final class Downloads extends DownloadService.Downloadable {
       return Messages.Downloads_Release_DisplayName(this.name, this.released);
     }
 
+    /**
+     * Gets markup linking to the release notes for this release, if they are available.
+     *
+     * @return Markup linking to the release notes for this release, or {@code null} if they are not available.
+     */
     @CheckForNull
     public String getReleaseNotesLink() {
       if (this.releaseNotes == null)
@@ -260,22 +413,27 @@ public final class Downloads extends DownloadService.Downloadable {
 
   //region Sdk
 
+  /** A .NET SDK. */
   public static final class Sdk implements ModelObject {
 
+    /** The name of the SDK. */
     public String name;
 
+    /** Information about the SDK (such as the version of Visual Studio that includes tooling for it). */
     @SuppressFBWarnings(
       value = "UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD",
       justification = "Set by JSON deserialization."
     )
     public String info;
 
+    /** The common prefix for the download links of the packages associated with this SDK. */
     @SuppressFBWarnings(
       value = "UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD",
       justification = "Set by JSON deserialization."
     )
     public String urlPrefix;
 
+    /** This SDK's packages. */
     @SuppressFBWarnings(
       value = "UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD",
       justification = "Set by JSON deserialization."
@@ -297,11 +455,24 @@ public final class Downloads extends DownloadService.Downloadable {
       }
     }
 
+    /**
+     * Maps this SDK to a descriptive string.
+     *
+     * @return A string describing this SDK.
+     */
+    @Override
     @Nonnull
     public String getDisplayName() {
       return Messages.Downloads_Sdk_DisplayName(this.name);
     }
 
+    /**
+     * Gets a package for this SDK, via its download link.
+     *
+     * @param url The download link for the package.
+     *
+     * @return The requested package, or {@code null} if it was not found.
+     */
     public Package getPackage(String url) {
       return this.packageMap.get(url);
     }
@@ -312,18 +483,23 @@ public final class Downloads extends DownloadService.Downloadable {
 
   //region Package
 
+  /** A .NET package. */
   public static final class Package implements ModelObject {
 
+    /** The RID (runtime identifier) of the platform for which this package is intended. */
     @SuppressFBWarnings(
       value = "UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD",
       justification = "Set by JSON deserialization."
     )
     public String rid;
 
+    /** A string describing the platform for which this package is intended. */
     public String platform;
 
+    /** The hash (SHA256) of the package. */
     public String hash;
 
+    /** The download URL for the package. */
     @SuppressFBWarnings(
       value = "UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD",
       justification = "Set by JSON deserialization."
@@ -339,11 +515,22 @@ public final class Downloads extends DownloadService.Downloadable {
         this.url = urlPrefix + this.url;
     }
 
+    /**
+     * Maps this package to a descriptive string.
+     *
+     * @return A string describing this package.
+     */
+    @Override
     @Nonnull
     public String getDisplayName() {
       return Messages.Downloads_Package_DisplayName(this.rid, this.platform);
     }
 
+    /**
+     * Gets markup linking to this package.
+     *
+     * @return Markup linking to this package.
+     */
     @Nonnull
     public String getDirectDownloadLink() {
       // For now, this does not include the file hash (it's a bit long)
@@ -362,9 +549,15 @@ public final class Downloads extends DownloadService.Downloadable {
 
   private Map<String, Version> versions;
 
+  /**
+   * Gets the (single) instance of {@link Downloads}.
+   *
+   * @return An instance of {@link Downloads}, loaded with all available SDK installation packages for all .NET versions/releases.
+   */
+  @Nonnull
   public static synchronized Downloads getInstance() {
     // JENKINS-62572: would be simpler to pass just the class
-    final DownloadService.Downloadable instance = DownloadService.Downloadable.get(Downloads.class.getName());
+    final DownloadService.Downloadable instance = DownloadService.Downloadable.get(Downloads.class.getName().replace('$', '.'));
     if (instance instanceof Downloads)
       return ((Downloads) instance).loadData();
     else { // No such downloadable (should be impossible).
@@ -375,6 +568,7 @@ public final class Downloads extends DownloadService.Downloadable {
     }
   }
 
+  @Nonnull
   private Downloads loadData() {
     if (this.sdks != null && this.versions != null)
       return this;

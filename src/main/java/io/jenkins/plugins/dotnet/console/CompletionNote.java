@@ -21,10 +21,12 @@ public final class CompletionNote extends ConsoleNote<Object> {
     return null;
   }
 
+  /** Descriptor for {@link CompletionNote}. */
   @Extension
   @Symbol("dotnetCommandCompleted")
   public static final class DescriptorImpl extends ConsoleAnnotationDescriptor {
 
+    @Override
     public String getDisplayName() {
       return ".NET Commmand Completion Message";
     }

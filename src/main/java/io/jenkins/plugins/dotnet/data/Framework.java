@@ -70,6 +70,7 @@ public final class Framework extends DownloadService.Downloadable {
    *
    * @return The validation result.
    */
+  @Nonnull
   public FormValidation checkMonikers(@CheckForNull String text) {
     text = DotNetUtils.normalizeList(text);
     if (text == null)
@@ -93,6 +94,7 @@ public final class Framework extends DownloadService.Downloadable {
    *
    * @return An instance of {@link Framework}, loaded with the available .NET target framework monikers.
    */
+  @Nonnull
   public static synchronized Framework getInstance() {
     // JENKINS-62572: would be simpler to pass just the class
     final DownloadService.Downloadable instance = DownloadService.Downloadable.get(Framework.class.getName());
@@ -105,7 +107,11 @@ public final class Framework extends DownloadService.Downloadable {
     }
   }
 
-  /** Loads the framework moniker data (if not already done). */
+  /**
+   * Loads the framework moniker data (if not already done).
+   *
+   * @return This {@link Framework} instance.
+   */
   private Framework loadMonikers() {
     if (this.monikers != null)
       return this;

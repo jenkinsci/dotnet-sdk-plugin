@@ -132,6 +132,7 @@ public final class DiagnosticNote extends ConsoleNote<Object> {
     return DiagnosticNote.RE_DIAGNOSTIC_LINE.matcher(text).matches();
   }
 
+  /** Descriptor for {@link DiagnosticNote}. */
   @Extension
   @Symbol("dotnetDiagnostic")
   public static final class DescriptorImpl extends ConsoleAnnotationDescriptor {

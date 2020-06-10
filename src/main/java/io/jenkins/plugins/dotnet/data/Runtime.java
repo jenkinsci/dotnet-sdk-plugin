@@ -70,6 +70,7 @@ public final class Runtime extends DownloadService.Downloadable {
    *
    * @return The validation result.
    */
+  @Nonnull
   public FormValidation checkIdentifiers(@CheckForNull String text) {
     text = DotNetUtils.normalizeList(text);
     if (text == null)
@@ -93,6 +94,7 @@ public final class Runtime extends DownloadService.Downloadable {
    *
    * @return An instance of {@link Runtime}, loaded with the available .NET runtime identifiers.
    */
+  @Nonnull
   public static synchronized Runtime getInstance() {
     // JENKINS-62572: would be simpler to pass just the class
     final DownloadService.Downloadable instance = DownloadService.Downloadable.get(Runtime.class.getName());
@@ -105,7 +107,12 @@ public final class Runtime extends DownloadService.Downloadable {
     }
   }
 
-  /** Loads the runtime identifier data (if not already done). */
+  /**
+   * Loads the runtime identifier data (if not already done).
+   *
+   * @return This {@link Runtime} instance.
+   */
+  @Nonnull
   private Runtime loadIdentifiers() {
     if (this.identifiers != null)
       return this;
