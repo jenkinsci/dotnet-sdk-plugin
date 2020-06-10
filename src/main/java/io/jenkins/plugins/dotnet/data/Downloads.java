@@ -1,24 +1,24 @@
 package io.jenkins.plugins.dotnet.data;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.Extension;
 import hudson.model.DownloadService;
 import hudson.model.ModelObject;
 import hudson.util.ListBoxModel;
 import io.jenkins.plugins.dotnet.Messages;
-import net.sf.ezmorph.Morpher;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
-import net.sf.json.util.EnumMorpher;
-import net.sf.json.util.JSONUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -36,34 +36,6 @@ public final class Downloads extends DownloadService.Downloadable {
   /**
    * Gets a package for a particular SDK, via its download link.
    *
-   * @param sdk The SDK to which the package belongs.
-   * @param url The download link for the package.
-   *
-   * @return The requested package, or {@code null} if it was not found.
-   */
-  @CheckForNull
-  private static Package getPackage(@CheckForNull Sdk sdk, @CheckForNull String url) {
-    if (sdk == null)
-      return null;
-    return sdk.getPackage(url);
-  }
-
-  /**
-   * Gets a package for a particular SDK, via its download link.
-   *
-   * @param sdk The name of the SDK to which the package belongs.
-   * @param url The download link for the package.
-   *
-   * @return The requested package, or {@code null} if it was not found.
-   */
-  @CheckForNull
-  public Package getPackage(@CheckForNull String sdk, @CheckForNull String url) {
-    return Downloads.getPackage(this.getSdk(sdk), url);
-  }
-
-  /**
-   * Gets a package for a particular SDK, via its download link.
-   *
    * @param version The name of the version containing the release to which the package belongs.
    * @param release The name of the release containing the SDK to which the package belongs.
    * @param sdk     The name of the SDK to which the package belongs.
@@ -73,7 +45,10 @@ public final class Downloads extends DownloadService.Downloadable {
    */
   @CheckForNull
   public Package getPackage(@CheckForNull String version, @CheckForNull String release, @CheckForNull String sdk, @CheckForNull String url) {
-    return Downloads.getPackage(this.getSdk(version, release, sdk), url);
+    final Sdk s = this.getSdk(version, release, sdk);
+    if (s == null)
+      return null;
+    return s.getPackage(url);
   }
 
   /**
@@ -116,7 +91,7 @@ public final class Downloads extends DownloadService.Downloadable {
   @CheckForNull
   public Sdk getSdk(@CheckForNull String version, @CheckForNull String release, @CheckForNull String name) {
     final Release r = this.getRelease(version, release);
-    if (r == null || r.sdks == null || !r.sdks.contains(name))
+    if (r == null || !r.sdks.contains(name))
       return null;
     return this.getSdk(name);
   }
@@ -148,8 +123,8 @@ public final class Downloads extends DownloadService.Downloadable {
   @Nonnull
   public ListBoxModel addPackages(@Nonnull ListBoxModel model, @CheckForNull String sdk) {
     final Sdk s = this.getSdk(sdk);
-    if (s != null && s.packages != null) {
-      for (Package p : s.packages)
+    if (s != null) {
+      for (Package p : s.packages.values())
         model.add(p, p.url);
     }
     return model;
@@ -167,8 +142,8 @@ public final class Downloads extends DownloadService.Downloadable {
   @Nonnull
   public ListBoxModel addReleases(@Nonnull ListBoxModel model, @CheckForNull String version, boolean includePreview) {
     final Version v = this.getVersion(version);
-    if (v != null && v.releases != null) {
-      for (Release r : v.releases) {
+    if (v != null) {
+      for (Release r : v.releases.values()) {
         if (r.preview && !includePreview)
           continue;
         model.add(r, r.name);
@@ -189,8 +164,8 @@ public final class Downloads extends DownloadService.Downloadable {
   @Nonnull
   public ListBoxModel addSdks(@Nonnull ListBoxModel model, @CheckForNull String version, @CheckForNull String release) {
     final Release r = this.getRelease(version, release);
-    if (r != null && r.sdks != null) {
-      for (String sdk : r.sdks) {
+    if (r != null) {
+      for (final String sdk : r.sdks) {
         final Sdk s = this.getSdk(sdk);
         if (s != null)
           model.add(s, s.name);
@@ -221,6 +196,31 @@ public final class Downloads extends DownloadService.Downloadable {
 
   /** A .NET version. */
   public static final class Version implements ModelObject {
+
+    Version(@Nonnull JSONObject json) {
+      {
+        final Object value = json.get("name");
+        if (value instanceof String)
+          this.name = (String) value;
+        else
+          throw new JSONException("Version object lacks 'name' property.");
+      }
+      {
+        final Object value = json.get("status");
+        if (value instanceof String)
+          this.status = Enum.valueOf(Status.class, (String) value);
+        else
+          this.status = Status.UNKNOWN;
+      }
+      {
+        final Object value = json.get("endOfSupport");
+        if (value instanceof String)
+          this.endOfSupport = (String) value;
+        else
+          this.endOfSupport = null;
+      }
+      this.releases = Downloads.readJsonObjectArray(json, "releases", Release::new, r -> r.name);
+    }
 
     //region Status Enum
 
@@ -267,8 +267,9 @@ public final class Downloads extends DownloadService.Downloadable {
             return Messages.Downloads_Version_Status_Preview();
           case UNKNOWN:
             return Messages.Downloads_Version_Status_Unknown();
+          default:
+            return this.toString();
         }
-        return null;
       }
 
     }
@@ -276,41 +277,20 @@ public final class Downloads extends DownloadService.Downloadable {
     //endregion
 
     /** The name of the version. */
-    public String name;
+    @Nonnull
+    public final String name;
 
     /** The status of the version. */
-    public Status status;
+    @Nonnull
+    public final Status status;
 
     /** The date on which support for this version ends (or ended), if known. */
-    @SuppressFBWarnings(
-      value = "UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD",
-      justification = "Set by JSON deserialization."
-    )
+    @CheckForNull
     public String endOfSupport;
 
     /** The releases for this version. */
-    @SuppressFBWarnings(
-      value = "UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD",
-      justification = "Set by JSON deserialization."
-    )
-    public Release[] releases;
-
-    private final Map<String, Release> releaseMap = new HashMap<>();
-
-    private void finish() {
-      if (this.name == null)
-        this.name = Messages.Downloads_Unknown();
-      if (this.status == null)
-        this.status = Status.UNKNOWN;
-      if (!this.releaseMap.isEmpty())
-        this.releaseMap.clear();
-      if (this.releases == null)
-        return;
-      for (final Release r : this.releases) {
-        r.finish();
-        this.releaseMap.put(r.name, r);
-      }
-    }
+    @Nonnull
+    private final Map<String, Release> releases;
 
     /**
      * Maps this version to a descriptive string.
@@ -335,7 +315,19 @@ public final class Downloads extends DownloadService.Downloadable {
      */
     @CheckForNull
     public Release getRelease(@CheckForNull String name) {
-      return this.releaseMap.get(name);
+      return this.releases.get(name);
+    }
+
+    /**
+     * Gets all releases for this version.
+     *
+     * @return All releases for this version.
+     */
+    @Nonnull
+    public Collection<Release> getReleases() {
+      if (this.releases.isEmpty())
+        return Collections.emptyList();
+      return this.releases.values();
     }
 
   }
@@ -347,10 +339,51 @@ public final class Downloads extends DownloadService.Downloadable {
   /** A .NET release. */
   public static final class Release implements ModelObject {
 
+    Release(@Nonnull JSONObject json) {
+      {
+        final Object value = json.get("name");
+        if (value instanceof String)
+          this.name = (String) value;
+        else
+          throw new JSONException("Release object lacks 'name' property.");
+      }
+      {
+        final Object value = json.get("released");
+        if (value instanceof String)
+          this.released = (String) value;
+        else
+          this.released = Messages.Downloads_Unknown();
+      }
+      {
+        final Object value = json.get("preview");
+        if (value instanceof Boolean)
+          this.preview = (boolean) value;
+        else
+          this.preview = false;
+      }
+      {
+        final Object value = json.get("securityFixes");
+        if (value instanceof Boolean)
+          this.securityFixes = (boolean) value;
+        else
+          this.securityFixes = false;
+      }
+      {
+        final Object value = json.get("releaseNotes");
+        if (value instanceof String)
+          this.releaseNotes = (String) value;
+        else
+          this.releaseNotes = null;
+      }
+      this.sdks = Collections.unmodifiableList(Downloads.readJsonStringArray(json, "sdks"));
+    }
+
     /** The name of the release. */
+    @Nonnull
     public String name;
 
     /** The date of release. */
+    @Nonnull
     public String released;
 
     /** Indicates whether or not this release is a preview. */
@@ -360,27 +393,12 @@ public final class Downloads extends DownloadService.Downloadable {
     public boolean securityFixes;
 
     /** A link to the release notes for this release. */
-    @SuppressFBWarnings(
-      value = "UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD",
-      justification = "Set by JSON deserialization."
-    )
+    @CheckForNull
     public String releaseNotes;
 
     /** The SDKs included in this release. */
-    @SuppressFBWarnings(
-      value = "UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD",
-      justification = "Set by JSON deserialization."
-    )
+    @Nonnull
     public List<String> sdks;
-
-    private void finish() {
-      if (this.name == null)
-        this.name = Messages.Downloads_Unknown();
-      if (this.released == null)
-        this.released = Messages.Downloads_Unknown();
-      if (this.sdks == null)
-        this.sdks = Collections.emptyList();
-    }
 
     /**
      * Maps this release to a descriptive string.
@@ -416,44 +434,42 @@ public final class Downloads extends DownloadService.Downloadable {
   /** A .NET SDK. */
   public static final class Sdk implements ModelObject {
 
+    Sdk(@Nonnull JSONObject json) {
+      {
+        final Object value = json.get("name");
+        if (value instanceof String)
+          this.name = (String) value;
+        else
+          throw new JSONException("SDK object lacks 'name' property.");
+      }
+      {
+        final Object value = json.get("info");
+        if (value instanceof String)
+          this.info = (String) value;
+        else
+          this.info = null;
+      }
+      final String urlPrefix;
+      {
+        final Object value = json.get("urlPrefix");
+        if (value instanceof String)
+          urlPrefix = (String) value;
+        else
+          urlPrefix = null;
+      }
+      this.packages = Downloads.readJsonObjectArray(json, "packages", j -> new Package(j, urlPrefix), p -> p.url);
+    }
+
     /** The name of the SDK. */
-    public String name;
+    @Nonnull
+    public final String name;
 
     /** Information about the SDK (such as the version of Visual Studio that includes tooling for it). */
-    @SuppressFBWarnings(
-      value = "UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD",
-      justification = "Set by JSON deserialization."
-    )
-    public String info;
+    @CheckForNull
+    public final String info;
 
-    /** The common prefix for the download links of the packages associated with this SDK. */
-    @SuppressFBWarnings(
-      value = "UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD",
-      justification = "Set by JSON deserialization."
-    )
-    public String urlPrefix;
-
-    /** This SDK's packages. */
-    @SuppressFBWarnings(
-      value = "UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD",
-      justification = "Set by JSON deserialization."
-    )
-    public Package[] packages;
-
-    private final Map<String, Package> packageMap = new HashMap<>();
-
-    private void finish() {
-      if (this.name == null)
-        this.name = Messages.Downloads_Unknown();
-      if (!this.packageMap.isEmpty())
-        this.packageMap.clear();
-      if (this.packages == null)
-        return;
-      for (final Package p : this.packages) {
-        p.finish(this.urlPrefix);
-        this.packageMap.put(p.url, p);
-      }
-    }
+    @Nonnull
+    private final Map<String, Package> packages;
 
     /**
      * Maps this SDK to a descriptive string.
@@ -473,8 +489,21 @@ public final class Downloads extends DownloadService.Downloadable {
      *
      * @return The requested package, or {@code null} if it was not found.
      */
-    public Package getPackage(String url) {
-      return this.packageMap.get(url);
+    @CheckForNull
+    public Package getPackage(@CheckForNull String url) {
+      return this.packages.get(url);
+    }
+
+    /**
+     * Gets all packages for this SDK.
+     *
+     * @return All packages for this SDK.
+     */
+    @Nonnull
+    public Collection<Package> getPackages() {
+      if (this.packages.isEmpty())
+        return Collections.emptyList();
+      return this.packages.values();
     }
 
   }
@@ -486,34 +515,45 @@ public final class Downloads extends DownloadService.Downloadable {
   /** A .NET package. */
   public static final class Package implements ModelObject {
 
+    Package(@Nonnull JSONObject json, @CheckForNull String urlPrefix) {
+      {
+        final Object value = json.get("rid");
+        if (value instanceof String)
+          this.rid = (String) value;
+        else
+          this.rid = Messages.Downloads_Unknown();
+      }
+      {
+        final Object value = json.get("platform");
+        if (value instanceof String)
+          this.platform = (String) value;
+        else
+          this.platform = Messages.Downloads_Unknown();
+      }
+      {
+        final Object value = json.get("url");
+        if (value instanceof String) {
+          String text = (String) value;
+          if (urlPrefix != null)
+            text = urlPrefix + text;
+          this.url = text;
+        }
+        else
+          throw new JSONException("Package object lacks 'url' property.");
+      }
+    }
+
     /** The RID (runtime identifier) of the platform for which this package is intended. */
-    @SuppressFBWarnings(
-      value = "UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD",
-      justification = "Set by JSON deserialization."
-    )
-    public String rid;
+    @Nonnull
+    public final String rid;
 
     /** A string describing the platform for which this package is intended. */
-    public String platform;
-
-    /** The hash (SHA256) of the package. */
-    public String hash;
+    @Nonnull
+    public final String platform;
 
     /** The download URL for the package. */
-    @SuppressFBWarnings(
-      value = "UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD",
-      justification = "Set by JSON deserialization."
-    )
-    public String url;
-
-    private void finish(String urlPrefix) {
-      if (this.hash == null)
-        this.hash = Messages.Downloads_Unknown();
-      if (this.platform == null)
-        this.platform = Messages.Downloads_Unknown();
-      if (urlPrefix != null && this.url != null)
-        this.url = urlPrefix + this.url;
-    }
+    @Nonnull
+    public final String url;
 
     /**
      * Maps this package to a descriptive string.
@@ -533,7 +573,6 @@ public final class Downloads extends DownloadService.Downloadable {
      */
     @Nonnull
     public String getDirectDownloadLink() {
-      // For now, this does not include the file hash (it's a bit long)
       return Messages.Downloads_Package_DirectDownloadLink(this.url);
     }
 
@@ -568,6 +607,30 @@ public final class Downloads extends DownloadService.Downloadable {
     }
   }
 
+  /**
+   * Gets all known .NET SDKs.
+   *
+   * @return All known .NET SDKs.
+   */
+  @Nonnull
+  public Collection<Sdk> getSdks() {
+    if (this.sdks == null || this.sdks.isEmpty())
+      return Collections.emptyList();
+    return this.sdks.values();
+  }
+
+  /**
+   * Gets all known .NET versions.
+   *
+   * @return All known .NET versions.
+   */
+  @Nonnull
+  public Collection<Version> getVersions() {
+    if (this.versions == null || this.versions.isEmpty())
+      return Collections.emptyList();
+    return this.versions.values();
+  }
+
   @Nonnull
   private Downloads loadData() {
     if (this.sdks != null && this.versions != null)
@@ -575,38 +638,8 @@ public final class Downloads extends DownloadService.Downloadable {
     try {
       final JSONObject json = this.getData();
       if (json != null) {
-        // TODO: Use custom deserialization
-        this.sdks = new LinkedHashMap<>();
-        for (Object item : json.getJSONArray("sdks")) {
-          if (item instanceof JSONObject) {
-            final JSONObject jobj = (JSONObject) item;
-            if (!jobj.isNullObject() && !jobj.isArray()) {
-              final Sdk sdk = (Sdk) JSONObject.toBean(jobj, Sdk.class);
-              sdk.finish();
-              this.sdks.put(sdk.name, sdk);
-            }
-          }
-        }
-        this.versions = new LinkedHashMap<>();
-        { // Explicit morpher fiddling to avoid a warning being logged
-          final Morpher statusMorpher = new EnumMorpher(Version.Status.class);
-          JSONUtils.getMorpherRegistry().registerMorpher(statusMorpher);
-          try {
-            for (Object item : json.getJSONArray("versions")) {
-              if (item instanceof JSONObject) {
-                final JSONObject jobj = (JSONObject) item;
-                if (!jobj.isNullObject() && !jobj.isArray()) {
-                  final Version v = (Version) JSONObject.toBean(jobj, Version.class);
-                  v.finish();
-                  this.versions.put(v.name, v);
-                }
-              }
-            }
-          }
-          finally {
-            JSONUtils.getMorpherRegistry().deregisterMorpher(statusMorpher);
-          }
-        }
+        this.sdks = Downloads.readJsonObjectArray(json, "sdks", Sdk::new, sdk -> sdk.name);
+        this.versions = Downloads.readJsonObjectArray(json, "versions", Version::new, v -> v.name);
       }
     }
     catch (Throwable t) {
@@ -623,6 +656,52 @@ public final class Downloads extends DownloadService.Downloadable {
         Downloads.LOGGER.fine(Messages.Downloads_NoVersions());
     }
     return this;
+  }
+
+  @Nonnull
+  public static <T> Map<String, T> readJsonObjectArray(@Nonnull JSONObject o, @Nonnull String prop, @Nonnull Function<JSONObject, T> convert, @Nonnull Function<T, String> createKey) {
+    final Map<String, T> map = new LinkedHashMap<>();
+    final Object array = o.get(prop);
+    if (array instanceof JSONArray) {
+      int idx = 0;
+      for (Object item : (JSONArray) array) {
+        ++idx;
+        JSONObject jitem = null;
+        if (item instanceof JSONObject) {
+          jitem = (JSONObject) item;
+          if (jitem.isNullObject() || jitem.isArray())
+            jitem = null;
+        }
+        if (jitem != null) {
+          final T t = convert.apply(jitem);
+          map.put(createKey.apply(t), t);
+        }
+        else
+          Downloads.LOGGER.warning(String.format("Element #%d of JSON array '%s' was not an object.", idx, prop));
+      }
+    }
+    else
+      Downloads.LOGGER.warning(String.format("The value of JSON property '%s' was not an array.", prop));
+    return map;
+  }
+
+  @Nonnull
+  public static <T> List<String> readJsonStringArray(@Nonnull JSONObject o, @Nonnull String prop) {
+    final List<String> list = new ArrayList<>();
+    final Object array = o.get(prop);
+    if (array instanceof JSONArray) {
+      int idx = 0;
+      for (Object item : (JSONArray) array) {
+        ++idx;
+        if (item instanceof String)
+          list.add((String) item);
+        else
+          Downloads.LOGGER.warning(String.format("Element #%d of JSON array '%s' was not a string.", idx, prop));
+      }
+    }
+    else
+      Downloads.LOGGER.warning(String.format("The value of JSON property '%s' was not an array.", prop));
+    return list;
   }
 
   /** A logger to use for trace messages. */
