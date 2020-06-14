@@ -37,6 +37,7 @@ import java.util.Set;
  */
 public final class DotNetStep extends Step {
 
+  /** The wrapped .NET builder. */
   public final DotNet builder;
 
   /**
@@ -50,19 +51,34 @@ public final class DotNetStep extends Step {
     this.builder = builder;
   }
 
+  /**
+   * Starts the .NET step execution.
+   *
+   * @param context The step context.
+   *
+   * @return A .NET step execution object.
+   */
   @Nonnull
   @Override
   public StepExecution start(@Nonnull StepContext context) {
     return new DotNetStep.Execution(this.builder, context);
   }
 
+  /** The execution object for a .NET step. */
   private static final class Execution extends SynchronousNonBlockingStepExecution<Void> {
 
     private static final long serialVersionUID = -1006932277774627110L;
 
+    /** The builder to execute. */
     @SuppressFBWarnings(value = "SE_TRANSIENT_FIELD_NOT_RESTORED", justification = "Only used when starting.")
     private transient final DotNet builder;
 
+    /**
+     * Creates an execution object for a .NET step.
+     *
+     * @param builder The builder to execute.
+     * @param context The step context.
+     */
     Execution(@Nonnull DotNet builder, @Nonnull StepContext context) {
       super(context);
       this.builder = builder;
@@ -92,37 +108,46 @@ public final class DotNetStep extends Step {
       return null;
     }
 
-    @Nonnull
-    @Override
-    public String getStatus() {
-      final String supe = super.getStatus();
-      return this.builder != null ? this.builder.getClass().getName() + ": " + supe : supe;
-    }
-
   }
 
+  /** The descriptor for the .NET step. */
   @Extension
   public static final class DescriptorImpl extends StepDescriptor {
 
+    /**
+     * Gets the function name used to execute the step in a pipeline script.
+     *
+     * @return The function name.
+     */
     @Nonnull
     @Override
     public String getFunctionName() {
       return "dotnetStep";
     }
 
+    /**
+     * Gets the display name for the .NET step.
+     *
+     * @return The display name.
+     */
     @Nonnull
     @Override
     public String getDisplayName() {
       return ".NET Step";
     }
 
+    /**
+     * Determines whether or not this is a meta-step (a step wrapping other steps).
+     *
+     * @return {@code true}.
+     */
     @Override
     public boolean isMetaStep() {
       return true;
     }
 
     /**
-     * Gets the descriptors to which this metastep applies.
+     * Gets the descriptors to which this meta-step applies.
      *
      * @return The {@link BuildStepDescriptor}s for the builders deriving from {@link DotNet}. Uses a dynamic lookup to avoid
      * hard-coding that list.
@@ -138,13 +163,16 @@ public final class DotNetStep extends Step {
       return r;
     }
 
+    /**
+     * Determines the set of context variables required by this step.
+     *
+     * @return The types of context variables required by this step.
+     */
     @Nonnull
     @Override
     public Set<? extends Class<?>> getRequiredContext() {
       return ImmutableSet.of(Run.class, FilePath.class, EnvVars.class, Launcher.class, TaskListener.class);
     }
-
-    // Note: CoreStep also overrides argumentsToString(), but that does not seem to be particularly relevant for DotNet builders.
 
   }
 
