@@ -37,7 +37,7 @@ public final class Runtime extends DownloadService.Downloadable {
    * @return Suitable auto-completion candidates for {@code text}.
    */
   @NonNull
-  public AutoCompletionCandidates autoComplete(@CheckForNull String text) {
+  public AutoCompletionCandidates autoCompleteIdentifier(@CheckForNull String text) {
     final AutoCompletionCandidates candidates = new AutoCompletionCandidates();
     for (final String rid : this.identifiers) {
       if (text == null || rid.startsWith(text))

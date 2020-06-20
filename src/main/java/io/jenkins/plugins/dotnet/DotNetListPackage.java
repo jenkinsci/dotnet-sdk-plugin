@@ -169,7 +169,7 @@ public final class DotNetListPackage extends DotNet {
 
   @Extension
   @Symbol("dotnetListPackage")
-  public static class DescriptorImpl extends DotNet.DescriptorImpl {
+  public static class DescriptorImpl extends CommandDescriptor {
 
     public DescriptorImpl() {
       this.load();

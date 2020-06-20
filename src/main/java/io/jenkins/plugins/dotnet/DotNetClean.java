@@ -58,7 +58,7 @@ public final class DotNetClean extends DotNetUsingMSBuild {
 
   @Extension
   @Symbol("dotnetClean")
-  public static class DescriptorImpl extends DotNetUsingMSBuild.DescriptorImpl {
+  public static class DescriptorImpl extends MSBuildCommandDescriptor {
 
     public DescriptorImpl() {
       this.load();

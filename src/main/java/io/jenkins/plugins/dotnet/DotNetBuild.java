@@ -138,7 +138,7 @@ public final class DotNetBuild extends DotNetUsingMSBuild {
 
   @Extension
   @Symbol("dotnetBuild")
-  public static class DescriptorImpl extends DotNetUsingMSBuild.DescriptorImpl {
+  public static class DescriptorImpl extends MSBuildCommandDescriptor {
 
     public DescriptorImpl() {
       this.load();

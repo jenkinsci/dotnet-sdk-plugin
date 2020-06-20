@@ -31,20 +31,36 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
-/** A builder using a .NET SDK. */
+/** A builder executing a .NET CLI command. */
 public abstract class DotNet extends Builder {
 
+  /** {@inheritDoc} */
   @Override
-  public DescriptorImpl getDescriptor() {
-    return (DescriptorImpl) super.getDescriptor();
+  public CommandDescriptor getDescriptor() {
+    return (CommandDescriptor) super.getDescriptor();
   }
 
+  /**
+   * Adds command line arguments for this invocation of the {@code dotnet} CLI.
+   *
+   * @param args      The current set of arguments.
+   * @param resolver  The variable resolved to use.
+   * @param sensitive The list of variable names whose content is to be considered sensitive.
+   */
   protected abstract void addCommandLineArguments(@NonNull ArgumentListBuilder args, @NonNull VariableResolver<String> resolver, @NonNull Set<String> sensitive);
 
+  /** Gets the descriptor for a .NET SDK. */
+  @NonNull
+  public static DotNetSDK.DescriptorImpl getSdkDescriptor() {
+    return Objects.requireNonNull(ToolInstallation.all().get(DotNetSDK.DescriptorImpl.class), ".NET SDK descriptor not found.");
+  }
+
+  /** {@inheritDoc} */
   @Override
-  public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
+  public boolean perform(@NonNull AbstractBuild<?, ?> build, @NonNull Launcher launcher, @NonNull BuildListener listener) throws InterruptedException, IOException {
     final FilePath workspace = build.getWorkspace();
     if (workspace == null)
       throw new AbortException(Messages.DotNet_NoWorkspace());
@@ -57,12 +73,26 @@ public abstract class DotNet extends Builder {
     return true;
   }
 
+  /**
+   * Runs this .NET command.
+   *
+   * @param wd       The base working directory for the command.
+   * @param env      The environment variables that apply for the command.
+   * @param launcher The launcher to use to execute the command.
+   * @param listener The listener to report command output to.
+   * @param cs       The character set to use for command output.
+   *
+   * @return The command's result.
+   * @throws InterruptedException When execution is interrupted.
+   * @throws IOException          When an I/O error occurs.
+   */
+  @NonNull
   public Result run(@NonNull FilePath wd, @NonNull EnvVars env, @NonNull Launcher launcher, @NonNull TaskListener listener, @NonNull Charset cs) throws InterruptedException, IOException {
     final DotNetSDK sdkInstance;
     if (this.sdk == null)
       sdkInstance = null;
     else
-      sdkInstance = this.getDescriptor().getToolDescriptor().prepareAndValidateInstance(this.sdk, wd, env, listener);
+      sdkInstance = DotNet.getSdkDescriptor().prepareAndValidateInstance(this.sdk, wd, env, listener);
     final String executable;
     if (sdkInstance != null) {
       executable = sdkInstance.ensureExecutableExists(launcher);
@@ -129,49 +159,102 @@ public abstract class DotNet extends Builder {
 
   //region Properties
 
+  /** The name of the SDK to use. */
+  @CheckForNull
   protected String sdk;
 
+  /**
+   * Gets the name of the SDK to use.
+   *
+   * @return The name of the SDK to use, or {@code null} to use the SDK made available by the parent context (or the system).
+   */
+  @CheckForNull
   public String getSdk() {
     return this.sdk;
   }
 
+  /**
+   * Sets the name of the SDK to use.
+   *
+   * @param sdk The name of the SDK to use, or {@code null} to use the SDK made available by the parent context (or the system).
+   */
   @DataBoundSetter
   public void setSdk(@CheckForNull String sdk) {
     this.sdk = Util.fixEmpty(sdk);
   }
 
+  /** Flag indicating whether or not SDK information should be shown. */
   protected boolean showSdkInfo = false;
 
+  /**
+   * Determines whether or not SDK information should be shown.
+   *
+   * @return {@code true} if "{@code dotnet --info}" should be run before the main command; {@code false} otherwise.
+   */
   public boolean isShowSdkInfo() {
     return this.showSdkInfo;
   }
 
+  /**
+   * Determines whether or not SDK information should be shown.
+   *
+   * @param showSdkInfo {@code true} if "{@code dotnet --info}" should be run before the main command; {@code false} otherwise.
+   */
   @DataBoundSetter
   public void setShowSdkInfo(boolean showSdkInfo) {
     this.showSdkInfo = showSdkInfo;
   }
 
+  /** Flag indicating whether or not any build servers started by the main command should be shut down. */
   protected boolean shutDownBuildServers = false;
 
+  /** Flag indicating whether or not a specific SDK version should be used. */
   private boolean specificSdkVersion = false;
 
+  /**
+   * Determines whether or not a specific SDK version should be used.
+   *
+   * @return {@code true} if a {@code global.json} should be created to force the use of the configured .NET SDK (as opposed to
+   * a more recent one that happens to be installed on the build agent); {@code false} otherwise.
+   */
   public boolean isSpecificSdkVersion() {
     return this.specificSdkVersion;
   }
 
+  /**
+   * Determines whether or not a specific SDK version should be used.
+   *
+   * @param specificSdkVersion {@code true} if a {@code global.json} should be created to force the use of the configured .NET SDK
+   *                           (as opposed to a more recent one that happens to be installed on the build agent); {@code false}
+   *                           otherwise.
+   */
   @DataBoundSetter
   public void setSpecificSdkVersion(boolean specificSdkVersion) {
     this.specificSdkVersion = specificSdkVersion;
   }
 
+  /** Flag indicating whether or not the presence of warnings makes the build unstable. */
   protected boolean unstableIfWarnings = false;
 
+  /** The working directory to use for the command. This directory is <em>not</em> created by the command execution. */
+  @CheckForNull
   protected String workDirectory = null;
 
+  /**
+   * Gets the working directory to use for the command.
+   *
+   * @return The working directory to use for the command.
+   */
+  @CheckForNull
   public String getWorkDirectory() {
     return this.workDirectory;
   }
 
+  /**
+   * Sets the working directory to use for the command.
+   *
+   * @param workDirectory The working directory to use for the command.
+   */
   @DataBoundSetter
   public void setWorkDirectory(@CheckForNull String workDirectory) {
     this.workDirectory = Util.fixEmpty(workDirectory);
@@ -179,59 +262,140 @@ public abstract class DotNet extends Builder {
 
   //endregion
 
-  //region DescriptorImpl
+  //region Command Descriptor
 
-  public static abstract class DescriptorImpl extends BuildStepDescriptor<Builder> {
+  /** A descriptor for a .NET command. */
+  public static abstract class CommandDescriptor extends BuildStepDescriptor<Builder> {
 
-    protected DescriptorImpl() {
+    /**
+     * Creates a new .NET command descriptor instance.
+     * <p>
+     * This version works when you follow the common convention, where a descriptor is written as the static nested class of the
+     * describable class.
+     */
+    protected CommandDescriptor() {
     }
 
-    protected DescriptorImpl(Class<? extends DotNet> clazz) {
+    /**
+     * Creates a new .NET command descriptor instance for a specific class.
+     *
+     * @param clazz The class implementing the command described by this descriptor instance.
+     */
+    protected CommandDescriptor(@NonNull Class<? extends DotNet> clazz) {
       super(clazz);
     }
 
+    /**
+     * Performs auto-completion for a .NET target framework moniker.
+     *
+     * @param value The (partial) value to perform auto-completion for.
+     *
+     * @return The computed auto-completion candidates.
+     */
     @SuppressWarnings("unused")
-    public final AutoCompletionCandidates doAutoCompleteFramework(@QueryParameter String value) {
+    @NonNull
+    public final AutoCompletionCandidates doAutoCompleteFramework(@CheckForNull @QueryParameter String value) {
       return Framework.getInstance().autoCompleteMoniker(value);
     }
 
+    /**
+     * Performs auto-completion for a list of .NET target framework monikers.
+     *
+     * @param value The (partial) value to perform auto-completion for.
+     *
+     * @return The computed auto-completion candidates.
+     */
     @SuppressWarnings("unused")
-    public final AutoCompletionCandidates doAutoCompleteFrameworks(@QueryParameter String value) {
+    @NonNull
+    public final AutoCompletionCandidates doAutoCompleteFrameworks(@CheckForNull @QueryParameter String value) {
       return Framework.getInstance().autoCompleteMoniker(value);
     }
 
+    /**
+     * Performs auto-completion for a .NET target runtime identifier.
+     *
+     * @param value The (partial) value to perform auto-completion for.
+     *
+     * @return The computed auto-completion candidates.
+     */
     @SuppressWarnings("unused")
-    public final AutoCompletionCandidates doAutoCompleteRuntime(@QueryParameter String value) {
-      return Runtime.getInstance().autoComplete(value);
+    @NonNull
+    public final AutoCompletionCandidates doAutoCompleteRuntime(@CheckForNull @QueryParameter String value) {
+      return Runtime.getInstance().autoCompleteIdentifier(value);
     }
 
+    /**
+     * Performs auto-completion for a list of .NET runtime identifiers.
+     *
+     * @param value The (partial) value to perform auto-completion for.
+     *
+     * @return The computed auto-completion candidates.
+     */
     @SuppressWarnings("unused")
-    public final AutoCompletionCandidates doAutoCompleteRuntimes(@QueryParameter String value) {
-      // FIXME: How to handle autocompletion of a space-separated list?
-      return Runtime.getInstance().autoComplete(value);
+    @NonNull
+    public final AutoCompletionCandidates doAutoCompleteRuntimes(@CheckForNull @QueryParameter String value) {
+      return Runtime.getInstance().autoCompleteIdentifier(value);
     }
 
+    /**
+     * Performs validation on a .NET target framework moniker.
+     *
+     * @param value The value to validate.
+     *
+     * @return The result of the validation.
+     */
     @SuppressWarnings("unused")
-    public FormValidation doCheckFramework(@QueryParameter String value) {
+    @NonNull
+    public FormValidation doCheckFramework(@CheckForNull @QueryParameter String value) {
       return Framework.getInstance().checkMoniker(value);
     }
 
+    /**
+     * Performs validation on a list of .NET target framework monikers.
+     *
+     * @param value The value to validate.
+     *
+     * @return The result of the validation.
+     */
     @SuppressWarnings("unused")
-    public FormValidation doCheckFrameworks(@QueryParameter String value) {
+    @NonNull
+    public FormValidation doCheckFrameworks(@CheckForNull @QueryParameter String value) {
       return Framework.getInstance().checkMonikers(value);
     }
 
+    /**
+     * Performs validation on a .NET runtime identifier.
+     *
+     * @param value The value to validate.
+     *
+     * @return The result of the validation.
+     */
     @SuppressWarnings("unused")
-    public FormValidation doCheckRuntime(@QueryParameter String value) {
+    @NonNull
+    public FormValidation doCheckRuntime(@CheckForNull @QueryParameter String value) {
       return Runtime.getInstance().checkIdentifier(value);
     }
 
+    /**
+     * Performs validation on a list of .NET runtime identifiers.
+     *
+     * @param value The values to validate.
+     *
+     * @return The result of the validation.
+     */
     @SuppressWarnings("unused")
-    public FormValidation doCheckRuntimes(@QueryParameter String value) {
+    @NonNull
+    public FormValidation doCheckRuntimes(@CheckForNull @QueryParameter String value) {
       return Runtime.getInstance().checkIdentifiers(value);
     }
 
+    /**
+     * Fills a listbox with the names of .NET SDKs that have been defined as global tools.
+     *
+     * @return A suitably filled listbox model.
+     */
     @SuppressWarnings("unused")
+    @NonNull
     public final ListBoxModel doFillSdkItems() {
       final ListBoxModel model = new ListBoxModel();
       model.add(Messages.DotNet_DefaultSDK(), "");
@@ -239,7 +403,13 @@ public abstract class DotNet extends Builder {
       return model;
     }
 
+    /**
+     * Fills a listbox with the possible values for the .NET CLI "verbosity" option.
+     *
+     * @return A suitably filled listbox model.
+     */
     @SuppressWarnings("unused")
+    @NonNull
     public final ListBoxModel doFillVerbosityItems() {
       final ListBoxModel model = new ListBoxModel();
       model.add(Messages.DotNet_Verbosity_Default(), "");
@@ -251,16 +421,25 @@ public abstract class DotNet extends Builder {
       return model;
     }
 
+    /**
+     * Gets the button text to use for the "Advanced" button.
+     *
+     * @return "More Options", or the localized equivalent.
+     */
     @SuppressWarnings("unused")
+    @NonNull
     public final String getMoreOptions() {
       return Messages.DotNet_MoreOptions();
     }
 
-    public final DotNetSDK.DescriptorImpl getToolDescriptor() {
-      return ToolInstallation.all().get(DotNetSDK.DescriptorImpl.class);
-    }
-
-    public final boolean isApplicable(Class<? extends AbstractProject> jobType) {
+    /**
+     * Determines whether or not this descriptor is applicable for the specified job type.
+     *
+     * @param jobType The job type.
+     *
+     * @return {@code true}.
+     */
+    public final boolean isApplicable(@CheckForNull Class<? extends AbstractProject> jobType) {
       return true;
     }
 

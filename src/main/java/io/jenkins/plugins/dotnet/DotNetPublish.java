@@ -173,7 +173,7 @@ public class DotNetPublish extends DotNetUsingMSBuild {
 
   @Extension
   @Symbol("dotnetPublish")
-  public static class DescriptorImpl extends DotNetUsingMSBuild.DescriptorImpl {
+  public static class DescriptorImpl extends MSBuildCommandDescriptor {
 
     public DescriptorImpl() {
       this.load();

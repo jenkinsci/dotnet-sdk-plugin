@@ -216,7 +216,7 @@ public final class DotNetRestore extends DotNet {
 
   @Extension
   @Symbol("dotnetRestore")
-  public static class DescriptorImpl extends DotNet.DescriptorImpl {
+  public static class DescriptorImpl extends CommandDescriptor {
 
     public DescriptorImpl() {
       this.load();
