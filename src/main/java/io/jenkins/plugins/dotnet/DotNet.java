@@ -54,8 +54,13 @@ public abstract class DotNet extends Builder {
 
   /** Gets the descriptor for a .NET SDK. */
   @NonNull
-  public static DotNetSDK.DescriptorImpl getSdkDescriptor() {
-    return Objects.requireNonNull(ToolInstallation.all().get(DotNetSDK.DescriptorImpl.class), ".NET SDK descriptor not found.");
+  public static DotNetSDK.DescriptorImpl getSdkDescriptor() throws AbortException {
+    // spotbugs does not like explicit throws of NullPointerException (see https://github.com/spotbugs/spotbugs/issues/1175), so we
+    // need to do the test explicitly instead of using Objects.requireNonNull.
+    final DotNetSDK.DescriptorImpl sdkDescriptor = ToolInstallation.all().get(DotNetSDK.DescriptorImpl.class);
+    if (sdkDescriptor == null)
+      throw new AbortException(".NET SDK descriptor not found.");
+    return sdkDescriptor;
   }
 
   /** {@inheritDoc} */
