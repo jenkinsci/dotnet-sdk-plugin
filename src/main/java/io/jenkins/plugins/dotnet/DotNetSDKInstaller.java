@@ -1,5 +1,6 @@
 package io.jenkins.plugins.dotnet;
 
+import edu.umd.cs.findbugs.annotations.CheckForNull;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.FilePath;
@@ -23,15 +24,33 @@ import org.kohsuke.stapler.QueryParameter;
 import java.io.IOException;
 import java.net.URL;
 
+/** A tool installer for downloading .NET SDK installation packages from {@code microsoft.com}. */
 public final class DotNetSDKInstaller extends ToolInstaller {
 
+  /**
+   * Creates a new .NET SDK installer.
+   *
+   * @param label A label expression identifying the agent(s) for which the installer is suitable.
+   */
   @DataBoundConstructor
-  public DotNetSDKInstaller(String label) {
+  public DotNetSDKInstaller(@CheckForNull String label) {
     super(label);
   }
 
+  /**
+   * Performs the installation for a .NET SDK, if not already done.
+   *
+   * @param tool The SDK to install.
+   * @param node The agent on which the SDK should be installed.
+   * @param log  The task listener to use for output.
+   *
+   * @return The SDK's installation location.
+   * @throws IOException          When an I/O error occurs during processing.
+   * @throws InterruptedException When processing is interrupted.
+   */
   @Override
-  public FilePath performInstallation(ToolInstallation tool, Node node, TaskListener log) throws IOException, InterruptedException {
+  @NonNull
+  public FilePath performInstallation(@NonNull ToolInstallation tool, @NonNull Node node, @NonNull TaskListener log) throws IOException, InterruptedException {
     final FilePath dir = this.preferredLocation(tool, node);
     {
       final FilePath marker = dir.child(".installedFrom");
@@ -42,7 +61,7 @@ public final class DotNetSDKInstaller extends ToolInstaller {
     // Unfortunately this processing does not include a means of checking a hash of the archive
     if (dir.installIfNecessaryFrom(new URL(this.url), log, Messages.DotNetSDKInstaller_Installing(this.url, dir, node.getDisplayName()))) {
       dir.child(".timestamp").delete();
-      dir.child(".installedFrom").write(this.url,"UTF-8");
+      dir.child(".installedFrom").write(this.url, "UTF-8");
       // For now, this does no include ZipExtractionInstaller's behaviour of making everything executable (in part because it's
       // not exposed, so I can't directly reuse it).
     }
@@ -53,10 +72,20 @@ public final class DotNetSDKInstaller extends ToolInstaller {
 
   private boolean includePreview;
 
+  /**
+   * Determines whether or not .NET preview releases should be made available for installation.
+   *
+   * @return {@code true} if installation of .NET preview releases is allowed, {@code false} otherwise.
+   */
   public boolean isIncludePreview() {
     return this.includePreview;
   }
 
+  /**
+   * Determines whether or not .NET preview releases should be made available for installation.
+   *
+   * @param includePreview {@code true} to allow installation of .NET preview releases, {@code false} otherwise.
+   */
   @DataBoundSetter
   public void setIncludePreview(boolean includePreview) {
     this.includePreview = includePreview;
@@ -64,10 +93,21 @@ public final class DotNetSDKInstaller extends ToolInstaller {
 
   private String release;
 
+  /**
+   * Gets the name of the .NET release containing the SDK to install.
+   *
+   * @return The name of the .NET release containing the SDK to install.
+   */
+  @CheckForNull
   public String getRelease() {
     return this.release;
   }
 
+  /**
+   * Sets the name of the .NET release containing the SDK to install.
+   *
+   * @param release The name of the .NET release containing the SDK to install.
+   */
   @DataBoundSetter
   public void setRelease(String release) {
     this.release = release;
@@ -75,10 +115,20 @@ public final class DotNetSDKInstaller extends ToolInstaller {
 
   private String sdk;
 
+  /**
+   * Gets the name of the SDK to install.
+   *
+   * @return The name of the SDK to install.
+   */
   public String getSdk() {
     return this.sdk;
   }
 
+  /**
+   * Sets the name of the SDK to install.
+   *
+   * @param sdk The name of the SDK to install.
+   */
   @DataBoundSetter
   public void setSdk(String sdk) {
     this.sdk = sdk;
@@ -86,10 +136,20 @@ public final class DotNetSDKInstaller extends ToolInstaller {
 
   private String url;
 
+  /**
+   * Gets the URL for the download package of the SDK to install.
+   *
+   * @return The URL for the download package of the SDK to install.
+   */
   public String getUrl() {
     return this.url;
   }
 
+  /**
+   * Sets the URL for the download package of the SDK to install.
+   *
+   * @param url The URL for the download package of the SDK to install.
+   */
   @DataBoundSetter
   public void setUrl(String url) {
     this.url = url;
@@ -97,10 +157,20 @@ public final class DotNetSDKInstaller extends ToolInstaller {
 
   private String version;
 
+  /**
+   * Gets the name of the .NET version containing the SDK to install.
+   *
+   * @return The name of the .NET version containing the SDK to install.
+   */
   public String getVersion() {
     return this.version;
   }
 
+  /**
+   * Sets the name of the .NET version containing the SDK to install.
+   *
+   * @param version The name of the .NET version containing the SDK to install.
+   */
   @DataBoundSetter
   public void setVersion(String version) {
     this.version = version;
@@ -110,6 +180,7 @@ public final class DotNetSDKInstaller extends ToolInstaller {
 
   //region DescriptorImpl
 
+  /** A descriptor for a .NET SDK installer. */
   @Extension
   @Symbol("installDotNetSDK")
   public static final class DescriptorImpl extends ToolInstallerDescriptor<DotNetSDKInstaller> {
@@ -121,19 +192,44 @@ public final class DotNetSDKInstaller extends ToolInstaller {
       return model;
     }
 
+    /**
+     * Performs auto-completion on a label expression.
+     *
+     * @param value The (partial) label expression to auto-complete.
+     *
+     * @return The computed auto-completion candidates.
+     */
     @SuppressWarnings("unused")
-    public AutoCompletionCandidates doAutoCompleteLabel(@QueryParameter String value) {
+    @NonNull
+    public AutoCompletionCandidates doAutoCompleteLabel(@CheckForNull @QueryParameter String value) {
       // JENKINS-26097: There is no available static method for Label completion
       return new FreeStyleProject.DescriptorImpl().doAutoCompleteLabel(value);
     }
 
+    /**
+     * Performs validation on a label expression.
+     *
+     * @param value The label expression to validate.
+     *
+     * @return The validation result.
+     */
     @SuppressWarnings("unused")
-    public FormValidation doCheckLabel(@QueryParameter String value) {
+    @NonNull
+    public FormValidation doCheckLabel(@CheckForNull @QueryParameter String value) {
       return AbstractProject.AbstractProjectDescriptor.validateLabelExpression(value, null);
     }
 
+    /**
+     * Performs validation on a .NET release name.
+     *
+     * @param version The name of the .NET version containing the release.
+     * @param value   The .NET release name to validate.
+     *
+     * @return The validation result.
+     */
     @SuppressWarnings("unused")
-    public FormValidation doCheckRelease(@QueryParameter String version, @QueryParameter String value) {
+    @NonNull
+    public FormValidation doCheckRelease(@CheckForNull @QueryParameter String version, @CheckForNull @QueryParameter String value) {
       if (Util.fixEmpty(version) == null)
         return FormValidation.error(Messages.DotNetSDKInstaller_VersionRequired());
       if (Util.fixEmpty(value) == null)
@@ -147,8 +243,18 @@ public final class DotNetSDKInstaller extends ToolInstaller {
       return FormValidation.ok();
     }
 
+    /**
+     * Performs validation on a .NET SDK name.
+     *
+     * @param version The name of the .NET version containing the release.
+     * @param release The name of the .NET release containing the SDK.
+     * @param value   The .NET SDK name to validate.
+     *
+     * @return The validation result.
+     */
     @SuppressWarnings("unused")
-    public FormValidation doCheckSdk(@QueryParameter String version, @QueryParameter String release, @QueryParameter String value) {
+    @NonNull
+    public FormValidation doCheckSdk(@CheckForNull @QueryParameter String version, @CheckForNull @QueryParameter String release, @CheckForNull @QueryParameter String value) {
       if (Util.fixEmpty(version) == null)
         return FormValidation.error(Messages.DotNetSDKInstaller_VersionRequired());
       if (Util.fixEmpty(release) == null)
@@ -163,8 +269,19 @@ public final class DotNetSDKInstaller extends ToolInstaller {
       return FormValidation.ok();
     }
 
+    /**
+     * Performs validation on a .NET SDK installation package URL.
+     *
+     * @param version The name of the .NET version containing the release.
+     * @param release The name of the .NET release containing the SDK.
+     * @param sdk     The name of the .NET SDK containing the installation package.
+     * @param value   The installation package URL to validate.
+     *
+     * @return The validation result.
+     */
     @SuppressWarnings("unused")
-    public FormValidation doCheckUrl(@QueryParameter String version, @QueryParameter String release, @QueryParameter String sdk, @QueryParameter String value) {
+    @NonNull
+    public FormValidation doCheckUrl(@CheckForNull @QueryParameter String version, @CheckForNull @QueryParameter String release, @CheckForNull @QueryParameter String sdk, @CheckForNull @QueryParameter String value) {
       if (Util.fixEmpty(version) == null)
         return FormValidation.error(Messages.DotNetSDKInstaller_VersionRequired());
       if (Util.fixEmpty(release) == null)
@@ -179,8 +296,15 @@ public final class DotNetSDKInstaller extends ToolInstaller {
       return FormValidation.okWithMarkup(pkg.getDirectDownloadLink());
     }
 
+    /**
+     * Performs validation on a .NET version name.
+     *
+     * @param value The .NET version name to validate.
+     *
+     * @return The validation result.
+     */
     @SuppressWarnings("unused")
-    public FormValidation doCheckVersion(@QueryParameter String value) {
+    public FormValidation doCheckVersion(@CheckForNull @QueryParameter String value) {
       if (Util.fixEmpty(value) == null)
         return FormValidation.error(Messages.DotNetSDKInstaller_Required());
       if (Downloads.getInstance().getVersion(value) == null)
@@ -188,34 +312,78 @@ public final class DotNetSDKInstaller extends ToolInstaller {
       return FormValidation.ok();
     }
 
+    /**
+     * Fills a listbox with the installation package URLs for a .NET SDK.
+     *
+     * @param sdk The name of the .NET SDK from which to obtain installation package URLs.
+     *
+     * @return A suitably filled listbox model.
+     */
     @SuppressWarnings("unused")
-    public ListBoxModel doFillUrlItems(@QueryParameter String sdk) {
+    @NonNull
+    public ListBoxModel doFillUrlItems(@CheckForNull @QueryParameter String sdk) {
       return Downloads.getInstance().addPackages(this.createList(), sdk);
     }
 
+    /**
+     * Fills a listbox with the names of .NET releases.
+     *
+     * @param version        The name of the .NET version containing the releases.
+     * @param includePreview Indicates whether or not preview releases should be included.
+     *
+     * @return A suitably filled listbox model.
+     */
     @SuppressWarnings("unused")
-    public ListBoxModel doFillReleaseItems(@QueryParameter String version, @QueryParameter boolean includePreview) {
+    @NonNull
+    public ListBoxModel doFillReleaseItems(@CheckForNull @QueryParameter String version, @QueryParameter boolean includePreview) {
       return Downloads.getInstance().addReleases(this.createList(), version, includePreview);
     }
 
+    /**
+     * Fills a listbox with the names of .NET SDKs.
+     *
+     * @param version The name of the .NET version containing the release.
+     * @param release The name of the .NET release containing the SDKs.
+     *
+     * @return A suitably filled listbox model.
+     */
     @SuppressWarnings("unused")
-    public ListBoxModel doFillSdkItems(@QueryParameter String version, @QueryParameter String release) {
+    @NonNull
+    public ListBoxModel doFillSdkItems(@CheckForNull @QueryParameter String version, @CheckForNull @QueryParameter String release) {
       return Downloads.getInstance().addSdks(this.createList(), version, release);
     }
 
+    /**
+     * Fills a listbox with the names of the available .NET versions.
+     *
+     * @return A suitably filled listbox model.
+     */
     @SuppressWarnings("unused")
+    @NonNull
     public ListBoxModel doFillVersionItems() {
       return Downloads.getInstance().addVersions(this.createList());
     }
 
-    @NonNull
+    /**
+     * Returns the display name for a .NET SDK installer.
+     *
+     * @return "Install from microsoft.com" or a localized equivalent.
+     */
     @Override
+    @NonNull
     public String getDisplayName() {
       return Messages.DotNetSDKInstaller_DisplayName();
     }
 
+    /**
+     * Determines whether or not this installer is applicable for the specified type of tool.
+     *
+     * @param toolType The type of tool to install.
+     *
+     * @return {@code true} if {@code toolType} is {@link DotNetSDK}; {@code false} otherwise.
+     */
     @Override
-    public boolean isApplicable(Class<? extends ToolInstallation> toolType) {
+    public boolean isApplicable(@CheckForNull Class<? extends ToolInstallation> toolType) {
       return toolType == DotNetSDK.class;
     }
 
