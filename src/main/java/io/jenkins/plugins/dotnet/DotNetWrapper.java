@@ -39,9 +39,10 @@ public class DotNetWrapper extends SimpleBuildWrapper {
   /**
    * Gets the name of the SDK that this wrapper will make available.
    *
-   * @return The name of the SDK that this wrapper will make available, or {@code null} of none was set (which will cause a runtime
+   * @return The name of the SDK that this wrapper will make available, or {@code null} if none was set (which will cause a runtime
    * exception if the wrapper gets used).
    */
+  @CheckForNull
   public String getSdk() {
     return this.sdk;
   }
@@ -52,7 +53,7 @@ public class DotNetWrapper extends SimpleBuildWrapper {
    * @param sdk The name of the SDK to make available.
    */
   @DataBoundSetter
-  public void setSdk(String sdk) {
+  public void setSdk(@CheckForNull String sdk) {
     this.sdk = Util.fixEmpty(sdk);
   }
 
@@ -177,7 +178,7 @@ public class DotNetWrapper extends SimpleBuildWrapper {
      * @return {@code true} if .NET SDK installations have been configured; {@code false} otherwise.
      */
     @Override
-    public boolean isApplicable(AbstractProject<?, ?> item) {
+    public boolean isApplicable(@CheckForNull AbstractProject<?, ?> item) {
       return DotNetSDK.hasConfiguration();
     }
 
@@ -191,16 +192,18 @@ public class DotNetWrapper extends SimpleBuildWrapper {
      * @return The validation result.
      */
     @SuppressWarnings("unused")
-    public FormValidation doCheckSdk(@QueryParameter String value) {
+    @NonNull
+    public FormValidation doCheckSdk(@CheckForNull @QueryParameter String value) {
       return FormValidation.validateRequired(value);
     }
 
     /**
      * Fills a listbox with the available .NET SDKs.
      *
-     * @return The listbox, with the requested SDK names added.
+     * @return A suitably filled listbox model.
      */
     @SuppressWarnings("unused")
+    @NonNull
     public ListBoxModel doFillSdkItems() {
       final ListBoxModel model = new ListBoxModel();
       DotNetSDK.addSdks(model);

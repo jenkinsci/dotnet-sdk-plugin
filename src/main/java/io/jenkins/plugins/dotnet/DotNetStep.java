@@ -119,8 +119,8 @@ public final class DotNetStep extends Step {
      *
      * @return The function name.
      */
-    @NonNull
     @Override
+    @NonNull
     public String getFunctionName() {
       return "dotnetStep";
     }
@@ -130,8 +130,8 @@ public final class DotNetStep extends Step {
      *
      * @return The display name.
      */
-    @NonNull
     @Override
+    @NonNull
     public String getDisplayName() {
       return ".NET Step";
     }
@@ -152,8 +152,8 @@ public final class DotNetStep extends Step {
      * @return The {@link BuildStepDescriptor}s for the builders deriving from {@link DotNet}. Uses a dynamic lookup to avoid
      * hard-coding that list.
      */
-    @NonNull
     @SuppressWarnings("unused")
+    @NonNull
     public Collection<? extends Descriptor<?>> getApplicableDescriptors() {
       final List<Descriptor<?>> r = new ArrayList<>();
       for (final Descriptor<?> d : Jenkins.get().getDescriptorList(Builder.class)) {
@@ -168,8 +168,8 @@ public final class DotNetStep extends Step {
      *
      * @return The types of context variables required by this step.
      */
-    @NonNull
     @Override
+    @NonNull
     public Set<? extends Class<?>> getRequiredContext() {
       return ImmutableSet.of(Run.class, FilePath.class, EnvVars.class, Launcher.class, TaskListener.class);
     }
