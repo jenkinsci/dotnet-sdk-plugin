@@ -1,6 +1,7 @@
 package io.jenkins.plugins.dotnet;
 
 import com.google.common.collect.ImmutableSet;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.EnvVars;
 import hudson.Extension;
@@ -20,7 +21,6 @@ import org.jenkinsci.plugins.workflow.steps.StepExecution;
 import org.jenkinsci.plugins.workflow.steps.SynchronousNonBlockingStepExecution;
 import org.kohsuke.stapler.DataBoundConstructor;
 
-import javax.annotation.Nonnull;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -47,7 +47,7 @@ public final class DotNetStep extends Step {
    */
   @DataBoundConstructor
   @SuppressWarnings("unused")
-  public DotNetStep(@Nonnull DotNet builder) {
+  public DotNetStep(@NonNull DotNet builder) {
     this.builder = builder;
   }
 
@@ -58,9 +58,9 @@ public final class DotNetStep extends Step {
    *
    * @return A .NET step execution object.
    */
-  @Nonnull
+  @NonNull
   @Override
-  public StepExecution start(@Nonnull StepContext context) {
+  public StepExecution start(@NonNull StepContext context) {
     return new DotNetStep.Execution(this.builder, context);
   }
 
@@ -79,7 +79,7 @@ public final class DotNetStep extends Step {
      * @param builder The builder to execute.
      * @param context The step context.
      */
-    Execution(@Nonnull DotNet builder, @Nonnull StepContext context) {
+    Execution(@NonNull DotNet builder, @NonNull StepContext context) {
       super(context);
       this.builder = builder;
     }
@@ -119,7 +119,7 @@ public final class DotNetStep extends Step {
      *
      * @return The function name.
      */
-    @Nonnull
+    @NonNull
     @Override
     public String getFunctionName() {
       return "dotnetStep";
@@ -130,7 +130,7 @@ public final class DotNetStep extends Step {
      *
      * @return The display name.
      */
-    @Nonnull
+    @NonNull
     @Override
     public String getDisplayName() {
       return ".NET Step";
@@ -152,7 +152,7 @@ public final class DotNetStep extends Step {
      * @return The {@link BuildStepDescriptor}s for the builders deriving from {@link DotNet}. Uses a dynamic lookup to avoid
      * hard-coding that list.
      */
-    @Nonnull
+    @NonNull
     @SuppressWarnings("unused")
     public Collection<? extends Descriptor<?>> getApplicableDescriptors() {
       final List<Descriptor<?>> r = new ArrayList<>();
@@ -168,7 +168,7 @@ public final class DotNetStep extends Step {
      *
      * @return The types of context variables required by this step.
      */
-    @Nonnull
+    @NonNull
     @Override
     public Set<? extends Class<?>> getRequiredContext() {
       return ImmutableSet.of(Run.class, FilePath.class, EnvVars.class, Launcher.class, TaskListener.class);

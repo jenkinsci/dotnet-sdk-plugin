@@ -1,5 +1,7 @@
 package io.jenkins.plugins.dotnet.data;
 
+import edu.umd.cs.findbugs.annotations.CheckForNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.Util;
 import hudson.model.AutoCompletionCandidates;
@@ -10,8 +12,6 @@ import io.jenkins.plugins.dotnet.Messages;
 import net.sf.json.JSONObject;
 import org.kohsuke.stapler.DataBoundConstructor;
 
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -36,7 +36,7 @@ public final class Framework extends DownloadService.Downloadable {
    *
    * @return Suitable auto-completion candidates for {@code text}.
    */
-  @Nonnull
+  @NonNull
   public AutoCompletionCandidates autoCompleteMoniker(@CheckForNull String text) {
     final AutoCompletionCandidates candidates = new AutoCompletionCandidates();
     for (final String tfm : this.monikers) {
@@ -53,7 +53,7 @@ public final class Framework extends DownloadService.Downloadable {
    *
    * @return The validation result.
    */
-  @Nonnull
+  @NonNull
   public FormValidation checkMoniker(@CheckForNull String text) {
     text = Util.fixEmptyAndTrim(text);
     if (text != null) {
@@ -70,7 +70,7 @@ public final class Framework extends DownloadService.Downloadable {
    *
    * @return The validation result.
    */
-  @Nonnull
+  @NonNull
   public FormValidation checkMonikers(@CheckForNull String text) {
     text = DotNetUtils.normalizeList(text);
     if (text == null)
@@ -94,7 +94,7 @@ public final class Framework extends DownloadService.Downloadable {
    *
    * @return An instance of {@link Framework}, loaded with the available .NET target framework monikers.
    */
-  @Nonnull
+  @NonNull
   public static synchronized Framework getInstance() {
     // JENKINS-62572: would be simpler to pass just the class
     final DownloadService.Downloadable instance = DownloadService.Downloadable.get(Framework.class.getName());

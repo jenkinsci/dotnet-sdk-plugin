@@ -1,5 +1,7 @@
 package io.jenkins.plugins.dotnet.data;
 
+import edu.umd.cs.findbugs.annotations.CheckForNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.model.DownloadService;
 import hudson.model.ModelObject;
@@ -10,8 +12,6 @@ import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
 import org.kohsuke.stapler.DataBoundConstructor;
 
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -120,8 +120,8 @@ public final class Downloads extends DownloadService.Downloadable {
    *
    * @return The updated list box.
    */
-  @Nonnull
-  public ListBoxModel addPackages(@Nonnull ListBoxModel model, @CheckForNull String sdk) {
+  @NonNull
+  public ListBoxModel addPackages(@NonNull ListBoxModel model, @CheckForNull String sdk) {
     final Sdk s = this.getSdk(sdk);
     if (s != null) {
       for (Package p : s.packages.values())
@@ -139,8 +139,8 @@ public final class Downloads extends DownloadService.Downloadable {
    *
    * @return The updated list box.
    */
-  @Nonnull
-  public ListBoxModel addReleases(@Nonnull ListBoxModel model, @CheckForNull String version, boolean includePreview) {
+  @NonNull
+  public ListBoxModel addReleases(@NonNull ListBoxModel model, @CheckForNull String version, boolean includePreview) {
     final Version v = this.getVersion(version);
     if (v != null) {
       for (Release r : v.releases.values()) {
@@ -161,8 +161,8 @@ public final class Downloads extends DownloadService.Downloadable {
    *
    * @return The updated list box.
    */
-  @Nonnull
-  public ListBoxModel addSdks(@Nonnull ListBoxModel model, @CheckForNull String version, @CheckForNull String release) {
+  @NonNull
+  public ListBoxModel addSdks(@NonNull ListBoxModel model, @CheckForNull String version, @CheckForNull String release) {
     final Release r = this.getRelease(version, release);
     if (r != null) {
       for (final String sdk : r.sdks) {
@@ -181,8 +181,8 @@ public final class Downloads extends DownloadService.Downloadable {
    *
    * @return The updated list box.
    */
-  @Nonnull
-  public ListBoxModel addVersions(@Nonnull ListBoxModel model) {
+  @NonNull
+  public ListBoxModel addVersions(@NonNull ListBoxModel model) {
     for (Version v : this.versions.values())
       model.add(v, v.name);
     return model;
@@ -197,7 +197,7 @@ public final class Downloads extends DownloadService.Downloadable {
   /** A .NET version. */
   public static final class Version implements ModelObject {
 
-    Version(@Nonnull JSONObject json) {
+    Version(@NonNull JSONObject json) {
       {
         final Object value = json.get("name");
         if (value instanceof String)
@@ -252,7 +252,7 @@ public final class Downloads extends DownloadService.Downloadable {
        *
        * @return A string describing this status.
        */
-      @Nonnull
+      @NonNull
       public String getDisplayName() {
         switch (this) {
           case CURRENT:
@@ -277,11 +277,11 @@ public final class Downloads extends DownloadService.Downloadable {
     //endregion
 
     /** The name of the version. */
-    @Nonnull
+    @NonNull
     public final String name;
 
     /** The status of the version. */
-    @Nonnull
+    @NonNull
     public final Status status;
 
     /** The date on which support for this version ends (or ended), if known. */
@@ -289,7 +289,7 @@ public final class Downloads extends DownloadService.Downloadable {
     public String endOfSupport;
 
     /** The releases for this version. */
-    @Nonnull
+    @NonNull
     private final Map<String, Release> releases;
 
     /**
@@ -298,7 +298,7 @@ public final class Downloads extends DownloadService.Downloadable {
      * @return A string describing this version.
      */
     @Override
-    @Nonnull
+    @NonNull
     public String getDisplayName() {
       if (this.endOfSupport != null)
         return Messages.Downloads_Version_DisplayNameWithDate(this.name, this.status.getDisplayName(), this.endOfSupport);
@@ -323,7 +323,7 @@ public final class Downloads extends DownloadService.Downloadable {
      *
      * @return All releases for this version.
      */
-    @Nonnull
+    @NonNull
     public Collection<Release> getReleases() {
       if (this.releases.isEmpty())
         return Collections.emptyList();
@@ -339,7 +339,7 @@ public final class Downloads extends DownloadService.Downloadable {
   /** A .NET release. */
   public static final class Release implements ModelObject {
 
-    Release(@Nonnull JSONObject json) {
+    Release(@NonNull JSONObject json) {
       {
         final Object value = json.get("name");
         if (value instanceof String)
@@ -379,11 +379,11 @@ public final class Downloads extends DownloadService.Downloadable {
     }
 
     /** The name of the release. */
-    @Nonnull
+    @NonNull
     public String name;
 
     /** The date of release. */
-    @Nonnull
+    @NonNull
     public String released;
 
     /** Indicates whether or not this release is a preview. */
@@ -397,7 +397,7 @@ public final class Downloads extends DownloadService.Downloadable {
     public String releaseNotes;
 
     /** The SDKs included in this release. */
-    @Nonnull
+    @NonNull
     public List<String> sdks;
 
     /**
@@ -406,7 +406,7 @@ public final class Downloads extends DownloadService.Downloadable {
      * @return A string describing this release.
      */
     @Override
-    @Nonnull
+    @NonNull
     public String getDisplayName() {
       if (this.securityFixes)
         return Messages.Downloads_Release_DisplayNameWithSecurity(this.name, this.released);
@@ -434,7 +434,7 @@ public final class Downloads extends DownloadService.Downloadable {
   /** A .NET SDK. */
   public static final class Sdk implements ModelObject {
 
-    Sdk(@Nonnull JSONObject json) {
+    Sdk(@NonNull JSONObject json) {
       {
         final Object value = json.get("name");
         if (value instanceof String)
@@ -461,14 +461,14 @@ public final class Downloads extends DownloadService.Downloadable {
     }
 
     /** The name of the SDK. */
-    @Nonnull
+    @NonNull
     public final String name;
 
     /** Information about the SDK (such as the version of Visual Studio that includes tooling for it). */
     @CheckForNull
     public final String info;
 
-    @Nonnull
+    @NonNull
     private final Map<String, Package> packages;
 
     /**
@@ -477,7 +477,7 @@ public final class Downloads extends DownloadService.Downloadable {
      * @return A string describing this SDK.
      */
     @Override
-    @Nonnull
+    @NonNull
     public String getDisplayName() {
       return Messages.Downloads_Sdk_DisplayName(this.name);
     }
@@ -499,7 +499,7 @@ public final class Downloads extends DownloadService.Downloadable {
      *
      * @return All packages for this SDK.
      */
-    @Nonnull
+    @NonNull
     public Collection<Package> getPackages() {
       if (this.packages.isEmpty())
         return Collections.emptyList();
@@ -515,7 +515,7 @@ public final class Downloads extends DownloadService.Downloadable {
   /** A .NET package. */
   public static final class Package implements ModelObject {
 
-    Package(@Nonnull JSONObject json, @CheckForNull String urlPrefix) {
+    Package(@NonNull JSONObject json, @CheckForNull String urlPrefix) {
       {
         final Object value = json.get("rid");
         if (value instanceof String)
@@ -544,15 +544,15 @@ public final class Downloads extends DownloadService.Downloadable {
     }
 
     /** The RID (runtime identifier) of the platform for which this package is intended. */
-    @Nonnull
+    @NonNull
     public final String rid;
 
     /** A string describing the platform for which this package is intended. */
-    @Nonnull
+    @NonNull
     public final String platform;
 
     /** The download URL for the package. */
-    @Nonnull
+    @NonNull
     public final String url;
 
     /**
@@ -561,7 +561,7 @@ public final class Downloads extends DownloadService.Downloadable {
      * @return A string describing this package.
      */
     @Override
-    @Nonnull
+    @NonNull
     public String getDisplayName() {
       return Messages.Downloads_Package_DisplayName(this.rid, this.platform);
     }
@@ -571,7 +571,7 @@ public final class Downloads extends DownloadService.Downloadable {
      *
      * @return Markup linking to this package.
      */
-    @Nonnull
+    @NonNull
     public String getDirectDownloadLink() {
       return Messages.Downloads_Package_DirectDownloadLink(this.url);
     }
@@ -593,7 +593,7 @@ public final class Downloads extends DownloadService.Downloadable {
    *
    * @return An instance of {@link Downloads}, loaded with all available SDK installation packages for all .NET versions/releases.
    */
-  @Nonnull
+  @NonNull
   public static synchronized Downloads getInstance() {
     // JENKINS-62572: would be simpler to pass just the class
     final DownloadService.Downloadable instance = DownloadService.Downloadable.get(Downloads.class.getName().replace('$', '.'));
@@ -612,7 +612,7 @@ public final class Downloads extends DownloadService.Downloadable {
    *
    * @return All known .NET SDKs.
    */
-  @Nonnull
+  @NonNull
   public Collection<Sdk> getSdks() {
     if (this.sdks == null || this.sdks.isEmpty())
       return Collections.emptyList();
@@ -624,14 +624,14 @@ public final class Downloads extends DownloadService.Downloadable {
    *
    * @return All known .NET versions.
    */
-  @Nonnull
+  @NonNull
   public Collection<Version> getVersions() {
     if (this.versions == null || this.versions.isEmpty())
       return Collections.emptyList();
     return this.versions.values();
   }
 
-  @Nonnull
+  @NonNull
   private Downloads loadData() {
     if (this.sdks != null && this.versions != null)
       return this;
@@ -658,8 +658,8 @@ public final class Downloads extends DownloadService.Downloadable {
     return this;
   }
 
-  @Nonnull
-  public static <T> Map<String, T> readJsonObjectArray(@Nonnull JSONObject o, @Nonnull String prop, @Nonnull Function<JSONObject, T> convert, @Nonnull Function<T, String> createKey) {
+  @NonNull
+  public static <T> Map<String, T> readJsonObjectArray(@NonNull JSONObject o, @NonNull String prop, @NonNull Function<JSONObject, T> convert, @NonNull Function<T, String> createKey) {
     final Map<String, T> map = new LinkedHashMap<>();
     final Object array = o.get(prop);
     if (array instanceof JSONArray) {
@@ -685,8 +685,8 @@ public final class Downloads extends DownloadService.Downloadable {
     return map;
   }
 
-  @Nonnull
-  public static <T> List<String> readJsonStringArray(@Nonnull JSONObject o, @Nonnull String prop) {
+  @NonNull
+  public static <T> List<String> readJsonStringArray(@NonNull JSONObject o, @NonNull String prop) {
     final List<String> list = new ArrayList<>();
     final Object array = o.get(prop);
     if (array instanceof JSONArray) {

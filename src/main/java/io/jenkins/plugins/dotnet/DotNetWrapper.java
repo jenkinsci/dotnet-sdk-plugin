@@ -1,5 +1,7 @@
 package io.jenkins.plugins.dotnet;
 
+import edu.umd.cs.findbugs.annotations.CheckForNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.AbortException;
 import hudson.EnvVars;
 import hudson.Extension;
@@ -21,8 +23,6 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
 
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.Map;
 
@@ -100,8 +100,8 @@ public class DotNetWrapper extends SimpleBuildWrapper {
    * @param initialEnvironment The initial environment for the wrapper.
    */
   @Override
-  public void setUp(@Nonnull Context context, @Nonnull Run<?, ?> build, @Nonnull FilePath workspace, @Nonnull Launcher launcher,
-                    @Nonnull TaskListener listener, @Nonnull EnvVars initialEnvironment) throws IOException, InterruptedException {
+  public void setUp(@NonNull Context context, @NonNull Run<?, ?> build, @NonNull FilePath workspace, @NonNull Launcher launcher,
+                    @NonNull TaskListener listener, @NonNull EnvVars initialEnvironment) throws IOException, InterruptedException {
     if (this.sdk == null)
       throw new AbortException(String.format(Messages.DotNetWrapper_NoSDK(), this.sdk));
     final DotNetSDK sdkInstance = Jenkins.get().getDescriptorByType(DotNetSDK.DescriptorImpl.class).prepareAndValidateInstance(this.sdk, workspace, initialEnvironment, listener);
@@ -132,7 +132,7 @@ public class DotNetWrapper extends SimpleBuildWrapper {
      * @param listener  The listener for the build.
      */
     @Override
-    public void tearDown(@Nonnull Run<?, ?> build, @Nonnull FilePath workspace, @Nonnull Launcher launcher, @Nonnull TaskListener listener) {
+    public void tearDown(@NonNull Run<?, ?> build, @NonNull FilePath workspace, @NonNull Launcher launcher, @NonNull TaskListener listener) {
       DotNetSDK.removeGlobalJson(workspace, listener);
     }
 
@@ -147,7 +147,7 @@ public class DotNetWrapper extends SimpleBuildWrapper {
    */
   @CheckForNull
   @Override
-  public ConsoleLogFilter createLoggerDecorator(@Nonnull Run<?, ?> build) {
+  public ConsoleLogFilter createLoggerDecorator(@NonNull Run<?, ?> build) {
     return new DiagnosticFilter();
   }
 
@@ -164,7 +164,7 @@ public class DotNetWrapper extends SimpleBuildWrapper {
      * @return The display name for the .NET wrapper.
      */
     @Override
-    @Nonnull
+    @NonNull
     public String getDisplayName() {
       return Messages.DotNetWrapper_DisplayName();
     }

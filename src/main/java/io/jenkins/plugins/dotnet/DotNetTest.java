@@ -1,5 +1,6 @@
 package io.jenkins.plugins.dotnet;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.Util;
 import hudson.util.ArgumentListBuilder;
@@ -10,7 +11,6 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
 
-import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Properties;
@@ -26,7 +26,7 @@ public final class DotNetTest extends DotNetUsingMSBuild {
   }
 
   @Override
-  protected void addCommandLineArguments(@Nonnull ArgumentListBuilder args, @Nonnull VariableResolver<String> resolver, @Nonnull Set<String> sensitive) {
+  protected void addCommandLineArguments(@NonNull ArgumentListBuilder args, @NonNull VariableResolver<String> resolver, @NonNull Set<String> sensitive) {
     args.add("test");
     super.addCommandLineArguments(args, resolver, sensitive);
     if (this.framework != null)
@@ -252,7 +252,7 @@ public final class DotNetTest extends DotNetUsingMSBuild {
       return FormValidation.ok();
     }
 
-    @Nonnull
+    @NonNull
     public String getDisplayName() {
       return Messages.DotNetTest_DisplayName();
     }

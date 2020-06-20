@@ -1,5 +1,7 @@
 package io.jenkins.plugins.dotnet.console;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import hudson.Extension;
 import hudson.MarkupText;
 import hudson.console.ConsoleAnnotationDescriptor;
@@ -14,7 +16,7 @@ public final class CompletionNote extends ConsoleNote<Object> {
 
   @SuppressWarnings("rawtypes")
   @Override
-  public ConsoleAnnotator annotate(Object context, MarkupText text, int charPos) {
+  public ConsoleAnnotator annotate(@Nullable Object context, @NonNull MarkupText text, int charPos) {
     final String t = text.getText().replaceAll("\r?\n$", "");
     text.addMarkup(0, text.length(), "<span class='dotnet-completed-line'>", "</span><br/>");
     text.addMarkup(charPos, t.length(), "<span class='dotnet-exit-code'>", "</span>");
@@ -27,6 +29,7 @@ public final class CompletionNote extends ConsoleNote<Object> {
   public static final class DescriptorImpl extends ConsoleAnnotationDescriptor {
 
     @Override
+    @NonNull
     public String getDisplayName() {
       return ".NET Commmand Completion Message";
     }

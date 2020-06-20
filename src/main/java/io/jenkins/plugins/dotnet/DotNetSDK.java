@@ -1,5 +1,7 @@
 package io.jenkins.plugins.dotnet;
 
+import edu.umd.cs.findbugs.annotations.CheckForNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.AbortException;
 import hudson.EnvVars;
 import hudson.Extension;
@@ -23,8 +25,6 @@ import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
@@ -61,7 +61,7 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
     this.telemetryOptOut = telemetryOptOut;
   }
 
-  public static void addSdks(@Nonnull ListBoxModel model) {
+  public static void addSdks(@NonNull ListBoxModel model) {
     final DotNetSDK[] sdks = Jenkins.get().getDescriptorByType(DescriptorImpl.class).getInstallations();
     for (final DotNetSDK _sdk : sdks)
       model.add(_sdk.getName());
@@ -75,7 +75,7 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
       env.put("DOTNET_CLI_TELEMETRY_OPTOUT", "1");
   }
 
-  public boolean createGlobalJson(@Nonnull FilePath dir, @Nonnull Launcher launcher, @Nonnull TaskListener listener) {
+  public boolean createGlobalJson(@NonNull FilePath dir, @NonNull Launcher launcher, @NonNull TaskListener listener) {
     final String version;
     try {
       final FilePath home = this.getHomePath(launcher);
@@ -118,7 +118,7 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
     }
   }
 
-  public String ensureExecutableExists(@Nonnull Launcher launcher) throws IOException, InterruptedException {
+  public String ensureExecutableExists(@NonNull Launcher launcher) throws IOException, InterruptedException {
     final FilePath homePath = this.getHomePath(launcher);
     if (homePath == null || !homePath.exists())
       throw new AbortException(Messages.DotNetSDK_NoHome(this.getName()));
@@ -140,13 +140,13 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
   }
 
   @Override
-  public DotNetSDK forNode(@Nonnull Node node, TaskListener listener) throws IOException, InterruptedException {
+  public DotNetSDK forNode(@NonNull Node node, TaskListener listener) throws IOException, InterruptedException {
     final DotNetSDK sdk = new DotNetSDK(this.getName(), this.translateFor(node, listener));
     sdk.setTelemetryOptOut(this.telemetryOptOut);
     return sdk;
   }
 
-  public static String getExecutableFileName(@Nonnull Launcher launcher) {
+  public static String getExecutableFileName(@NonNull Launcher launcher) {
     return launcher.isUnix() ? "dotnet" : "dotnet.exe";
   }
 
@@ -157,7 +157,7 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
    *
    * @return A file path representing this SDK's home directory, or {@code null} if no home directory was set.
    */
-  public FilePath getHomePath(@Nonnull Launcher launcher) {
+  public FilePath getHomePath(@NonNull Launcher launcher) {
     final String home = this.getHome();
     if (home == null)
       return null;
@@ -174,7 +174,7 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
     return sdks != null && sdks.length > 0;
   }
 
-  public static void removeGlobalJson(@Nonnull FilePath dir, @Nonnull TaskListener listener) {
+  public static void removeGlobalJson(@NonNull FilePath dir, @NonNull TaskListener listener) {
     final FilePath globalJson = dir.child("global.json");
     try {
       globalJson.delete();
@@ -241,12 +241,12 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
       return Collections.singletonList(new DotNetSDKInstaller(""));
     }
 
-    @Nonnull
+    @NonNull
     public String getDisplayName() {
       return Messages.DotNetSDK_DisplayName();
     }
 
-    public DotNetSDK prepareAndValidateInstance(@Nonnull String name, @Nonnull FilePath workspace, @CheckForNull EnvVars env, @CheckForNull TaskListener listener) throws IOException, InterruptedException {
+    public DotNetSDK prepareAndValidateInstance(@NonNull String name, @NonNull FilePath workspace, @CheckForNull EnvVars env, @CheckForNull TaskListener listener) throws IOException, InterruptedException {
       DotNetSDK sdkInstance = null;
       {
         for (final DotNetSDK sdk : this.getInstallations()) {

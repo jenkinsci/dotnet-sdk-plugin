@@ -1,5 +1,7 @@
 package io.jenkins.plugins.dotnet;
 
+import edu.umd.cs.findbugs.annotations.CheckForNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.AbortException;
 import hudson.EnvVars;
 import hudson.FilePath;
@@ -25,8 +27,6 @@ import io.jenkins.plugins.dotnet.data.Runtime;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
 
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Collections;
@@ -41,7 +41,7 @@ public abstract class DotNet extends Builder {
     return (DescriptorImpl) super.getDescriptor();
   }
 
-  protected abstract void addCommandLineArguments(@Nonnull ArgumentListBuilder args, @Nonnull VariableResolver<String> resolver, @Nonnull Set<String> sensitive);
+  protected abstract void addCommandLineArguments(@NonNull ArgumentListBuilder args, @NonNull VariableResolver<String> resolver, @NonNull Set<String> sensitive);
 
   @Override
   public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
@@ -57,7 +57,7 @@ public abstract class DotNet extends Builder {
     return true;
   }
 
-  public Result run(@Nonnull FilePath wd, @Nonnull EnvVars env, @Nonnull Launcher launcher, @Nonnull TaskListener listener, @Nonnull Charset cs) throws InterruptedException, IOException {
+  public Result run(@NonNull FilePath wd, @NonNull EnvVars env, @NonNull Launcher launcher, @NonNull TaskListener listener, @NonNull Charset cs) throws InterruptedException, IOException {
     final DotNetSDK sdkInstance;
     if (this.sdk == null)
       sdkInstance = null;

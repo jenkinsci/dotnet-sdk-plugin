@@ -1,5 +1,6 @@
 package io.jenkins.plugins.dotnet;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Util;
 import hudson.util.ArgumentListBuilder;
 import hudson.util.ComboBoxModel;
@@ -8,7 +9,6 @@ import hudson.util.VariableResolver;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
 
-import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Properties;
@@ -19,7 +19,7 @@ import java.util.logging.Logger;
 public abstract class DotNetUsingMSBuild extends DotNet {
 
   @Override
-  protected void addCommandLineArguments(@Nonnull ArgumentListBuilder args, @Nonnull VariableResolver<String> resolver, @Nonnull Set<String> sensitive) {
+  protected void addCommandLineArguments(@NonNull ArgumentListBuilder args, @NonNull VariableResolver<String> resolver, @NonNull Set<String> sensitive) {
     if (this.options != null) {
       for (String option : Util.tokenize(this.options)) {
         option = Util.fixEmptyAndTrim(option);

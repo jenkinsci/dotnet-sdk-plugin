@@ -1,5 +1,6 @@
 package io.jenkins.plugins.dotnet;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.Util;
 import hudson.util.ArgumentListBuilder;
@@ -9,7 +10,6 @@ import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -22,7 +22,7 @@ public class DotNetPublish extends DotNetUsingMSBuild {
   }
 
   @Override
-  protected void addCommandLineArguments(@Nonnull ArgumentListBuilder args, @Nonnull VariableResolver<String> resolver, @Nonnull Set<String> sensitive) {
+  protected void addCommandLineArguments(@NonNull ArgumentListBuilder args, @NonNull VariableResolver<String> resolver, @NonNull Set<String> sensitive) {
     args.add("publish");
     super.addCommandLineArguments(args, resolver, sensitive);
     if (this.force)
@@ -192,7 +192,7 @@ public class DotNetPublish extends DotNetUsingMSBuild {
       return model;
     }
 
-    @Nonnull
+    @NonNull
     public String getDisplayName() {
       return Messages.DotNetPublish_DisplayName();
     }

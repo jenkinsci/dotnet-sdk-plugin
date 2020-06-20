@@ -1,5 +1,6 @@
 package io.jenkins.plugins.dotnet;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.Util;
 import hudson.util.ArgumentListBuilder;
@@ -10,7 +11,6 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
 
-import javax.annotation.Nonnull;
 import java.util.Set;
 
 /** A build step using the 'dotnet' executable to list all resolved package dependencies for a project. */
@@ -21,7 +21,7 @@ public final class DotNetListPackage extends DotNet {
   }
 
   @Override
-  protected void addCommandLineArguments(@Nonnull ArgumentListBuilder args, @Nonnull VariableResolver<String> resolver, @Nonnull Set<String> sensitive) {
+  protected void addCommandLineArguments(@NonNull ArgumentListBuilder args, @NonNull VariableResolver<String> resolver, @NonNull Set<String> sensitive) {
     args.add("list");
     args.add(this.project);
     args.add("package");
@@ -228,7 +228,7 @@ public final class DotNetListPackage extends DotNet {
       return FormValidation.ok();
     }
 
-    @Nonnull
+    @NonNull
     public String getDisplayName() {
       return Messages.DotNetListPackage_DisplayName();
     }

@@ -1,5 +1,7 @@
 package io.jenkins.plugins.dotnet.console;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import hudson.console.ConsoleLogFilter;
 import hudson.model.Run;
 import io.jenkins.plugins.dotnet.DotNetUtils;
@@ -24,7 +26,8 @@ public final class DiagnosticFilter extends ConsoleLogFilter implements Serializ
    * @return The created {@link DiagnosticScanner}.
    */
   @Override
-  public OutputStream decorateLogger(Run build, OutputStream logger) {
+  @NonNull
+  public OutputStream decorateLogger(@Nullable Run build, @NonNull OutputStream logger) {
     return new DiagnosticScanner(logger, StandardCharsets.UTF_8, this.diagnosticNote);
   }
 
