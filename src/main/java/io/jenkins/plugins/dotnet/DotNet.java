@@ -112,7 +112,7 @@ public abstract class DotNet extends Builder {
       wd = wd.child(this.workDirectory);
     try {
       if (sdkInstance != null && this.specificSdkVersion)
-        sdkInstance.createGlobalJson(wd, launcher, listener);
+        sdkInstance.createGlobalJson(wd, listener);
       // Note: this MUST NOT BE CLOSED, because that also closes the build listener, causing all further output to go bye-bye
       final DiagnosticScanner scanner = new DiagnosticScanner(listener.getLogger(), cs);
       if (this.showSdkInfo) {

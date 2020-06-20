@@ -12,6 +12,7 @@ import hudson.model.EnvironmentSpecific;
 import hudson.model.Node;
 import hudson.model.PersistentDescriptor;
 import hudson.model.TaskListener;
+import hudson.remoting.VirtualChannel;
 import hudson.slaves.NodeSpecific;
 import hudson.tools.ToolDescriptor;
 import hudson.tools.ToolInstallation;
@@ -30,19 +31,34 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
-/** Information about .NET SDKs. */
+/** An installation of a .NET SDK as a global tool. */
 public final class DotNetSDK extends ToolInstallation implements NodeSpecific<DotNetSDK>, EnvironmentSpecific<DotNetSDK> {
 
   private static final long serialVersionUID = 1834789641052956539L;
 
+  /** The environment variable that will be set to the full path to the SDK. */
   public static final String HOME_ENVIRONMENT_VARIABLE = "DOTNET_SDK_JENKINS_TOOL_HOME";
 
-  public DotNetSDK(String name, String home) {
+  /**
+   * Creates a new .NET SDK installation.
+   *
+   * @param name The name for the installation.
+   * @param home The path to the SDK.
+   */
+  public DotNetSDK(@NonNull String name, @NonNull String home) {
     super(name, home, Collections.emptyList());
   }
 
+
+  /**
+   * Creates a new .NET SDK installation.
+   *
+   * @param name       The name for the installation.
+   * @param home       The path to the SDK.
+   * @param properties Additional properties for the SDK installation.
+   */
   @DataBoundConstructor
-  public DotNetSDK(String name, String home, List<? extends ToolProperty<?>> properties) {
+  public DotNetSDK(@NonNull String name, @NonNull String home, @CheckForNull List<? extends ToolProperty<?>> properties) {
     super(name, home, properties);
   }
 
@@ -52,33 +68,61 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
 
   private boolean telemetryOptOut = true;
 
+  /**
+   * Determines whether or not the telemetry opt-out is set.
+   *
+   * @return {@code true} when the telemetry opt-out is set; {@code false} otherwise.
+   */
   public boolean isTelemetryOptOut() {
     return this.telemetryOptOut;
   }
 
+  /**
+   * Determines whether or not the telemetry opt-out should be set.
+   *
+   * @param telemetryOptOut {@code true} to opt out of telemetry; {@code false} otherwise.
+   */
   @DataBoundSetter
   public void setTelemetryOptOut(boolean telemetryOptOut) {
     this.telemetryOptOut = telemetryOptOut;
   }
 
+  /**
+   * Adds the names of all defined .NET SDK installations to a listbox model.
+   *
+   * @param model The listbox model to add the .NET SDK installations to.
+   */
   public static void addSdks(@NonNull ListBoxModel model) {
     final DotNetSDK[] sdks = Jenkins.get().getDescriptorByType(DescriptorImpl.class).getInstallations();
     for (final DotNetSDK _sdk : sdks)
       model.add(_sdk.getName());
   }
 
+  /**
+   * Sets up environment variables for this .NET SDK installation.
+   *
+   * @param env The environment variables to add values to.
+   */
   @Override
-  public void buildEnvVars(EnvVars env) {
+  public void buildEnvVars(@NonNull EnvVars env) {
     env.put(DotNetSDK.HOME_ENVIRONMENT_VARIABLE, this.getHome());
     env.put("PATH+DOTNET", this.getHome());
     if (this.telemetryOptOut)
       env.put("DOTNET_CLI_TELEMETRY_OPTOUT", "1");
   }
 
-  public boolean createGlobalJson(@NonNull FilePath dir, @NonNull Launcher launcher, @NonNull TaskListener listener) {
+  /**
+   * Create a {@code global.json} in the specified location, forcing the use of this .NET SDK's exact version.
+   *
+   * @param dir      The location where the {@code global.json} should be created.
+   * @param listener The task listener to use for output
+   *
+   * @return {@code true} when a {@code global.json} file was created; {@code false} otherwise.
+   */
+  public boolean createGlobalJson(@NonNull FilePath dir, @NonNull TaskListener listener) {
     final String version;
     try {
-      final FilePath home = this.getHomePath(launcher);
+      final FilePath home = this.getHomePath(dir.getChannel());
       if (home == null) {
         listener.getLogger().println(Messages.DotNetSDK_GlobalJson_NoVersion(this.getName(), Messages.DotNetSDK_GlobalJson_NoHome()));
         return false;
@@ -88,7 +132,7 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
         String singleSdkVersion = null;
         for (final FilePath sdkDir : sdkRoot.listDirectories()) {
           // Assumption: the presence of 'dotnet.dll' is a correct way of distinguishing between SDK dirs and things like the NuGet
-          //             fallback folder. So far this has been shown to be true (.NET Core 1.0 up to .NET 5.0 preview 4).
+          //             fallback folder. So far this has been shown to be true (.NET Core 1.0 up to .NET 5.0 preview 5).
           if (!sdkDir.child("dotnet.dll").exists())
             continue;
           if (singleSdkVersion != null)
@@ -109,17 +153,28 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
     try {
       final String json = "{ \"sdk\": { \"version\": \"" + version + "\", \"rollback\": \"disable\" } }";
       dir.child("global.json").write(json, "UTF-8");
-      listener.getLogger().println(Messages.DotNetSDK_GlobalJson_CreationDone(this.getName(), version));
-      return true;
     }
     catch (Throwable t) {
       listener.getLogger().println(Messages.DotNetSDK_GlobalJson_CreationFailed(this.getName(), version, t));
       return false;
     }
+    listener.getLogger().println(Messages.DotNetSDK_GlobalJson_CreationDone(this.getName(), version));
+    return true;
   }
 
+  /**
+   * Ensures that the {@code dotnet} executable exists in this .NET SDK installation.
+   *
+   * @param launcher The launcher to use for the verification.
+   *
+   * @return The full path to the {@code dotnet} executable in this .NET SDK installation.
+   * @throws AbortException       When the executable could not be found.
+   * @throws IOException          When an I/O error occurs.
+   * @throws InterruptedException When processing is interrupted.
+   */
+  @NonNull
   public String ensureExecutableExists(@NonNull Launcher launcher) throws IOException, InterruptedException {
-    final FilePath homePath = this.getHomePath(launcher);
+    final FilePath homePath = this.getHomePath(launcher.getChannel());
     if (homePath == null || !homePath.exists())
       throw new AbortException(Messages.DotNetSDK_NoHome(this.getName()));
     final FilePath fullExecutablePath;
@@ -132,20 +187,44 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
     return fullExecutablePath.getRemote();
   }
 
+  /**
+   * Creates a copy of this .NET SDK installation that has the specified environment variables applied.
+   *
+   * @param envVars The environment variables to apply.
+   *
+   * @return A copy of this .NET SDK installation that has the specified environment variables applied.
+   */
   @Override
-  public DotNetSDK forEnvironment(EnvVars envVars) {
+  @NonNull
+  public DotNetSDK forEnvironment(@NonNull EnvVars envVars) {
     final DotNetSDK sdk = new DotNetSDK(this.getName(), envVars.expand(this.getHome()));
     sdk.setTelemetryOptOut(this.telemetryOptOut);
     return sdk;
   }
 
+  /**
+   * Creates a copy of this .NET SDK installation for use on the specified node.
+   *
+   * @param node The node to use the .NET SDK installation on.
+   *
+   * @return A copy of this .NET SDK installation for use on {@code node}.
+   */
   @Override
-  public DotNetSDK forNode(@NonNull Node node, TaskListener listener) throws IOException, InterruptedException {
+  @NonNull
+  public DotNetSDK forNode(@NonNull Node node, @NonNull TaskListener listener) throws IOException, InterruptedException {
     final DotNetSDK sdk = new DotNetSDK(this.getName(), this.translateFor(node, listener));
     sdk.setTelemetryOptOut(this.telemetryOptOut);
     return sdk;
   }
 
+  /**
+   * Returns the file name for the {@code dotnet} executable on the agent platform.
+   *
+   * @param launcher The launcher to use to determine the agent platform.
+   *
+   * @return {@code dotnet.exe} when {@code launcher} represents a Windows agent, {@code dotnet} otherwise.
+   */
+  @NonNull
   public static String getExecutableFileName(@NonNull Launcher launcher) {
     return launcher.isUnix() ? "dotnet" : "dotnet.exe";
   }
@@ -153,15 +232,16 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
   /**
    * Determines the file path for this SDK's home directory.
    *
-   * @param launcher The launcher to get the remote context from.
+   * @param channel The remote context to use for the file path.
    *
    * @return A file path representing this SDK's home directory, or {@code null} if no home directory was set.
    */
-  public FilePath getHomePath(@NonNull Launcher launcher) {
+  @CheckForNull
+  public FilePath getHomePath(@CheckForNull VirtualChannel channel) {
     final String home = this.getHome();
     if (home == null)
       return null;
-    return new FilePath(launcher.getChannel(), home);
+    return new FilePath(channel, home);
   }
 
   /**
@@ -174,6 +254,12 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
     return sdks != null && sdks.length > 0;
   }
 
+  /**
+   * Removes a {@code global.json} file (as previously created via {@link #createGlobalJson(FilePath, TaskListener)}.
+   *
+   * @param dir      The location containing the {@code global.json} file to remove.
+   * @param listener The task listener to use for output.
+   */
   public static void removeGlobalJson(@NonNull FilePath dir, @NonNull TaskListener listener) {
     final FilePath globalJson = dir.child("global.json");
     try {
@@ -185,32 +271,23 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
     }
   }
 
-  //region ConverterImpl
-
-  @SuppressWarnings("unused")
-  public static class ConverterImpl extends ToolConverter {
-
-    public ConverterImpl(XStream2 xstream) {
-      super(xstream);
-    }
-
-    @Override
-    protected String oldHomeField(ToolInstallation obj) {
-      return null;
-    }
-
-  }
-
-  //endregion
-
   //region DescriptorImpl
 
+  /** A descriptor for .NET SDK installations. */
   @Extension
   @Symbol("dotnetsdk")
   public static class DescriptorImpl extends ToolDescriptor<DotNetSDK> implements PersistentDescriptor {
 
+    /**
+     * Performs validation on the installation directory for a .NET SDK.
+     *
+     * @param home The directory to validate.
+     *
+     * @return The validation result.
+     */
     @Override
-    protected FormValidation checkHomeDirectory(File home) {
+    @NonNull
+    protected FormValidation checkHomeDirectory(@NonNull File home) {
       // This can be used to check the existence of a file on the server, so needs to be protected.
       if (!Jenkins.get().hasPermission(Jenkins.ADMINISTER))
         return FormValidation.ok();
@@ -236,17 +313,42 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
       return FormValidation.ok();
     }
 
+    /**
+     * Gets the default installer to use for a .NET SDK installation.
+     *
+     * @return A list containing a single {@link DotNetSDKInstaller} instance.
+     */
     @Override
+    @NonNull
     public List<? extends ToolInstaller> getDefaultInstallers() {
       return Collections.singletonList(new DotNetSDKInstaller(""));
     }
 
+    /**
+     * Returns the display name for .NET SDK installations.
+     *
+     * @return ".NET SDK" or a localized equivalent.
+     */
     @NonNull
     public String getDisplayName() {
       return Messages.DotNetSDK_DisplayName();
     }
 
-    public DotNetSDK prepareAndValidateInstance(@NonNull String name, @NonNull FilePath workspace, @CheckForNull EnvVars env, @CheckForNull TaskListener listener) throws IOException, InterruptedException {
+    /**
+     * Gets a .NET SDK installation by its name, and prepare it for use in the specified context.
+     *
+     * @param name      The name of the configured .NET SDK installation.
+     * @param workspace The workspace to use.
+     * @param env       The environment to use.
+     * @param listener  The task listener to use.
+     *
+     * @return The requested .NET SDK installation.
+     * @throws AbortException       When the SDK installation could not be set up.
+     * @throws IOException          Then an I/O error occurs.
+     * @throws InterruptedException When processing is interrupted.
+     */
+    @NonNull
+    public DotNetSDK prepareAndValidateInstance(@NonNull String name, @NonNull FilePath workspace, @NonNull EnvVars env, @NonNull TaskListener listener) throws IOException, InterruptedException {
       DotNetSDK sdkInstance = null;
       {
         for (final DotNetSDK sdk : this.getInstallations()) {
@@ -268,13 +370,17 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
           throw new AbortException(Messages.DotNetSDK_NoNode());
         sdkInstance = sdkInstance.forNode(node, listener);
       }
-      if (env != null) // Apply EnvironmentSpecific
-        sdkInstance = sdkInstance.forEnvironment(env);
+      sdkInstance = sdkInstance.forEnvironment(env);
       return sdkInstance;
     }
 
+    /**
+     * Sets the set of configured .NET SDK installations.
+     *
+     * @param sdks The set of configured .NET SDK installations.
+     */
     @Override
-    public void setInstallations(DotNetSDK... sdks) {
+    public void setInstallations(@NonNull DotNetSDK... sdks) {
       super.setInstallations(sdks);
       this.save();
     }

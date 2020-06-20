@@ -114,7 +114,7 @@ public class DotNetWrapper extends SimpleBuildWrapper {
         context.env(entry.getKey(), entry.getValue());
     }
     if (this.specificSdkVersion) {
-      if (sdkInstance.createGlobalJson(workspace, launcher, listener))
+      if (sdkInstance.createGlobalJson(workspace, listener))
         context.setDisposer(new GlobalJsonRemover());
     }
   }
