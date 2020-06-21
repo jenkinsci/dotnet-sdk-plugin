@@ -160,29 +160,6 @@ public class DotNetWrapper extends SimpleBuildWrapper {
   public static class DescriptorImpl extends BuildWrapperDescriptor {
 
     /**
-     * Gets the display name for the .NET wrapper (as used in the project configuration UI.
-     *
-     * @return The display name for the .NET wrapper.
-     */
-    @Override
-    @NonNull
-    public String getDisplayName() {
-      return Messages.DotNetWrapper_DisplayName();
-    }
-
-    /**
-     * Determines whether or not the .NET wrapper is applicable.
-     *
-     * @param item The project context.
-     *
-     * @return {@code true} if .NET SDK installations have been configured; {@code false} otherwise.
-     */
-    @Override
-    public boolean isApplicable(@CheckForNull AbstractProject<?, ?> item) {
-      return DotNetSDK.hasConfiguration();
-    }
-
-    /**
      * Checks that a value is a valid .NET SDK name.
      * <p>
      * Because the value is set from a list box (so selecting invalid values is not possible), this only ensures that it's filled.
@@ -208,6 +185,29 @@ public class DotNetWrapper extends SimpleBuildWrapper {
       final ListBoxModel model = new ListBoxModel();
       DotNetSDK.addSdks(model);
       return model;
+    }
+
+    /**
+     * Gets the display name for the .NET wrapper (as used in the project configuration UI).
+     *
+     * @return "With .NET", or a localized equivalent.
+     */
+    @Override
+    @NonNull
+    public String getDisplayName() {
+      return Messages.DotNetWrapper_DisplayName();
+    }
+
+    /**
+     * Determines whether or not the .NET wrapper is applicable.
+     *
+     * @param item The project context.
+     *
+     * @return {@code true} if .NET SDK installations have been configured; {@code false} otherwise.
+     */
+    @Override
+    public boolean isApplicable(@CheckForNull AbstractProject<?, ?> item) {
+      return DotNetSDK.hasConfiguration();
     }
 
   }
