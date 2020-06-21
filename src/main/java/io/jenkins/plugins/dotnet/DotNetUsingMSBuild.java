@@ -3,6 +3,7 @@ package io.jenkins.plugins.dotnet;
 import edu.umd.cs.findbugs.annotations.CheckForNull;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Util;
+import hudson.model.Run;
 import hudson.util.ArgumentListBuilder;
 import hudson.util.ComboBoxModel;
 import hudson.util.FormValidation;
@@ -35,7 +36,7 @@ public abstract class DotNetUsingMSBuild extends DotNet {
    * </ol>
    */
   @Override
-  protected void addCommandLineArguments(@NonNull ArgumentListBuilder args, @NonNull VariableResolver<String> resolver, @NonNull Set<String> sensitive) {
+  protected void addCommandLineArguments(@NonNull Run<?, ?> run, @NonNull ArgumentListBuilder args, @NonNull VariableResolver<String> resolver, @NonNull Set<String> sensitive) {
     if (this.options != null) {
       for (String option : Util.tokenize(this.options)) {
         option = Util.fixEmptyAndTrim(option);

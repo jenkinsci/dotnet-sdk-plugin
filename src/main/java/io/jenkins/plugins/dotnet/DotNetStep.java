@@ -102,7 +102,7 @@ public final class DotNetStep extends Step {
       final EnvVars environment = Objects.requireNonNull(this.getContext().get(EnvVars.class));
       final Launcher launcher = Objects.requireNonNull(this.getContext().get(Launcher.class));
       final TaskListener listener = Objects.requireNonNull(this.getContext().get(TaskListener.class));
-      final Result r = this.builder.run(workspace, environment, launcher, listener, run.getCharset());
+      final Result r = this.builder.run(run, workspace, environment, launcher, listener, run.getCharset());
       if (r != Result.SUCCESS)
         run.setResult(r);
       return null;

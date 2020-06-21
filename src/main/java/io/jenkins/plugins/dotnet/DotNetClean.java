@@ -4,6 +4,7 @@ import edu.umd.cs.findbugs.annotations.CheckForNull;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.Util;
+import hudson.model.Run;
 import hudson.util.ArgumentListBuilder;
 import hudson.util.VariableResolver;
 import org.jenkinsci.Symbol;
@@ -26,15 +27,15 @@ public final class DotNetClean extends DotNetUsingMSBuild {
    * This adds:
    * <ol>
    *   <li>{@code clean}</li>
-   *   <li>Any arguments added by {@link DotNetUsingMSBuild#addCommandLineArguments(ArgumentListBuilder, VariableResolver, Set)}.</li>
+   *   <li>Any arguments added by {@link DotNetUsingMSBuild#addCommandLineArguments(Run, ArgumentListBuilder, VariableResolver, Set)}.</li>
    *   <li>{@code -f:xxx}, if a target framework moniker has been specified via {@link #setFramework(String)}.</li>
    *   <li>{@code -r:xxx}, if a runtime identifier has been specified via {@link #setRuntime(String)}.</li>
    * </ol>
    */
   @Override
-  protected void addCommandLineArguments(@NonNull ArgumentListBuilder args, @NonNull VariableResolver<String> resolver, @NonNull Set<String> sensitive) {
+  protected void addCommandLineArguments(@NonNull Run<?, ?> run, @NonNull ArgumentListBuilder args, @NonNull VariableResolver<String> resolver, @NonNull Set<String> sensitive) {
     args.add("clean");
-    super.addCommandLineArguments(args, resolver, sensitive);
+    super.addCommandLineArguments(run, args, resolver, sensitive);
     if (this.framework != null)
       args.add("-f:" + this.framework);
     if (this.runtime != null)

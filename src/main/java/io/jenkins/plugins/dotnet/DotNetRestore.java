@@ -4,6 +4,7 @@ import edu.umd.cs.findbugs.annotations.CheckForNull;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.Util;
+import hudson.model.Run;
 import hudson.util.ArgumentListBuilder;
 import hudson.util.VariableResolver;
 import org.jenkinsci.Symbol;
@@ -43,7 +44,7 @@ public final class DotNetRestore extends DotNet {
    * </ol>
    */
   @Override
-  protected void addCommandLineArguments(@NonNull ArgumentListBuilder args, @NonNull VariableResolver<String> resolver, @NonNull Set<String> sensitive) {
+  protected void addCommandLineArguments(@NonNull Run<?, ?> run, @NonNull ArgumentListBuilder args, @NonNull VariableResolver<String> resolver, @NonNull Set<String> sensitive) {
     args.add("restore");
     args.add(this.project);
     if (this.disableParallel)

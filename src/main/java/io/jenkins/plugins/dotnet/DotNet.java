@@ -13,6 +13,7 @@ import hudson.model.AbstractProject;
 import hudson.model.AutoCompletionCandidates;
 import hudson.model.BuildListener;
 import hudson.model.Result;
+import hudson.model.Run;
 import hudson.model.TaskListener;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
@@ -45,11 +46,12 @@ public abstract class DotNet extends Builder {
   /**
    * Adds command line arguments for this invocation of the {@code dotnet} CLI.
    *
+   * @param run       The run context for the command.
    * @param args      The current set of arguments.
    * @param resolver  The variable resolved to use.
    * @param sensitive The list of variable names whose content is to be considered sensitive.
    */
-  protected abstract void addCommandLineArguments(@NonNull ArgumentListBuilder args, @NonNull VariableResolver<String> resolver, @NonNull Set<String> sensitive);
+  protected abstract void addCommandLineArguments(@NonNull Run<?, ?> run, @NonNull ArgumentListBuilder args, @NonNull VariableResolver<String> resolver, @NonNull Set<String> sensitive) throws AbortException;
 
   /** Gets the descriptor for a .NET SDK. */
   @NonNull
@@ -71,7 +73,7 @@ public abstract class DotNet extends Builder {
     final EnvVars env = build.getEnvironment(listener);
     for (Map.Entry<String, String> e : build.getBuildVariables().entrySet())
       env.put(e.getKey(), e.getValue());
-    final Result r = this.run(workspace, env, launcher, listener, build.getCharset());
+    final Result r = this.run(build, workspace, env, launcher, listener, build.getCharset());
     if (r != Result.SUCCESS)
       build.setResult(r);
     return true;
@@ -80,6 +82,7 @@ public abstract class DotNet extends Builder {
   /**
    * Runs this .NET command.
    *
+   * @param run      The run context for the command.
    * @param wd       The base working directory for the command.
    * @param env      The environment variables that apply for the command.
    * @param launcher The launcher to use to execute the command.
@@ -91,7 +94,7 @@ public abstract class DotNet extends Builder {
    * @throws IOException          When an I/O error occurs.
    */
   @NonNull
-  public Result run(@NonNull FilePath wd, @NonNull EnvVars env, @NonNull Launcher launcher, @NonNull TaskListener listener, @NonNull Charset cs) throws InterruptedException, IOException {
+  public Result run(@NonNull Run<?, ?> run, @NonNull FilePath wd, @NonNull EnvVars env, @NonNull Launcher launcher, @NonNull TaskListener listener, @NonNull Charset cs) throws InterruptedException, IOException {
     final DotNetSDK sdkInstance;
     if (this.sdk == null)
       sdkInstance = null;
@@ -129,7 +132,7 @@ public abstract class DotNet extends Builder {
         { // Add the rest of the command line. Will eventually support variable expansion.
           final VariableResolver<String> vr = DotNetUtils.RESOLVE_NOTHING;
           final Set<String> sensitive = Collections.emptySet();
-          this.addCommandLineArguments(cmdLine, vr, sensitive);
+          this.addCommandLineArguments(run, cmdLine, vr, sensitive);
         }
         try {
           rc = launcher.launch().cmds(cmdLine).envs(env).stdout(scanner).pwd(wd).join();

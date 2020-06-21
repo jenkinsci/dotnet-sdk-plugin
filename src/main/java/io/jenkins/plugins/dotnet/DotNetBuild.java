@@ -4,6 +4,7 @@ import edu.umd.cs.findbugs.annotations.CheckForNull;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.Util;
+import hudson.model.Run;
 import hudson.util.ArgumentListBuilder;
 import hudson.util.VariableResolver;
 import org.jenkinsci.Symbol;
@@ -26,7 +27,7 @@ public final class DotNetBuild extends DotNetUsingMSBuild {
    * This adds:
    * <ol>
    *   <li>{@code build}</li>
-   *   <li>Any arguments added by {@link DotNetUsingMSBuild#addCommandLineArguments(ArgumentListBuilder, VariableResolver, Set)}.</li>
+   *   <li>Any arguments added by {@link DotNetUsingMSBuild#addCommandLineArguments(Run, ArgumentListBuilder, VariableResolver, Set)}.</li>
    *   <li>{@code --force}, if requested via {@link #setForce(boolean)}.</li>
    *   <li>{@code --no-dependencies}, if requested via {@link #setNoDependencies(boolean)}.</li>
    *   <li>{@code --no-incremental}, if requested via {@link #setNoIncremental(boolean)}.</li>
@@ -38,9 +39,9 @@ public final class DotNetBuild extends DotNetUsingMSBuild {
    * </ol>
    */
   @Override
-  protected void addCommandLineArguments(@NonNull ArgumentListBuilder args, @NonNull VariableResolver<String> resolver, @NonNull Set<String> sensitive) {
+  protected void addCommandLineArguments(@NonNull Run<?, ?> run, @NonNull ArgumentListBuilder args, @NonNull VariableResolver<String> resolver, @NonNull Set<String> sensitive) {
     args.add("build");
-    super.addCommandLineArguments(args, resolver, sensitive);
+    super.addCommandLineArguments(run, args, resolver, sensitive);
     if (this.force)
       args.add("--force");
     if (this.noDependencies)
