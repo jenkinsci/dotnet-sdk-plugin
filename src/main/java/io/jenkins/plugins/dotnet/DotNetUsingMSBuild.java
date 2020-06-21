@@ -17,7 +17,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/** A builder executing an MSBuild-based .NET CLI command. */
+/** A build step executing an MSBuild-based .NET CLI command. */
 public abstract class DotNetUsingMSBuild extends DotNet {
 
   /**

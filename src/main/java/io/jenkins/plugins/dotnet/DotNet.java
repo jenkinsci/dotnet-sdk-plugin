@@ -31,10 +31,9 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
-/** A builder executing a .NET CLI command. */
+/** A build step executing a .NET CLI command. */
 public abstract class DotNet extends Builder {
 
   /** {@inheritDoc} */
