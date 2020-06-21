@@ -4,7 +4,6 @@ import edu.umd.cs.findbugs.annotations.CheckForNull;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.console.LineTransformationOutputStream;
 import io.jenkins.plugins.dotnet.DotNetUtils;
-import io.jenkins.plugins.dotnet.Messages;
 
 import java.io.IOException;
 import java.io.OutputStream;

@@ -6,7 +6,6 @@ import hudson.Extension;
 import hudson.model.DownloadService;
 import hudson.model.ModelObject;
 import hudson.util.ListBoxModel;
-import io.jenkins.plugins.dotnet.Messages;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONException;
 import net.sf.json.JSONObject;

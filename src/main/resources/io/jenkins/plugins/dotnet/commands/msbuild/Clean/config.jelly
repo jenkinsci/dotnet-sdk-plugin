@@ -1,0 +1,20 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form" xmlns:s="jelly:stapler">
+
+  <s:include page="options.jelly" class="io.jenkins.plugins.dotnet.commands.msbuild.MSBuildCommand"/>
+
+  <f:advanced title="${descriptor.moreOptions}">
+
+    <f:entry title="${%Framework}" field="framework">
+      <f:textbox/>
+    </f:entry>
+
+    <f:entry title="${%Runtime}" field="runtime">
+      <f:textbox/>
+    </f:entry>
+
+    <s:include page="moreOptions.jelly" class="io.jenkins.plugins.dotnet.commands.msbuild.MSBuildCommand"/>
+
+  </f:advanced>
+
+</j:jelly>

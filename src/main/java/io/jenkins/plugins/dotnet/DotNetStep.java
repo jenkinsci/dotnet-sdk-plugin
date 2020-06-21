@@ -13,6 +13,7 @@ import hudson.model.Run;
 import hudson.model.TaskListener;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
+import io.jenkins.plugins.dotnet.commands.Command;
 import jenkins.model.Jenkins;
 import org.jenkinsci.plugins.workflow.steps.Step;
 import org.jenkinsci.plugins.workflow.steps.StepContext;
@@ -31,14 +32,14 @@ import java.util.Set;
 /**
  * A (meta)step that executes a .NET command.
  * <p>
- * Automatically wraps the builders deriving from {@link DotNet} and executes them, passing along the environment variables, unlike
+ * Automatically wraps the builders deriving from {@link Command} and executes them, passing along the environment variables, unlike
  * the CoreStep/SimpleBuildStep combo (pending <a href="https://issues.jenkins-ci.org/browse/JENKINS-29144">JENKINS-29144</a>
  * anyway).
  */
 public final class DotNetStep extends Step {
 
   /** The wrapped .NET builder. */
-  public final DotNet builder;
+  public final Command builder;
 
   /**
    * Creates a new step, wrapping the specified .NET builder.
@@ -47,7 +48,7 @@ public final class DotNetStep extends Step {
    */
   @DataBoundConstructor
   @SuppressWarnings("unused")
-  public DotNetStep(@NonNull DotNet builder) {
+  public DotNetStep(@NonNull Command builder) {
     this.builder = builder;
   }
 
@@ -71,7 +72,7 @@ public final class DotNetStep extends Step {
 
     /** The builder to execute. */
     @SuppressFBWarnings(value = "SE_TRANSIENT_FIELD_NOT_RESTORED", justification = "Only used when starting.")
-    private transient final DotNet builder;
+    private transient final Command builder;
 
     /**
      * Creates an execution object for a .NET step.
@@ -79,7 +80,7 @@ public final class DotNetStep extends Step {
      * @param builder The builder to execute.
      * @param context The step context.
      */
-    Execution(@NonNull DotNet builder, @NonNull StepContext context) {
+    Execution(@NonNull Command builder, @NonNull StepContext context) {
       super(context);
       this.builder = builder;
     }
@@ -88,11 +89,11 @@ public final class DotNetStep extends Step {
      * Runs the stored .NET builder as a step.
      * <p>
      * This gets the required information (run, working directory, environment variables, launcher and listener) from the step
-     * context and passes them along to {@link DotNet#run(FilePath, EnvVars, Launcher, TaskListener, Charset)}.
+     * context and passes them along to {@link Command#run(Run, FilePath, EnvVars, Launcher, TaskListener, Charset)}.
      *
      * @return Nothing.
      * @throws Exception When the working directory did not exist and could not be created, or when
-     *                   {@link DotNet#run(FilePath, EnvVars, Launcher, TaskListener, Charset)} threw an exception.
+     *                   {@link Command#run(Run, FilePath, EnvVars, Launcher, TaskListener, Charset)} threw an exception.
      */
     @Override
     protected Void run() throws Exception {
@@ -149,7 +150,7 @@ public final class DotNetStep extends Step {
     /**
      * Gets the descriptors to which this meta-step applies.
      *
-     * @return The {@link BuildStepDescriptor}s for the builders deriving from {@link DotNet}. Uses a dynamic lookup to avoid
+     * @return The {@link BuildStepDescriptor}s for the builders deriving from {@link Command}. Uses a dynamic lookup to avoid
      * hard-coding that list.
      */
     @SuppressWarnings("unused")
@@ -157,7 +158,7 @@ public final class DotNetStep extends Step {
     public Collection<? extends Descriptor<?>> getApplicableDescriptors() {
       final List<Descriptor<?>> r = new ArrayList<>();
       for (final Descriptor<?> d : Jenkins.get().getDescriptorList(Builder.class)) {
-        if (DotNet.class.isAssignableFrom(d.clazz))
+        if (Command.class.isAssignableFrom(d.clazz))
           r.add(d);
       }
       return r;
