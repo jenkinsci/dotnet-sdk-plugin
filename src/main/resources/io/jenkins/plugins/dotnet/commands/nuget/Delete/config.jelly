@@ -3,7 +3,11 @@
 
   <s:include page="options.jelly" class="io.jenkins.plugins.dotnet.commands.Command"/>
 
-  <f:entry title="${%Package Specification}" field="root">
+  <f:entry title="${%Package Name}" field="packageName">
+    <f:textbox/>
+  </f:entry>
+
+  <f:entry title="${%Package Version}" field="packageVersion">
     <f:textbox/>
   </f:entry>
 
@@ -17,36 +21,12 @@
 
   <f:advanced title="${descriptor.moreOptions}">
 
-    <f:entry title="${%Disable Buffering}" field="disableBuffering">
-      <f:checkbox/>
-    </f:entry>
-
     <f:entry title="${%Force English Output}" field="forceEnglishOutput">
       <f:checkbox/>
     </f:entry>
 
     <f:entry title="${%No Service Endpoint}" field="noServiceEndpoint">
       <f:checkbox/>
-    </f:entry>
-
-    <f:entry title="${%No Symbols}" field="noSymbols">
-      <f:checkbox/>
-    </f:entry>
-
-    <f:entry title="${%Skip Duplicates}" field="skipDuplicate">
-      <f:checkbox/>
-    </f:entry>
-
-    <f:entry title="${%Symbol Server API Key}" field="symbolApiKeyId">
-      <c:select/>
-    </f:entry>
-
-    <f:entry title="${%Symbol Source}" field="symbolSource">
-      <f:textbox/>
-    </f:entry>
-
-    <f:entry title="${%Timeout}" field="timeout">
-      <f:number/>
     </f:entry>
 
     <s:include page="moreOptions.jelly" class="io.jenkins.plugins.dotnet.commands.Command"/>

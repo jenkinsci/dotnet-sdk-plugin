@@ -1,6 +1,5 @@
 package io.jenkins.plugins.dotnet.commands.nuget;
 
-import com.cloudbees.plugins.credentials.CredentialsProvider;
 import edu.umd.cs.findbugs.annotations.CheckForNull;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.AbortException;
@@ -15,7 +14,6 @@ import io.jenkins.plugins.dotnet.commands.CommandDescriptor;
 import io.jenkins.plugins.dotnet.commands.Messages;
 import jenkins.model.Jenkins;
 import org.jenkinsci.Symbol;
-import org.jenkinsci.plugins.plaincredentials.StringCredentials;
 import org.kohsuke.stapler.AncestorInPath;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
@@ -23,7 +21,7 @@ import org.kohsuke.stapler.DataBoundSetter;
 import java.util.Set;
 
 /** A build step to run "{@code dotnet nuget push}", pushing a package to a server and publishing it. */
-public final class Push extends NuGetCommand {
+public final class Push extends DeleteOrPush {
 
   /** Creates a new "{@code dotnet nuget push}" build step. */
   @DataBoundConstructor
@@ -36,54 +34,60 @@ public final class Push extends NuGetCommand {
    * This adds:
    * <ol>
    *   <li>{@code nuget push}</li>
-   *   <li>The project specified via {@link #setProject(String)}.</li>
-   *   <li>{@code --api-key xxx}, if an API key was specified via {@link #setApiKeyId(String)}</li>
-   *   <li>{@code --symbol-api-key xxx}, if an API key was specified via {@link #setSymbolApiKeyId(String)}</li>
+   *   <li>The package file path specified via {@link #setRoot(String)}.</li>
+   *   <li>
+   *     Any arguments added by {@link DeleteOrPush#addCommandLineArguments(Run, ArgumentListBuilder, VariableResolver, Set)}.
+   *   </li>
+   *   <li>{@code --disable-buffering}, if requested via {@link #setDisableBuffering(boolean)}.</li>
+   *   <li>{@code --no-symbols}, if requested via {@link #setNoSymbols(boolean)}.</li>
+   *   <li>{@code --skip-duplicate}, if requested via {@link #setSkipDuplicate(boolean)}.</li>
+   *   <li>{@code --symbol-api-key xxx}, if an API key was specified via {@link #setSymbolApiKeyId(String)}.</li>
+   *   <li>{@code --symbol-source xxx}, if a symbol source was specified via {@link #setSymbolSource(String)}.</li>
+   *   <li>{@code --timeout nnn}, if a timeout was specified via {@link #setTimeout(Integer)}.</li>
    * </ol>
    */
   @Override
   protected void addCommandLineArguments(@NonNull Run<?, ?> run, @NonNull ArgumentListBuilder args, @NonNull VariableResolver<String> resolver, @NonNull Set<String> sensitive) throws AbortException {
-    args.add("nuget", "push");
-    args.add(this.project);
-    if (this.apiKeyId != null) {
-      final StringCredentials credential = CredentialsProvider.findCredentialById(this.apiKeyId, StringCredentials.class, run);
-      if (credential == null)
-        throw new AbortException(Messages.NuGet_Push_NoCredentialsFound(this.apiKeyId));
-      args.add("--api-key").add(credential.getSecret(), true);
-    }
-    if (this.symbolApiKeyId != null) {
-      final StringCredentials credential = CredentialsProvider.findCredentialById(this.symbolApiKeyId, StringCredentials.class, run);
-      if (credential == null)
-        throw new AbortException(Messages.NuGet_Push_NoCredentialsFound(this.symbolApiKeyId));
-      args.add("--symbol-api-key").add(credential.getSecret(), true);
-    }
+    args.add("nuget", "push", this.root);
+    super.addCommandLineArguments(run, args, resolver, sensitive);
+    if (this.disableBuffering)
+      args.add("--disable-buffering");
+    if (this.noSymbols)
+      args.add("--no-symbols");
+    if (this.skipDuplicate)
+      args.add("--skip-duplicate");
+    NuGetCommand.addApiKeyOption(run, args, "--symbol-api-key", this.symbolApiKeyId);
+    if (this.symbolSource != null)
+      args.add("--symbol-source", this.symbolSource);
+    if (this.timeout != null)
+      args.add("--timeout", Integer.toString(this.timeout));
   }
 
   //region Properties
 
-  private String apiKeyId;
+  private boolean disableBuffering;
 
-  /**
-   * Gets the package server API key to use.
-   *
-   * @return The package server API key to use.
-   */
-  @CheckForNull
-  public String getApiKeyId() {
-    return this.apiKeyId;
+  public boolean isDisableBuffering() {
+    return this.disableBuffering;
   }
 
-  /**
-   * Sets the package server API key to use.
-   *
-   * @param apiKeyId The package server API key to use.
-   */
   @DataBoundSetter
-  public void setApiKeyId(@CheckForNull String apiKeyId) {
-    this.apiKeyId = Util.fixEmptyAndTrim(apiKeyId);
+  public void setDisableBuffering(boolean disableBuffering) {
+    this.disableBuffering = disableBuffering;
   }
 
-  private String project;
+  private boolean noSymbols;
+
+  public boolean isNoSymbols() {
+    return this.noSymbols;
+  }
+
+  @DataBoundSetter
+  public void setNoSymbols(boolean noSymbols) {
+    this.noSymbols = noSymbols;
+  }
+
+  private String root;
 
   /**
    * Gets the project to push packages for.
@@ -91,18 +95,29 @@ public final class Push extends NuGetCommand {
    * @return The project to push packages for.
    */
   @CheckForNull
-  public String getProject() {
-    return this.project;
+  public String getRoot() {
+    return this.root;
   }
 
   /**
    * Sets the project to push packages for.
    *
-   * @param project The project to push packages for.
+   * @param root The project to push packages for.
    */
   @DataBoundSetter
-  public void setProject(@CheckForNull String project) {
-    this.project = Util.fixEmptyAndTrim(project);
+  public void setRoot(@CheckForNull String root) {
+    this.root = Util.fixEmptyAndTrim(root);
+  }
+
+  private boolean skipDuplicate;
+
+  public boolean isSkipDuplicate() {
+    return this.skipDuplicate;
+  }
+
+  @DataBoundSetter
+  public void setSkipDuplicate(boolean skipDuplicate) {
+    this.skipDuplicate = skipDuplicate;
   }
 
   private String symbolApiKeyId;
@@ -125,6 +140,30 @@ public final class Push extends NuGetCommand {
   @DataBoundSetter
   public void setSymbolApiKeyId(@CheckForNull String symbolApiKeyId) {
     this.symbolApiKeyId = Util.fixEmptyAndTrim(symbolApiKeyId);
+  }
+
+  private String symbolSource;
+
+  public String getSymbolSource() {
+    return this.symbolSource;
+  }
+
+  @DataBoundSetter
+  public void setSymbolSource(String symbolSource) {
+    this.symbolSource = Util.fixEmptyAndTrim(symbolSource);
+  }
+
+  private Integer timeout;
+
+  public Integer getTimeout() {
+    return this.timeout;
+  }
+
+  @DataBoundSetter
+  public void setTimeout(Integer timeout) {
+    if (timeout != null && timeout <= 0)
+      timeout = null;
+    this.timeout = timeout;
   }
 
   //endregion
