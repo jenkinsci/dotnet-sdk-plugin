@@ -13,6 +13,8 @@ This includes:
   - `dotnetBuild`: runs "`dotnet build`"
   - `dotnetClean`: runs "`dotnet clean`"
   - `dotnetListPackage`: runs "`dotnet list package`"
+  - `dotnetNuGetDelete`: runs "`dotnet nuget delete`"
+  - `dotnetNuGetPush`: runs "`dotnet nuget push`"
   - `dotnetPack`: runs "`dotnet pack`"
   - `dotnetPublish`: runs "`dotnet publish`"
   - `dotnetRestore`: runs "`dotnet restore`"
