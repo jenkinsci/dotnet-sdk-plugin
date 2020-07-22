@@ -12,11 +12,6 @@
       <option name="url" value="https://repo1.maven.org/maven2" />
     </remote-repository>
     <remote-repository>
-      <option name="id" value="repo.jenkins-ci.org" />
-      <option name="name" value="repo.jenkins-ci.org" />
-      <option name="url" value="http://repo.jenkins-ci.org/public/" />
-    </remote-repository>
-    <remote-repository>
       <option name="id" value="incrementals" />
       <option name="name" value="incrementals" />
       <option name="url" value="https://repo.jenkins-ci.org/incrementals/" />
@@ -29,6 +24,11 @@
     <remote-repository>
       <option name="id" value="a2eca15c-7c02-4fe6-bd18-9c788636a6f1" />
       <option name="name" value="a2eca15c-7c02-4fe6-bd18-9c788636a6f1" />
+      <option name="url" value="http://repo.jenkins-ci.org/public/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="repo.jenkins-ci.org" />
+      <option name="name" value="repo.jenkins-ci.org" />
       <option name="url" value="http://repo.jenkins-ci.org/public/" />
     </remote-repository>
   </component>
