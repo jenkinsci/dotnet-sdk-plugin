@@ -5,13 +5,11 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.AbortException;
 import hudson.Extension;
 import hudson.Util;
-import hudson.model.Run;
-import hudson.util.ArgumentListBuilder;
 import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
-import hudson.util.VariableResolver;
 import io.jenkins.plugins.dotnet.DotNetUtils;
 import io.jenkins.plugins.dotnet.commands.CommandDescriptor;
+import io.jenkins.plugins.dotnet.commands.DotNetArguments;
 import io.jenkins.plugins.dotnet.commands.Messages;
 import jenkins.model.Jenkins;
 import org.jenkinsci.Symbol;
@@ -19,8 +17,6 @@ import org.kohsuke.stapler.AncestorInPath;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
-
-import java.util.Set;
 
 /** A build step to run "{@code dotnet nuget delete}", deleting or unlisting a specific version of a package from a server. */
 public final class Delete extends DeleteOrPush {
@@ -36,20 +32,16 @@ public final class Delete extends DeleteOrPush {
    * This adds:
    * <ol>
    *   <li>{@code nuget push}</li>
-   *   <li>
-   *     The package name and version, if specified via {@link #setPackageName(String)} and {@link #setPackageVersion(String)}.
-   *   </li>
-   *   <li>
-   *     Any arguments added by {@link DeleteOrPush#addCommandLineArguments(Run, ArgumentListBuilder, VariableResolver, Set)}.
-   *   </li>
+   *   <li>The package name, if specified via {@link #setPackageName(String)}.</li>
+   *   <li>The package version, if specified via {@link #setPackageVersion(String)}.</li>
+   *   <li>Any arguments added by {@link DeleteOrPush#addCommandLineArguments(DotNetArguments)}.</li>
    * </ol>
    */
   @Override
-  protected void addCommandLineArguments(@NonNull Run<?, ?> run, @NonNull ArgumentListBuilder args, @NonNull VariableResolver<String> resolver, @NonNull Set<String> sensitive) throws AbortException {
-    args.add("nuget", "delete");
-    if (this.packageName != null)
-      args.add(this.packageName, this.packageVersion);
-    super.addCommandLineArguments(run, args, resolver, sensitive);
+  protected void addCommandLineArguments(@NonNull DotNetArguments args) throws AbortException {
+    args.add("nuget").add("delete");
+    args.addOption(this.packageName).addOption(this.packageVersion);
+    super.addCommandLineArguments(args);
   }
 
   //region Properties

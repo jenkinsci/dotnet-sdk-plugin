@@ -71,11 +71,11 @@ public final class Runtime extends DownloadService.Downloadable {
    */
   @NonNull
   public FormValidation checkIdentifiers(@CheckForNull String text) {
-    text = DotNetUtils.normalizeList(text);
+    text = Util.fixEmptyAndTrim(text);
     if (text == null)
       return FormValidation.ok();
     final List<FormValidation> result = new ArrayList<>();
-    for (final String runtime : text.split(" ")) {
+    for (final String runtime : Util.tokenize(text)) {
       final FormValidation fv = this.checkIdentifier(runtime);
       if (fv.kind != FormValidation.Kind.OK)
         result.add(fv);

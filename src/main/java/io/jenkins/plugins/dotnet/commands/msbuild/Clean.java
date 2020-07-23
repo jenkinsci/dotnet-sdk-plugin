@@ -4,15 +4,11 @@ import edu.umd.cs.findbugs.annotations.CheckForNull;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.Util;
-import hudson.model.Run;
-import hudson.util.ArgumentListBuilder;
-import hudson.util.VariableResolver;
+import io.jenkins.plugins.dotnet.commands.DotNetArguments;
 import io.jenkins.plugins.dotnet.commands.Messages;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
-
-import java.util.Set;
 
 /** A build step to run "{@code dotnet clean}", cleaning up a project's build artifacts. */
 public final class Clean extends MSBuildCommand {
@@ -28,19 +24,17 @@ public final class Clean extends MSBuildCommand {
    * This adds:
    * <ol>
    *   <li>{@code clean}</li>
-   *   <li>Any arguments added by {@link MSBuildCommand#addCommandLineArguments(Run, ArgumentListBuilder, VariableResolver, Set)}.</li>
+   *   <li>Any arguments added by {@link MSBuildCommand#addCommandLineArguments(DotNetArguments)}.</li>
    *   <li>{@code -f:xxx}, if a target framework moniker has been specified via {@link #setFramework(String)}.</li>
    *   <li>{@code -r:xxx}, if a runtime identifier has been specified via {@link #setRuntime(String)}.</li>
    * </ol>
    */
   @Override
-  protected void addCommandLineArguments(@NonNull Run<?, ?> run, @NonNull ArgumentListBuilder args, @NonNull VariableResolver<String> resolver, @NonNull Set<String> sensitive) {
+  protected void addCommandLineArguments(@NonNull DotNetArguments args) {
     args.add("clean");
-    super.addCommandLineArguments(run, args, resolver, sensitive);
-    if (this.framework != null)
-      args.add("-f:" + this.framework);
-    if (this.runtime != null)
-      args.add("-r:" + this.runtime);
+    super.addCommandLineArguments(args);
+    args.addOption('f', this.framework);
+    args.addOption('r', this.runtime);
   }
 
   //region Properties

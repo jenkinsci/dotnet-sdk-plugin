@@ -3,15 +3,12 @@ package io.jenkins.plugins.dotnet.commands.msbuild;
 import edu.umd.cs.findbugs.annotations.CheckForNull;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Util;
-import hudson.model.Run;
-import hudson.util.ArgumentListBuilder;
-import hudson.util.VariableResolver;
 import io.jenkins.plugins.dotnet.commands.Command;
+import io.jenkins.plugins.dotnet.commands.DotNetArguments;
 import io.jenkins.plugins.dotnet.commands.Messages;
 import org.kohsuke.stapler.DataBoundSetter;
 
 import java.io.IOException;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -33,25 +30,15 @@ public abstract class MSBuildCommand extends Command {
    * </ol>
    */
   @Override
-  protected void addCommandLineArguments(@NonNull Run<?, ?> run, @NonNull ArgumentListBuilder args, @NonNull VariableResolver<String> resolver, @NonNull Set<String> sensitive) {
-    if (this.options != null) {
-      for (String option : Util.tokenize(this.options)) {
-        option = Util.fixEmptyAndTrim(option);
-        if (option != null)
-          args.add(option);
-      }
-    }
-    if (this.noLogo)
-      args.add("--nologo");
-    if (this.verbosity != null)
-      args.add("-v:" + this.verbosity);
-    args.add(this.project);
-    if (this.outputDirectory != null)
-      args.add("--output", this.outputDirectory);
-    if (this.configuration != null)
-      args.add("-c:" + this.configuration);
+  protected void addCommandLineArguments(@NonNull DotNetArguments args) {
+    args.addOptions(this.options);
+    args.addFlag("nologo", this.noLogo);
+    args.addOption('v', this.verbosity);
+    args.addOption(this.project);
+    args.addOption("output", this.outputDirectory);
+    args.addOption('c', this.configuration);
     try {
-      args.addKeyValuePairsFromPropertyString("-p:", this.properties, resolver, sensitive);
+      args.addPropertyOptions("-p:", this.properties);
     }
     catch (IOException e) {
       MSBuildCommand.LOGGER.log(Level.FINE, Messages.MSBuild_Command_BadProperties(), e);

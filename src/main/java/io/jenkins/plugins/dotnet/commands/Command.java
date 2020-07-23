@@ -16,17 +16,13 @@ import hudson.model.TaskListener;
 import hudson.tasks.Builder;
 import hudson.tools.ToolInstallation;
 import hudson.util.ArgumentListBuilder;
-import hudson.util.VariableResolver;
 import io.jenkins.plugins.dotnet.DotNetSDK;
-import io.jenkins.plugins.dotnet.DotNetUtils;
 import io.jenkins.plugins.dotnet.console.DiagnosticScanner;
 import org.kohsuke.stapler.DataBoundSetter;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.Collections;
 import java.util.Map;
-import java.util.Set;
 
 /** A build step executing a .NET CLI command. */
 public abstract class Command extends Builder {
@@ -40,12 +36,9 @@ public abstract class Command extends Builder {
   /**
    * Adds command line arguments for this invocation of the {@code dotnet} CLI.
    *
-   * @param run       The run context for the command.
-   * @param args      The current set of arguments.
-   * @param resolver  The variable resolved to use.
-   * @param sensitive The list of variable names whose content is to be considered sensitive.
+   * @param args The current set of arguments.
    */
-  protected abstract void addCommandLineArguments(@NonNull Run<?, ?> run, @NonNull ArgumentListBuilder args, @NonNull VariableResolver<String> resolver, @NonNull Set<String> sensitive) throws AbortException;
+  protected abstract void addCommandLineArguments(@NonNull DotNetArguments args) throws AbortException;
 
   /** Gets the descriptor for a .NET SDK. */
   @NonNull
@@ -123,11 +116,7 @@ public abstract class Command extends Builder {
       int rc = -1;
       {
         final ArgumentListBuilder cmdLine = new ArgumentListBuilder(executable);
-        { // Add the rest of the command line. Will eventually support variable expansion.
-          final VariableResolver<String> vr = DotNetUtils.RESOLVE_NOTHING;
-          final Set<String> sensitive = Collections.emptySet();
-          this.addCommandLineArguments(run, cmdLine, vr, sensitive);
-        }
+        this.addCommandLineArguments(new DotNetArguments(run, cmdLine));
         try {
           rc = launcher.launch().cmds(cmdLine).envs(env).stdout(scanner).pwd(wd).join();
         }

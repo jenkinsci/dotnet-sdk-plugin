@@ -4,18 +4,12 @@ import edu.umd.cs.findbugs.annotations.CheckForNull;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.Util;
-import hudson.model.Run;
-import hudson.util.ArgumentListBuilder;
 import hudson.util.ListBoxModel;
-import hudson.util.VariableResolver;
+import io.jenkins.plugins.dotnet.commands.DotNetArguments;
 import io.jenkins.plugins.dotnet.commands.Messages;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 
 /** A build step to run "{@code dotnet publish}", publishing a project. */
 public class Publish extends MSBuildCommand {
@@ -31,7 +25,7 @@ public class Publish extends MSBuildCommand {
    * This adds:
    * <ol>
    *   <li>{@code publish}</li>
-   *   <li>Any arguments added by {@link MSBuildCommand#addCommandLineArguments(Run, ArgumentListBuilder, VariableResolver, Set)}.</li>
+   *   <li>Any arguments added by {@link MSBuildCommand#addCommandLineArguments(DotNetArguments)}.</li>
    *   <li>{@code --force}, if requested via {@link #setForce(boolean)}.</li>
    *   <li>{@code -f:xxx}, if a target framework moniker has been specified via {@link #setFramework(String)}.</li>
    *   <li>{@code --manifest xxx} for each manifest specified via {@link #setManifests(String[])}.</li>
@@ -44,29 +38,18 @@ public class Publish extends MSBuildCommand {
    * </ol>
    */
   @Override
-  protected void addCommandLineArguments(@NonNull Run<?, ?> run, @NonNull ArgumentListBuilder args, @NonNull VariableResolver<String> resolver, @NonNull Set<String> sensitive) {
+  protected void addCommandLineArguments(@NonNull DotNetArguments args) {
     args.add("publish");
-    super.addCommandLineArguments(run, args, resolver, sensitive);
-    if (this.force)
-      args.add("--force");
-    if (this.framework != null)
-      args.add("-f:" + this.framework);
-    if (this.manifests != null) {
-      for (final String manifest : this.manifests)
-        args.add("--manifest", manifest);
-    }
-    if (this.noBuild)
-      args.add("--no-build");
-    if (this.noDependencies)
-      args.add("--no-dependencies");
-    if (this.noRestore)
-      args.add("--no-restore");
-    if (this.runtime != null)
-      args.add("-r:" + this.runtime);
-    if (this.selfContained != null)
-      args.add("--self-contained", this.selfContained ? "true" : "false");
-    if (this.versionSuffix != null)
-      args.add("--version-suffix", this.versionSuffix);
+    super.addCommandLineArguments(args);
+    args.addFlag("force", this.force);
+    args.addOption('f', this.framework);
+    args.addOptions("manifest", this.manifests);
+    args.addFlag("no-build", this.noBuild);
+    args.addFlag("no-dependencies", this.noDependencies);
+    args.addFlag("no-restore", this.noRestore);
+    args.addOption('r', this.runtime);
+    args.addOption("self-contained", this.selfContained);
+    args.addOption("version-suffix", this.versionSuffix);
   }
 
   //region Properties
@@ -114,7 +97,7 @@ public class Publish extends MSBuildCommand {
     this.framework = Util.fixEmptyAndTrim(framework);
   }
 
-  private String[] manifests;
+  private String manifests;
 
   /**
    * Gets the manifests to use.
@@ -122,10 +105,8 @@ public class Publish extends MSBuildCommand {
    * @return The manifests to use.
    */
   @CheckForNull
-  public String[] getManifests() {
-    if (this.manifests == null)
-      return null;
-    return this.manifests.clone();
+  public String getManifests() {
+    return this.manifests;
   }
 
   /**
@@ -134,25 +115,8 @@ public class Publish extends MSBuildCommand {
    * @param manifests The manifests to use.
    */
   @DataBoundSetter
-  public void setManifests(@CheckForNull String[] manifests) {
-    if (manifests != null) {
-      final List<String> cleaned = new ArrayList<>();
-      for (final String manifestLine : manifests) {
-        if (manifestLine == null)
-          continue;
-        for (final String manifest : manifestLine.split("[\r\n]")) {
-          final String clean = Util.fixEmptyAndTrim(manifest);
-          if (clean != null)
-            cleaned.add(clean);
-        }
-      }
-      if (cleaned.isEmpty())
-        this.manifests = null;
-      else
-        this.manifests = cleaned.toArray(new String[0]);
-    }
-    else
-      this.manifests = null;
+  public void setManifests(@CheckForNull String manifests) {
+    this.manifests = manifests;
   }
 
   private boolean noBuild;

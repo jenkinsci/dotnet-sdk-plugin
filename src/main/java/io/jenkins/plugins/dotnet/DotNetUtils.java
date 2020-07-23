@@ -65,19 +65,4 @@ public interface DotNetUtils {
     return model;
   }
 
-  /**
-   * Normalizes a list using whitespace, commas and/or semicolons to use a single space.
-   *
-   * @param list The list to normalize.
-   *
-   * @return The normalized list, or {@code null} when {@code list} was {@code null}.
-   */
-  @CheckForNull
-  static String normalizeList(@CheckForNull String list) {
-    if (list == null)
-      return null;
-    list = list.replaceAll("(?:\\s|[,;])+", " ");
-    return Util.fixEmptyAndTrim(list);
-  }
-
 }

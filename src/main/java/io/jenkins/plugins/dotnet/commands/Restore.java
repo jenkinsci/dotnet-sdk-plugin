@@ -4,15 +4,9 @@ import edu.umd.cs.findbugs.annotations.CheckForNull;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.Util;
-import hudson.model.Run;
-import hudson.util.ArgumentListBuilder;
-import hudson.util.VariableResolver;
-import io.jenkins.plugins.dotnet.DotNetUtils;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
-
-import java.util.Set;
 
 /** A build step to run "{@code dotnet restore}", restoring packages for a project. */
 public final class Restore extends Command {
@@ -45,39 +39,22 @@ public final class Restore extends Command {
    * </ol>
    */
   @Override
-  protected void addCommandLineArguments(@NonNull Run<?, ?> run, @NonNull ArgumentListBuilder args, @NonNull VariableResolver<String> resolver, @NonNull Set<String> sensitive) {
+  protected void addCommandLineArguments(@NonNull DotNetArguments args) {
     args.add("restore");
-    args.add(this.project);
-    if (this.disableParallel)
-      args.add("--disable-parallel");
-    if (this.force)
-      args.add("--force");
-    if (this.forceEvaluate)
-      args.add("--force-evaluate");
-    if (this.ignoreFailedSources)
-      args.add("--ignore-failed-sources");
-    if (this.lockFilePath != null)
-      args.add("--lock-file-path", this.lockFilePath);
-    if (this.lockedMode)
-      args.add("--locked-mode");
-    if (this.noCache)
-      args.add("--no-cache");
-    if (this.noDependencies)
-      args.add("--no-dependencies");
-    if (this.packages != null)
-      args.add("--packages", this.packages);
-    if (this.runtimes != null) {
-      for (final String runtime : this.runtimes.split(" "))
-        args.add("-r:" + runtime);
-    }
-    if (this.sources != null) {
-      for (final String source : this.sources.split(" "))
-        args.add("-s:" + source);
-    }
-    if (this.useLockFile)
-      args.add("--use-lock-file");
-    if (this.verbosity != null)
-      args.add("-v:" + this.verbosity);
+    args.addOption(this.project);
+    args.addFlag("disable-parallel", this.disableParallel);
+    args.addFlag("force", this.force);
+    args.addFlag("force-evaluate", this.forceEvaluate);
+    args.addFlag("ignore-failed-sources", this.ignoreFailedSources);
+    args.addOption("lock-file-path", this.lockFilePath);
+    args.addFlag("locked-mode", this.lockedMode);
+    args.addFlag("no-cache", this.noCache);
+    args.addFlag("no-dependencies", this.noDependencies);
+    args.addOption("packages", this.packages);
+    args.addOptions('r', this.runtimes);
+    args.addOptions('s', this.sources);
+    args.addFlag("use-lock-file", this.useLockFile);
+    args.addOption('v', this.verbosity);
   }
 
   //region Properties
@@ -314,7 +291,7 @@ public final class Restore extends Command {
    */
   @DataBoundSetter
   public void setRuntimes(@CheckForNull String runtimes) {
-    this.runtimes = DotNetUtils.normalizeList(runtimes);
+    this.runtimes = Util.fixEmptyAndTrim(runtimes);
   }
 
   private String sources;
@@ -336,7 +313,7 @@ public final class Restore extends Command {
    */
   @DataBoundSetter
   public void setSources(@CheckForNull String sources) {
-    this.sources = DotNetUtils.normalizeList(sources);
+    this.sources = Util.fixEmptyAndTrim(sources);
   }
 
   private boolean useLockFile;

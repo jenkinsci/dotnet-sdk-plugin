@@ -4,17 +4,11 @@ import edu.umd.cs.findbugs.annotations.CheckForNull;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.Util;
-import hudson.model.Run;
-import hudson.util.ArgumentListBuilder;
 import hudson.util.FormValidation;
-import hudson.util.VariableResolver;
-import io.jenkins.plugins.dotnet.DotNetUtils;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
-
-import java.util.Set;
 
 /** A build step to run "{@code dotnet list package}", showing a project's package dependencies. */
 public final class ListPackage extends Command {
@@ -47,33 +41,20 @@ public final class ListPackage extends Command {
    * </ol>
    */
   @Override
-  protected void addCommandLineArguments(@NonNull Run<?, ?> run, @NonNull ArgumentListBuilder args, @NonNull VariableResolver<String> resolver, @NonNull Set<String> sensitive) {
+  protected void addCommandLineArguments(@NonNull DotNetArguments args) {
     args.add("list");
-    args.add(this.project);
+    args.addOption(this.project);
     args.add("package");
-    if (this.deprecated)
-      args.add("--deprecated");
-    if (this.outdated)
-      args.add("--outdated");
-    if (this.frameworks != null) {
-      for (String fmw : this.frameworks.split(" "))
-        args.add("--framework", fmw);
-    }
-    if (this.includeTransitive)
-      args.add("--include-transitive");
+    args.addFlag("deprecated", this.deprecated);
+    args.addFlag("outdated", this.outdated);
+    args.addOptions("framework", this.frameworks);
+    args.addFlag("include-transitive", this.includeTransitive);
     if (this.outdated || this.deprecated) {
-      if (this.includePrerelease)
-        args.add("--include-prerelease");
-      if (this.highestMinor)
-        args.add("--highest-minor");
-      if (this.highestPatch)
-        args.add("--highest-patch");
-      if (this.config != null)
-        args.add("--config", this.config);
-      if (this.sources != null) {
-        for (String src : this.sources.split(" "))
-          args.add("--source", src);
-      }
+      args.addFlag("include-prerelease", this.includePrerelease);
+      args.addFlag("highest-minor", this.highestMinor);
+      args.addFlag("highest-patch", this.highestPatch);
+      args.addOption("config", this.config);
+      args.addOptions("source", this.sources);
     }
   }
 
@@ -141,7 +122,7 @@ public final class ListPackage extends Command {
    */
   @DataBoundSetter
   public void setFrameworks(@CheckForNull String frameworks) {
-    this.frameworks = DotNetUtils.normalizeList(frameworks);
+    this.frameworks = Util.fixEmptyAndTrim(frameworks);
   }
 
   private boolean highestMinor;
@@ -292,7 +273,7 @@ public final class ListPackage extends Command {
    */
   @DataBoundSetter
   public void setSources(@CheckForNull String sources) {
-    this.sources = DotNetUtils.normalizeList(sources);
+    this.sources = Util.fixEmptyAndTrim(sources);
   }
 
   //endregion

@@ -4,10 +4,8 @@ import edu.umd.cs.findbugs.annotations.CheckForNull;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.Util;
-import hudson.model.Run;
-import hudson.util.ArgumentListBuilder;
 import hudson.util.FormValidation;
-import hudson.util.VariableResolver;
+import io.jenkins.plugins.dotnet.commands.DotNetArguments;
 import io.jenkins.plugins.dotnet.commands.Messages;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -17,7 +15,6 @@ import org.kohsuke.stapler.QueryParameter;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Properties;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -35,7 +32,7 @@ public final class Test extends MSBuildCommand {
    * This adds:
    * <ol>
    *   <li>{@code test}</li>
-   *   <li>Any arguments added by {@link MSBuildCommand#addCommandLineArguments(Run, ArgumentListBuilder, VariableResolver, Set)}.</li>
+   *   <li>Any arguments added by {@link MSBuildCommand#addCommandLineArguments(DotNetArguments)}.</li>
    *   <li>{@code -f:xxx}, if a target framework moniker has been specified via {@link #setFramework(String)}.</li>
    *   <li>{@code -r:xxx}, if a runtime identifier has been specified via {@link #setRuntime(String)}.</li>
    *   <li>{@code --blame}, if requested via {@link #setBlame(boolean)}.</li>
@@ -53,44 +50,29 @@ public final class Test extends MSBuildCommand {
    * </ol>
    */
   @Override
-  protected void addCommandLineArguments(@NonNull Run<?, ?> run, @NonNull ArgumentListBuilder args, @NonNull VariableResolver<String> resolver, @NonNull Set<String> sensitive) {
+  protected void addCommandLineArguments(@NonNull DotNetArguments args) {
     args.add("test");
-    super.addCommandLineArguments(run, args, resolver, sensitive);
-    if (this.framework != null)
-      args.add("-f:" + this.framework);
-    if (this.runtime != null)
-      args.add("-r:" + this.runtime);
-    if (this.blame)
-      args.add("--blame");
-    if (this.collect != null)
-      args.add("--collect", this.collect);
-    if (this.diag != null)
-      args.add("--diag", this.diag);
-    if (this.filter != null)
-      args.add("--filter", this.filter);
-    if (this.listTests)
-      args.add("--list-tests");
-    if (this.logger != null)
-      args.add("--logger", this.logger);
-    if (this.noBuild)
-      args.add("--no-build");
-    if (this.noRestore)
-      args.add("--no-restore");
-    if (this.resultsDirectory != null)
-      args.add("--results-directory", this.resultsDirectory);
-    if (this.settings != null)
-      args.add("--settings", this.settings);
-    if (this.testAdapterPath != null)
-      args.add("--test-adapter-path", this.testAdapterPath);
+    super.addCommandLineArguments(args);
+    args.addOption('f', this.framework);
+    args.addOption('r', this.runtime);
+    args.addFlag("blame", this.blame);
+    args.addOption("collect", this.collect);
+    args.addOption("diag", this.diag);
+    args.addOption("filter", this.filter);
+    args.addFlag("list-tests", this.listTests);
+    args.addOption("logger", this.logger);
+    args.addFlag("no-build", this.noBuild);
+    args.addFlag("no-restore", this.noRestore);
+    args.addOption("results-directory", this.resultsDirectory);
+    args.addOption("settings", this.settings);
+    args.addOption("test-adapter-path", this.testAdapterPath);
     // This has to be at the end
-    if (this.runSettings != null) {
-      args.add("--");
-      try {
-        args.addKeyValuePairsFromPropertyString("", this.runSettings, resolver, sensitive);
-      }
-      catch (IOException e) {
-        Test.LOGGER.log(Level.FINE, Messages.MSBuild_Test_BadRunSettings(), e);
-      }
+    args.add("--");
+    try {
+      args.addPropertyOptions("", this.runSettings);
+    }
+    catch (IOException e) {
+      Test.LOGGER.log(Level.FINE, Messages.MSBuild_Test_BadRunSettings(), e);
     }
   }
 

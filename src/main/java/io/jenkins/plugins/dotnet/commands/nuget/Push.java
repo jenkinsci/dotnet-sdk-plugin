@@ -5,20 +5,16 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.AbortException;
 import hudson.Extension;
 import hudson.Util;
-import hudson.model.Run;
-import hudson.util.ArgumentListBuilder;
 import hudson.util.ListBoxModel;
-import hudson.util.VariableResolver;
 import io.jenkins.plugins.dotnet.DotNetUtils;
 import io.jenkins.plugins.dotnet.commands.CommandDescriptor;
+import io.jenkins.plugins.dotnet.commands.DotNetArguments;
 import io.jenkins.plugins.dotnet.commands.Messages;
 import jenkins.model.Jenkins;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.AncestorInPath;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
-
-import java.util.Set;
 
 /** A build step to run "{@code dotnet nuget push}", pushing a package to a server and publishing it. */
 public final class Push extends DeleteOrPush {
@@ -35,9 +31,7 @@ public final class Push extends DeleteOrPush {
    * <ol>
    *   <li>{@code nuget push}</li>
    *   <li>The package file path specified via {@link #setRoot(String)}.</li>
-   *   <li>
-   *     Any arguments added by {@link DeleteOrPush#addCommandLineArguments(Run, ArgumentListBuilder, VariableResolver, Set)}.
-   *   </li>
+   *   <li>Any arguments added by {@link DeleteOrPush#addCommandLineArguments(DotNetArguments)}.</li>
    *   <li>{@code --disable-buffering}, if requested via {@link #setDisableBuffering(boolean)}.</li>
    *   <li>{@code --no-symbols}, if requested via {@link #setNoSymbols(boolean)}.</li>
    *   <li>{@code --skip-duplicate}, if requested via {@link #setSkipDuplicate(boolean)}.</li>
@@ -47,20 +41,16 @@ public final class Push extends DeleteOrPush {
    * </ol>
    */
   @Override
-  protected void addCommandLineArguments(@NonNull Run<?, ?> run, @NonNull ArgumentListBuilder args, @NonNull VariableResolver<String> resolver, @NonNull Set<String> sensitive) throws AbortException {
-    args.add("nuget", "push", this.root);
-    super.addCommandLineArguments(run, args, resolver, sensitive);
-    if (this.disableBuffering)
-      args.add("--disable-buffering");
-    if (this.noSymbols)
-      args.add("--no-symbols");
-    if (this.skipDuplicate)
-      args.add("--skip-duplicate");
-    NuGetCommand.addApiKeyOption(run, args, "--symbol-api-key", this.symbolApiKeyId);
-    if (this.symbolSource != null)
-      args.add("--symbol-source", this.symbolSource);
-    if (this.timeout != null)
-      args.add("--timeout", Integer.toString(this.timeout));
+  protected void addCommandLineArguments(@NonNull DotNetArguments args) throws AbortException {
+    args.add("nuget").add("push");
+    args.addOption(this.root);
+    super.addCommandLineArguments(args);
+    args.addFlag("disable-buffering", this.disableBuffering);
+    args.addFlag("no-symbols", this.noSymbols);
+    args.addFlag("skip-duplicate", this.skipDuplicate);
+    args.addStringCredential("sybmol-api-key", this.symbolApiKeyId);
+    args.addOption("symbol-source", this.symbolSource);
+    args.addOption("timeout", this.timeout);
   }
 
   //region Properties

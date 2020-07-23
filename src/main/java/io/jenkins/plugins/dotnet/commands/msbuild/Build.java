@@ -4,16 +4,12 @@ import edu.umd.cs.findbugs.annotations.CheckForNull;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.Util;
-import hudson.model.Run;
-import hudson.util.ArgumentListBuilder;
-import hudson.util.VariableResolver;
 import io.jenkins.plugins.dotnet.DotNetUtils;
+import io.jenkins.plugins.dotnet.commands.DotNetArguments;
 import io.jenkins.plugins.dotnet.commands.Messages;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
-
-import java.util.Set;
 
 /** A build step to run "{@code dotnet build}", building a project. */
 public final class Build extends MSBuildCommand {
@@ -29,7 +25,7 @@ public final class Build extends MSBuildCommand {
    * This adds:
    * <ol>
    *   <li>{@code build}</li>
-   *   <li>Any arguments added by {@link MSBuildCommand#addCommandLineArguments(Run, ArgumentListBuilder, VariableResolver, Set)}.</li>
+   *   <li>Any arguments added by {@link MSBuildCommand#addCommandLineArguments(DotNetArguments)}.</li>
    *   <li>{@code --force}, if requested via {@link #setForce(boolean)}.</li>
    *   <li>{@code --no-dependencies}, if requested via {@link #setNoDependencies(boolean)}.</li>
    *   <li>{@code --no-incremental}, if requested via {@link #setNoIncremental(boolean)}.</li>
@@ -41,27 +37,17 @@ public final class Build extends MSBuildCommand {
    * </ol>
    */
   @Override
-  protected void addCommandLineArguments(@NonNull Run<?, ?> run, @NonNull ArgumentListBuilder args, @NonNull VariableResolver<String> resolver, @NonNull Set<String> sensitive) {
+  protected void addCommandLineArguments(@NonNull DotNetArguments args) {
     args.add("build");
-    super.addCommandLineArguments(run, args, resolver, sensitive);
-    if (this.force)
-      args.add("--force");
-    if (this.noDependencies)
-      args.add("--no-dependencies");
-    if (this.noIncremental)
-      args.add("--no-incremental");
-    if (this.noRestore)
-      args.add("--no-restore");
-    if (this.framework != null)
-      args.add("-f:" + this.framework);
-    if (this.runtime != null)
-      args.add("-r:" + this.runtime);
-    if (this.targets != null) {
-      for (final String target : this.targets.split(" "))
-        args.add("-t:" + target);
-    }
-    if (this.versionSuffix != null)
-      args.add("--version-suffix", this.versionSuffix);
+    super.addCommandLineArguments(args);
+    args.addFlag("force", this.force);
+    args.addFlag("no-dependencies", this.noDependencies);
+    args.addFlag("no-incremental", this.noIncremental);
+    args.addFlag("no-restore", this.noRestore);
+    args.addOption('f', this.framework);
+    args.addOption('r', this.runtime);
+    args.addOptions('t', this.targets);
+    args.addOption("version-suffix", this.versionSuffix);
   }
 
   //region Properties
@@ -213,7 +199,7 @@ public final class Build extends MSBuildCommand {
    */
   @DataBoundSetter
   public void setTargets(@CheckForNull String targets) {
-    this.targets = DotNetUtils.normalizeList(targets);
+    this.targets = Util.fixEmptyAndTrim(targets);
   }
 
   private String versionSuffix;

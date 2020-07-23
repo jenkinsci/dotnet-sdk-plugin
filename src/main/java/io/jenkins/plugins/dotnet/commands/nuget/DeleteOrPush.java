@@ -4,12 +4,8 @@ import edu.umd.cs.findbugs.annotations.CheckForNull;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.AbortException;
 import hudson.Util;
-import hudson.model.Run;
-import hudson.util.ArgumentListBuilder;
-import hudson.util.VariableResolver;
+import io.jenkins.plugins.dotnet.commands.DotNetArguments;
 import org.kohsuke.stapler.DataBoundSetter;
-
-import java.util.Set;
 
 public abstract class DeleteOrPush extends NuGetCommand {
 
@@ -18,22 +14,18 @@ public abstract class DeleteOrPush extends NuGetCommand {
    * <p>
    * This adds:
    * <ol>
-   *   <li>
-   *     Any arguments added by {@link NuGetCommand#addCommandLineArguments(Run, ArgumentListBuilder, VariableResolver, Set)}.
-   *   </li>
+   *   <li>Any arguments added by {@link NuGetCommand#addCommandLineArguments(DotNetArguments)}.</li>
    *   <li>{@code --api-key xxx}, if an API key was specified via {@link #setApiKeyId(String)}.</li>
    *   <li>{@code --no-service-endpoint}, if requested via {@link #setNoServiceEndpoint(boolean)}.</li>
    *   <li>{@code --source xxx}, if a source was specified via {@link #setSource(String)}.</li>
    * </ol>
    */
   @Override
-  protected void addCommandLineArguments(@NonNull Run<?, ?> run, @NonNull ArgumentListBuilder args, @NonNull VariableResolver<String> resolver, @NonNull Set<String> sensitive) throws AbortException {
-    super.addCommandLineArguments(run, args, resolver, sensitive);
-    NuGetCommand.addApiKeyOption(run, args, "--api-key", this.apiKeyId);
-    if (this.noServiceEndpoint)
-      args.add("--no-service-endpoint");
-    if (this.source != null)
-      args.add("--source", this.source);
+  protected void addCommandLineArguments(@NonNull DotNetArguments args) throws AbortException {
+    super.addCommandLineArguments(args);
+    args.addStringCredential("api-key", this.apiKeyId);
+    args.addFlag("no-service-endpoint", this.noServiceEndpoint);
+    args.addOption("source", this.source);
   }
 
   //region Properties

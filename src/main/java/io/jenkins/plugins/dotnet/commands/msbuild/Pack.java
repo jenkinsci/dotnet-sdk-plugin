@@ -4,15 +4,11 @@ import edu.umd.cs.findbugs.annotations.CheckForNull;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.Util;
-import hudson.model.Run;
-import hudson.util.ArgumentListBuilder;
-import hudson.util.VariableResolver;
+import io.jenkins.plugins.dotnet.commands.DotNetArguments;
 import io.jenkins.plugins.dotnet.commands.Messages;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
-
-import java.util.Set;
 
 /** A build step to run "{@code dotnet pack}", creating a NuGet package for a project. */
 public final class Pack extends MSBuildCommand {
@@ -28,7 +24,7 @@ public final class Pack extends MSBuildCommand {
    * This adds:
    * <ol>
    *   <li>{@code pack}</li>
-   *   <li>Any arguments added by {@link MSBuildCommand#addCommandLineArguments(Run, ArgumentListBuilder, VariableResolver, Set)}.</li>
+   *   <li>Any arguments added by {@link MSBuildCommand#addCommandLineArguments(DotNetArguments)}.</li>
    *   <li>{@code --force}, if requested via {@link #setForce(boolean)}.</li>
    *   <li>{@code --no-build}, if requested via {@link #setNoBuild(boolean)}.</li>
    *   <li>{@code --no-dependencies}, if requested via {@link #setNoDependencies(boolean)}.</li>
@@ -40,25 +36,17 @@ public final class Pack extends MSBuildCommand {
    * </ol>
    */
   @Override
-  protected void addCommandLineArguments(@NonNull Run<?, ?> run, @NonNull ArgumentListBuilder args, @NonNull VariableResolver<String> resolver, @NonNull Set<String> sensitive) {
+  protected void addCommandLineArguments(@NonNull DotNetArguments args) {
     args.add("pack");
-    super.addCommandLineArguments(run, args, resolver, sensitive);
-    if (this.force)
-      args.add("--force");
-    if (this.noBuild)
-      args.add("--no-build");
-    if (this.noDependencies)
-      args.add("--no-dependencies");
-    if (this.noRestore)
-      args.add("--no-restore");
-    if (this.runtime != null)
-      args.add("-r:" + this.runtime);
-    if (this.includeSource)
-      args.add("--include-source");
-    if (this.includeSymbols)
-      args.add("--include-symbols");
-    if (this.versionSuffix != null)
-      args.add("--version-suffix", this.versionSuffix);
+    super.addCommandLineArguments(args);
+    args.addFlag("force", this.force);
+    args.addFlag("no-build", this.noBuild);
+    args.addFlag("no-dependencies", this.noDependencies);
+    args.addFlag("no-restore", this.noRestore);
+    args.addOption('r', this.runtime);
+    args.addFlag("include-source", this.includeSource);
+    args.addFlag("include-symbols", this.includeSymbols);
+    args.addOption("version-suffix", this.versionSuffix);
   }
 
   //region Properties
