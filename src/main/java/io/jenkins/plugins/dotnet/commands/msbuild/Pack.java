@@ -16,6 +16,7 @@ public final class Pack extends MSBuildCommand {
   /** Creates a new "{@code dotnet pack}" build step. */
   @DataBoundConstructor
   public Pack() {
+    super("pack");
   }
 
   /**
@@ -23,7 +24,6 @@ public final class Pack extends MSBuildCommand {
    * <p>
    * This adds:
    * <ol>
-   *   <li>{@code pack}</li>
    *   <li>Any arguments added by {@link MSBuildCommand#addCommandLineArguments(DotNetArguments)}.</li>
    *   <li>{@code --force}, if requested via {@link #setForce(boolean)}.</li>
    *   <li>{@code --no-build}, if requested via {@link #setNoBuild(boolean)}.</li>
@@ -37,7 +37,6 @@ public final class Pack extends MSBuildCommand {
    */
   @Override
   protected void addCommandLineArguments(@NonNull DotNetArguments args) {
-    args.add("pack");
     super.addCommandLineArguments(args);
     args.addFlag("force", this.force);
     args.addFlag("no-build", this.noBuild);

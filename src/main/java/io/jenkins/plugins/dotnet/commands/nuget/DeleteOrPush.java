@@ -7,7 +7,11 @@ import hudson.Util;
 import io.jenkins.plugins.dotnet.commands.DotNetArguments;
 import org.kohsuke.stapler.DataBoundSetter;
 
-public abstract class DeleteOrPush extends NuGetCommand {
+public class DeleteOrPush extends NuGetCommand {
+
+  public DeleteOrPush(@NonNull String subCommand) {
+    super(subCommand);
+  }
 
   /**
    * Adds command line arguments for this .NET NuGet {@code delete} or {@code push} command invocation.

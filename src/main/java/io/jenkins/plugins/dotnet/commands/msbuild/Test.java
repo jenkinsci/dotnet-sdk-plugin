@@ -24,6 +24,7 @@ public final class Test extends MSBuildCommand {
   /** Creates a new "{@code dotnet test}" build step. */
   @DataBoundConstructor
   public Test() {
+    super("test");
   }
 
   /**
@@ -31,7 +32,6 @@ public final class Test extends MSBuildCommand {
    * <p>
    * This adds:
    * <ol>
-   *   <li>{@code test}</li>
    *   <li>Any arguments added by {@link MSBuildCommand#addCommandLineArguments(DotNetArguments)}.</li>
    *   <li>{@code -f:xxx}, if a target framework moniker has been specified via {@link #setFramework(String)}.</li>
    *   <li>{@code -r:xxx}, if a runtime identifier has been specified via {@link #setRuntime(String)}.</li>
@@ -51,7 +51,6 @@ public final class Test extends MSBuildCommand {
    */
   @Override
   protected void addCommandLineArguments(@NonNull DotNetArguments args) {
-    args.add("test");
     super.addCommandLineArguments(args);
     args.addOption('f', this.framework);
     args.addOption('r', this.runtime);

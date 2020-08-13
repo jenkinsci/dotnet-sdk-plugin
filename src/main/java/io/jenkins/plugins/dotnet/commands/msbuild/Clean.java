@@ -16,6 +16,7 @@ public final class Clean extends MSBuildCommand {
   /** Creates a new "{@code dotnet clean}" build step. */
   @DataBoundConstructor
   public Clean() {
+    super("clean");
   }
 
   /**
@@ -23,7 +24,6 @@ public final class Clean extends MSBuildCommand {
    * <p>
    * This adds:
    * <ol>
-   *   <li>{@code clean}</li>
    *   <li>Any arguments added by {@link MSBuildCommand#addCommandLineArguments(DotNetArguments)}.</li>
    *   <li>{@code -f:xxx}, if a target framework moniker has been specified via {@link #setFramework(String)}.</li>
    *   <li>{@code -r:xxx}, if a runtime identifier has been specified via {@link #setRuntime(String)}.</li>
@@ -31,7 +31,6 @@ public final class Clean extends MSBuildCommand {
    */
   @Override
   protected void addCommandLineArguments(@NonNull DotNetArguments args) {
-    args.add("clean");
     super.addCommandLineArguments(args);
     args.addOption('f', this.framework);
     args.addOption('r', this.runtime);

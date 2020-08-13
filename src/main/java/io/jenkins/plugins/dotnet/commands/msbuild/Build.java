@@ -4,7 +4,6 @@ import edu.umd.cs.findbugs.annotations.CheckForNull;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.Util;
-import io.jenkins.plugins.dotnet.DotNetUtils;
 import io.jenkins.plugins.dotnet.commands.DotNetArguments;
 import io.jenkins.plugins.dotnet.commands.Messages;
 import org.jenkinsci.Symbol;
@@ -17,6 +16,7 @@ public final class Build extends MSBuildCommand {
   /** Creates a new "{@code dotnet build}" build step. */
   @DataBoundConstructor
   public Build() {
+    super("build");
   }
 
   /**
@@ -24,7 +24,6 @@ public final class Build extends MSBuildCommand {
    * <p>
    * This adds:
    * <ol>
-   *   <li>{@code build}</li>
    *   <li>Any arguments added by {@link MSBuildCommand#addCommandLineArguments(DotNetArguments)}.</li>
    *   <li>{@code --force}, if requested via {@link #setForce(boolean)}.</li>
    *   <li>{@code --no-dependencies}, if requested via {@link #setNoDependencies(boolean)}.</li>
@@ -38,7 +37,6 @@ public final class Build extends MSBuildCommand {
    */
   @Override
   protected void addCommandLineArguments(@NonNull DotNetArguments args) {
-    args.add("build");
     super.addCommandLineArguments(args);
     args.addFlag("force", this.force);
     args.addFlag("no-dependencies", this.noDependencies);

@@ -24,6 +24,7 @@ public final class Delete extends DeleteOrPush {
   /** Creates a new "{@code dotnet nuget delete}" build step. */
   @DataBoundConstructor
   public Delete() {
+    super("delete");
   }
 
   /**
@@ -31,17 +32,15 @@ public final class Delete extends DeleteOrPush {
    * <p>
    * This adds:
    * <ol>
-   *   <li>{@code nuget push}</li>
+   *   <li>Any arguments added by {@link DeleteOrPush#addCommandLineArguments(DotNetArguments)}.</li>
    *   <li>The package name, if specified via {@link #setPackageName(String)}.</li>
    *   <li>The package version, if specified via {@link #setPackageVersion(String)}.</li>
-   *   <li>Any arguments added by {@link DeleteOrPush#addCommandLineArguments(DotNetArguments)}.</li>
    * </ol>
    */
   @Override
   protected void addCommandLineArguments(@NonNull DotNetArguments args) throws AbortException {
-    args.add("nuget").add("delete");
-    args.addOption(this.packageName).addOption(this.packageVersion);
     super.addCommandLineArguments(args);
+    args.addOption(this.packageName).addOption(this.packageVersion);
   }
 
   //region Properties

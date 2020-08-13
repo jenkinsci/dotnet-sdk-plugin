@@ -25,7 +25,7 @@ import java.nio.charset.Charset;
 import java.util.Map;
 
 /** A build step executing a .NET CLI command. */
-public abstract class Command extends Builder {
+public class Command extends Builder {
 
   /** {@inheritDoc} */
   @Override
@@ -38,7 +38,9 @@ public abstract class Command extends Builder {
    *
    * @param args The current set of arguments.
    */
-  protected abstract void addCommandLineArguments(@NonNull DotNetArguments args) throws AbortException;
+  protected void addCommandLineArguments(@NonNull DotNetArguments args) throws AbortException {
+    // nothing to add at this level
+  }
 
   /** Gets the descriptor for a .NET SDK. */
   @NonNull

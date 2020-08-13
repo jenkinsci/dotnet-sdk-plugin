@@ -13,13 +13,24 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /** A build step executing an MSBuild-based .NET CLI command. */
-public abstract class MSBuildCommand extends Command {
+public class MSBuildCommand extends Command {
+
+  public MSBuildCommand() {
+    this.command = null;
+  }
+
+  public MSBuildCommand(@NonNull String command) {
+    this.command = command;
+  }
+
+  private final String command;
 
   /**
    * {@inheritDoc}
    * <p>
    * This adds:
    * <ol>
+   *   <li>The command name, if applicable.</li>
    *   <li>Any raw options specified via {@link #setOptions(String)}.</li>
    *   <li>{@code --nologo}, if requested via {@link #setNoLogo(boolean)}.</li>
    *   <li>{@code -v:xxx}, if a verbosity has been specified via {@link #setVerbosity(String)}.</li>
@@ -31,6 +42,7 @@ public abstract class MSBuildCommand extends Command {
    */
   @Override
   protected void addCommandLineArguments(@NonNull DotNetArguments args) {
+    args.addOption(this.command);
     args.addOptions(this.options);
     args.addFlag("nologo", this.noLogo);
     args.addOption('v', this.verbosity);

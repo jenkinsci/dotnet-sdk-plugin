@@ -17,6 +17,7 @@ public class Publish extends MSBuildCommand {
   /** Creates a new "{@code dotnet publish}" build step. */
   @DataBoundConstructor
   public Publish() {
+    super("publish");
   }
 
   /**
@@ -24,7 +25,6 @@ public class Publish extends MSBuildCommand {
    * <p>
    * This adds:
    * <ol>
-   *   <li>{@code publish}</li>
    *   <li>Any arguments added by {@link MSBuildCommand#addCommandLineArguments(DotNetArguments)}.</li>
    *   <li>{@code --force}, if requested via {@link #setForce(boolean)}.</li>
    *   <li>{@code -f:xxx}, if a target framework moniker has been specified via {@link #setFramework(String)}.</li>
@@ -39,7 +39,6 @@ public class Publish extends MSBuildCommand {
    */
   @Override
   protected void addCommandLineArguments(@NonNull DotNetArguments args) {
-    args.add("publish");
     super.addCommandLineArguments(args);
     args.addFlag("force", this.force);
     args.addOption('f', this.framework);

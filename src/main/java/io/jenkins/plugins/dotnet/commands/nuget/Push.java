@@ -22,6 +22,7 @@ public final class Push extends DeleteOrPush {
   /** Creates a new "{@code dotnet nuget push}" build step. */
   @DataBoundConstructor
   public Push() {
+    super("push");
   }
 
   /**
@@ -29,9 +30,8 @@ public final class Push extends DeleteOrPush {
    * <p>
    * This adds:
    * <ol>
-   *   <li>{@code nuget push}</li>
-   *   <li>The package file path specified via {@link #setRoot(String)}.</li>
    *   <li>Any arguments added by {@link DeleteOrPush#addCommandLineArguments(DotNetArguments)}.</li>
+   *   <li>The package file path specified via {@link #setRoot(String)}.</li>
    *   <li>{@code --disable-buffering}, if requested via {@link #setDisableBuffering(boolean)}.</li>
    *   <li>{@code --no-symbols}, if requested via {@link #setNoSymbols(boolean)}.</li>
    *   <li>{@code --skip-duplicate}, if requested via {@link #setSkipDuplicate(boolean)}.</li>
@@ -42,9 +42,8 @@ public final class Push extends DeleteOrPush {
    */
   @Override
   protected void addCommandLineArguments(@NonNull DotNetArguments args) throws AbortException {
-    args.add("nuget").add("push");
-    args.addOption(this.root);
     super.addCommandLineArguments(args);
+    args.addOption(this.root);
     args.addFlag("disable-buffering", this.disableBuffering);
     args.addFlag("no-symbols", this.noSymbols);
     args.addFlag("skip-duplicate", this.skipDuplicate);
