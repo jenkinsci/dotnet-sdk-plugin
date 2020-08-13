@@ -66,12 +66,14 @@ public final class Test extends MSBuildCommand {
     args.addOption("settings", this.settings);
     args.addOption("test-adapter-path", this.testAdapterPath);
     // This has to be at the end
-    args.add("--");
-    try {
-      args.addPropertyOptions("", this.runSettings);
-    }
-    catch (IOException e) {
-      Test.LOGGER.log(Level.FINE, Messages.MSBuild_Test_BadRunSettings(), e);
+    if (this.runSettings != null) {
+      args.add("--");
+      try {
+        args.addPropertyOptions("", this.runSettings);
+      }
+      catch (IOException e) {
+        Test.LOGGER.log(Level.FINE, Messages.MSBuild_Test_BadRunSettings(), e);
+      }
     }
   }
 
