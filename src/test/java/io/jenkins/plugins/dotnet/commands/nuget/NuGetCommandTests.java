@@ -10,4 +10,18 @@ public final class NuGetCommandTests extends CommandTests {
     super.runCommandAndValidateProcessExecution(NuGetCommand::new, check -> check.expectCommand().withArgument("nuget"));
   }
 
+  @Test
+  public void forceEnglishOutputFlagWorks() throws Exception {
+    super.runCommandAndValidateProcessExecution(() -> {
+      final NuGetCommand command = new NuGetCommand();
+      command.setForceEnglishOutput(true);
+      return command;
+    }, check -> check.expectCommand().withArguments("nuget", "--force-english-output"));
+    super.runCommandAndValidateProcessExecution(() -> {
+      final NuGetCommand command = new NuGetCommand();
+      command.setForceEnglishOutput(false);
+      return command;
+    }, check -> check.expectCommand().withArguments("nuget"));
+  }
+
 }

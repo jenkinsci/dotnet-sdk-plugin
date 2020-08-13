@@ -9,6 +9,9 @@ import org.kohsuke.stapler.DataBoundSetter;
 
 public class DeleteOrPush extends NuGetCommand {
 
+  public DeleteOrPush() {
+  }
+
   public DeleteOrPush(@NonNull String subCommand) {
     super(subCommand);
   }

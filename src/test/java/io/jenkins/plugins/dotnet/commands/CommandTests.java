@@ -1,6 +1,12 @@
 package io.jenkins.plugins.dotnet.commands;
 
+import com.cloudbees.plugins.credentials.CredentialsProvider;
+import com.cloudbees.plugins.credentials.CredentialsStore;
+import com.cloudbees.plugins.credentials.SystemCredentialsProvider;
+import com.cloudbees.plugins.credentials.common.StandardCredentials;
+import com.cloudbees.plugins.credentials.domains.Domain;
 import edu.umd.cs.findbugs.annotations.NonNull;
+import hudson.ExtensionList;
 import hudson.Launcher;
 import hudson.Proc;
 import hudson.model.FreeStyleProject;
@@ -9,7 +15,6 @@ import hudson.model.TaskListener;
 import io.jenkins.plugins.dotnet.DotNetSDK;
 import org.junit.Assert;
 import org.junit.Rule;
-import org.junit.Test;
 import org.jvnet.hudson.test.FakeLauncher;
 import org.jvnet.hudson.test.JenkinsRule;
 
@@ -20,11 +25,14 @@ import java.util.List;
 import java.util.Queue;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import java.util.logging.Logger;
 
 public abstract class CommandTests {
 
   @Rule
   public final JenkinsRule rule = new JenkinsRule();
+
+  protected static final Logger LOGGER = Logger.getLogger(CommandTests.class.getName());
 
   //region Command Line Checking (Expected Commands)
 
@@ -69,12 +77,14 @@ public abstract class CommandTests {
         final List<String> actualCommandLine = actualCommand.cmds();
         final boolean[] actualMasks = actualCommand.masks();
         final int expectedSize = this.commandLine.size();
-        Assert.assertFalse("Wrong command line being executed: not enough elements.", actualCommandLine.size() < expectedSize);
-        Assert.assertFalse("Wrong command line being executed: too many elements.", actualCommandLine.size() > expectedSize);
+        final int actualSize = actualCommandLine.size();
+        CommandTests.LOGGER.info(String.format("Expected Command: %d element(s): '%s'", expectedSize, String.join("' '", this.commandLine)));
+        CommandTests.LOGGER.info(String.format("Actual   Command: %d element(s): '%s'", actualSize, String.join("' '", actualCommandLine)));
+        Assert.assertEquals("Wrong command line being executed: incorrect number of elements.", expectedSize, actualSize);
         for (int i = 0; i < expectedSize; ++i) {
           final String expectedElement = this.commandLine.get(i);
           final String actualElement = actualCommandLine.get(i);
-          Assert.assertEquals(String.format("Wrong command line being executed: element #%d has wrong content (expected: '%s', actual: '%s').", i, expectedElement, actualElement), expectedElement, actualElement);
+          Assert.assertEquals(String.format("Wrong command line being executed: element #%d has wrong content.", i), expectedElement, actualElement);
           final boolean expectedMask = this.masks.get(i) != null && this.masks.get(i);
           final boolean actualMask = actualMasks != null && actualMasks[i];
           Assert.assertFalse(String.format("Wrong command line being executed: element #%d is not masked.", i), !actualMask && expectedMask);
@@ -96,7 +106,15 @@ public abstract class CommandTests {
     }
 
     public void finish() {
-      Assert.assertTrue("Expected command not executed.", this.expectedCommands.isEmpty());
+      if (this.expectedCommands.isEmpty())
+        return;
+      while (!this.expectedCommands.isEmpty()) {
+        final ExpectedCommand expected = this.expectedCommands.remove();
+        final int expectedSize = expected.commandLine.size();
+        final String expectedCommand = String.join("' '", expected.commandLine);
+        CommandTests.LOGGER.info(String.format("Expected Command: %d element(s): '%s'", expectedSize, expectedCommand));
+      }
+      Assert.fail("Expected command(s) not executed.");
     }
 
     @Override
@@ -127,6 +145,27 @@ public abstract class CommandTests {
     }
     this.rule.buildAndAssertSuccess(project);
     launcher.finish();
+  }
+
+  @FunctionalInterface
+  protected interface Code {
+
+    void execute() throws Exception;
+
+  }
+
+  protected void withCredentials(@NonNull StandardCredentials credentials, @NonNull Code code) throws IOException {
+    // FIXME: Is this really the right way to do this?
+    final CredentialsProvider provider = ExtensionList.lookup(CredentialsProvider.class).get(SystemCredentialsProvider.ProviderImpl.class);
+    final CredentialsStore store = provider.getStore(this.rule.jenkins);
+    final Domain domain = Domain.global();
+    store.addCredentials(domain, credentials);
+    try {
+      code.execute();
+    }
+    catch (Throwable t) {
+      store.removeCredentials(domain, credentials);
+    }
   }
 
 }
