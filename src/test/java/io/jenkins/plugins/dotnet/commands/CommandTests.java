@@ -9,6 +9,7 @@ import hudson.model.TaskListener;
 import io.jenkins.plugins.dotnet.DotNetSDK;
 import org.junit.Assert;
 import org.junit.Rule;
+import org.junit.Test;
 import org.jvnet.hudson.test.FakeLauncher;
 import org.jvnet.hudson.test.JenkinsRule;
 
@@ -20,10 +21,12 @@ import java.util.Queue;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class CommandTests {
+public abstract class CommandTests {
 
   @Rule
   public final JenkinsRule rule = new JenkinsRule();
+
+  //region Command Line Checking (Expected Commands)
 
   protected static final class CommandLineChecker extends Launcher.DummyLauncher implements FakeLauncher {
 
@@ -105,6 +108,8 @@ public class CommandTests {
     }
 
   }
+
+  //endregion
 
   protected <T extends Command> void runCommandAndValidateProcessExecution(Supplier<T> createCommand, Consumer<CommandLineChecker> manageExpectations) throws Exception {
     final FreeStyleProject project = this.rule.createFreeStyleProject();

@@ -3,11 +3,11 @@ package io.jenkins.plugins.dotnet.commands.msbuild;
 import io.jenkins.plugins.dotnet.commands.CommandTests;
 import org.junit.Test;
 
-public final class BuildTests extends CommandTests {
+public final class MSBuildCommandTests extends CommandTests {
 
   @Test
   public void simpleExecutionWorks() throws Exception {
-    super.runCommandAndValidateProcessExecution(Build::new, check -> check.expectCommand().withArgument("build"));
+    super.runCommandAndValidateProcessExecution(MSBuildCommand::new, CommandLineChecker::expectCommand);
   }
 
 }

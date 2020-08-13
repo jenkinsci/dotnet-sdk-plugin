@@ -1,7 +1,12 @@
 package io.jenkins.plugins.dotnet.commands.msbuild;
 
-public final class TestTests {
+import io.jenkins.plugins.dotnet.commands.CommandTests;
 
-  // TODO: Put Unit Tests Here
+public final class TestTests extends CommandTests {
+
+  @org.junit.Test
+  public void simpleExecutionWorks() throws Exception {
+    super.runCommandAndValidateProcessExecution(Test::new, check -> check.expectCommand().withArgument("test"));
+  }
 
 }
