@@ -31,30 +31,30 @@ public class MSBuildCommand extends Command {
    * This adds:
    * <ol>
    *   <li>The command name, if applicable.</li>
-   *   <li>Any raw options specified via {@link #setOptions(String)}.</li>
-   *   <li>{@code --nologo}, if requested via {@link #setNologo(boolean)}.</li>
-   *   <li>{@code -v:xxx}, if a verbosity has been specified via {@link #setVerbosity(String)}.</li>
    *   <li>The project specified via {@link #setProject(String)}.</li>
-   *   <li>{@code --output xxx}, if an output directory has been specified via {@link #setOutputDirectory(String)}.</li>
+   *   <li>Any raw options specified via {@link #setOptions(String)}.</li>
    *   <li>{@code -c:xxx}, if a configuration has been specified via {@link #setConfiguration(String)}.</li>
+   *   <li>{@code --nologo}, if requested via {@link #setNologo(boolean)}.</li>
+   *   <li>{@code --output xxx}, if an output directory has been specified via {@link #setOutputDirectory(String)}.</li>
    *   <li>{@code -p:name=value}, for all properties specified via {@link #setProperties(String)}.</li>
+   *   <li>{@code -v:xxx}, if a verbosity has been specified via {@link #setVerbosity(String)}.</li>
    * </ol>
    */
   @Override
   protected void addCommandLineArguments(@NonNull DotNetArguments args) {
     args.addOption(this.command);
-    args.addOptions(this.options);
-    args.addFlag("nologo", this.nologo);
-    args.addOption('v', this.verbosity);
     args.addOption(this.project);
-    args.addOption("output", this.outputDirectory);
+    args.addOptions(this.options);
     args.addOption('c', this.configuration);
+    args.addFlag("nologo", this.nologo);
+    args.addOption("output", this.outputDirectory);
     try {
       args.addPropertyOptions("-p:", this.properties);
     }
     catch (IOException e) {
       MSBuildCommand.LOGGER.log(Level.FINE, Messages.MSBuild_Command_BadProperties(), e);
     }
+    args.addOption('v', this.verbosity);
   }
 
   private static final Logger LOGGER = Logger.getLogger(MSBuildCommand.class.getName());
