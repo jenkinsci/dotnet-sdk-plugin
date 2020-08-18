@@ -32,7 +32,7 @@ public class MSBuildCommand extends Command {
    * <ol>
    *   <li>The command name, if applicable.</li>
    *   <li>Any raw options specified via {@link #setOptions(String)}.</li>
-   *   <li>{@code --nologo}, if requested via {@link #setNoLogo(boolean)}.</li>
+   *   <li>{@code --nologo}, if requested via {@link #setNologo(boolean)}.</li>
    *   <li>{@code -v:xxx}, if a verbosity has been specified via {@link #setVerbosity(String)}.</li>
    *   <li>The project specified via {@link #setProject(String)}.</li>
    *   <li>{@code --output xxx}, if an output directory has been specified via {@link #setOutputDirectory(String)}.</li>
@@ -44,7 +44,7 @@ public class MSBuildCommand extends Command {
   protected void addCommandLineArguments(@NonNull DotNetArguments args) {
     args.addOption(this.command);
     args.addOptions(this.options);
-    args.addFlag("nologo", this.noLogo);
+    args.addFlag("nologo", this.nologo);
     args.addOption('v', this.verbosity);
     args.addOption(this.project);
     args.addOption("output", this.outputDirectory);
@@ -86,15 +86,15 @@ public class MSBuildCommand extends Command {
   }
 
   /** Flag indicating whether or not the MSBuild version/copyright lines should be suppressed. */
-  protected boolean noLogo;
+  protected boolean nologo;
 
   /**
    * Determines whether or not the MSBuild version/copyright lines should be suppressed.
    *
    * @return {@code true} if the MSBuild startup banner should be suppressed; {@code false} otherwise.
    */
-  public boolean isNoLogo() {
-    return this.noLogo;
+  public boolean isNologo() {
+    return this.nologo;
   }
 
   /**
@@ -103,8 +103,8 @@ public class MSBuildCommand extends Command {
    * @param noLogo {@code true} if the MSBuild startup banner should be suppressed; {@code false} otherwise.
    */
   @DataBoundSetter
-  public void setNoLogo(boolean noLogo) {
-    this.noLogo = noLogo;
+  public void setNologo(boolean noLogo) {
+    this.nologo = noLogo;
   }
 
   /** Additional options to pass to the command. */
