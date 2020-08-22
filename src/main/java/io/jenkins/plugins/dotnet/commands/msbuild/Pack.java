@@ -26,12 +26,12 @@ public final class Pack extends MSBuildCommand {
    * <ol>
    *   <li>Any arguments added by {@link MSBuildCommand#addCommandLineArguments(DotNetArguments)}.</li>
    *   <li>{@code --force}, if requested via {@link #setForce(boolean)}.</li>
+   *   <li>{@code --include-source}, if requested via {@link #setIncludeSource(boolean)}.</li>
+   *   <li>{@code --include-symbols}, if requested via {@link #setIncludeSymbols(boolean)}.</li>
    *   <li>{@code --no-build}, if requested via {@link #setNoBuild(boolean)}.</li>
    *   <li>{@code --no-dependencies}, if requested via {@link #setNoDependencies(boolean)}.</li>
    *   <li>{@code --no-restore}, if requested via {@link #setNoRestore(boolean)}.</li>
    *   <li>{@code -r:xxx}, if a runtime identifier has been specified via {@link #setRuntime(String)}.</li>
-   *   <li>{@code --include-source}, if requested via {@link #setIncludeSource(boolean)}.</li>
-   *   <li>{@code --include-symbols}, if requested via {@link #setIncludeSymbols(boolean)}.</li>
    *   <li>{@code --version-suffix xxx}, if a version suffix has been specified via {@link #setRuntime(String)}.</li>
    * </ol>
    */
@@ -39,12 +39,12 @@ public final class Pack extends MSBuildCommand {
   protected void addCommandLineArguments(@NonNull DotNetArguments args) {
     super.addCommandLineArguments(args);
     args.addFlag("force", this.force);
+    args.addFlag("include-source", this.includeSource);
+    args.addFlag("include-symbols", this.includeSymbols);
     args.addFlag("no-build", this.noBuild);
     args.addFlag("no-dependencies", this.noDependencies);
     args.addFlag("no-restore", this.noRestore);
     args.addOption('r', this.runtime);
-    args.addFlag("include-source", this.includeSource);
-    args.addFlag("include-symbols", this.includeSymbols);
     args.addOption("version-suffix", this.versionSuffix);
   }
 
