@@ -74,7 +74,7 @@ public final class Delete extends DeleteOrPush {
   /** A descriptor for "{@code dotnet nuget delete}" build steps. */
   @Extension
   @Symbol("dotnetNuGetDelete")
-  public static final class DescriptorImpl extends CommandDescriptor {
+  public static final class DescriptorImpl extends NuGetCommandDescriptor {
 
     /** Creates a new "{@code dotnet nuget delete}" build step descriptor instance. */
     public DescriptorImpl() {
