@@ -267,6 +267,8 @@ public final class DotNetArguments {
    * @param propertyString The Java-style property string to process; it will have variable substitution applied.
    *
    * @return This .NET CLI argument processor.
+   *
+   * @throws IOException When {@code propertyString} could not be loaded as a set of properties.
    */
   public DotNetArguments addPropertyOptions(@NonNull String prefix, @CheckForNull String propertyString) throws IOException {
     this.cmdLine.addKeyValuePairsFromPropertyString(prefix, propertyString, this.resolver, this.sensitive);
@@ -281,6 +283,8 @@ public final class DotNetArguments {
    *               If it expands to {@code null}, no argument is added.
    *
    * @return This .NET CLI argument processor.
+   *
+   * @throws AbortException When no matching string credential could be found.
    */
   public DotNetArguments addStringCredential(@NonNull String option, @CheckForNull String value) throws AbortException {
     final Secret secret = this.expandStringCredential(value);

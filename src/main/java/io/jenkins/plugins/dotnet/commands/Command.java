@@ -37,12 +37,20 @@ public class Command extends Builder {
    * Adds command line arguments for this invocation of the {@code dotnet} CLI.
    *
    * @param args The current set of arguments.
+   *
+   * @throws AbortException When something goes wrong.
    */
   protected void addCommandLineArguments(@NonNull DotNetArguments args) throws AbortException {
     // nothing to add at this level
   }
 
-  /** Gets the descriptor for a .NET SDK. */
+  /**
+   * Gets the descriptor for a .NET SDK.
+   *
+   * @return The descriptor for a .NET SDK.
+   *
+   * @throws AbortException When the descriptor could not be found.
+   */
   @NonNull
   public static DotNetSDK.DescriptorImpl getSdkDescriptor() throws AbortException {
     // spotbugs does not like explicit throws of NullPointerException (see https://github.com/spotbugs/spotbugs/issues/1175), so we

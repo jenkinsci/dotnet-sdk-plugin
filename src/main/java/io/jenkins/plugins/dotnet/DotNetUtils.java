@@ -50,7 +50,8 @@ public interface DotNetUtils {
   /**
    * Fills a listbox model with all available string credentials.
    *
-   * @param context The context to use to obtain the credentials.
+   * @param context    The context to use to obtain the credentials.
+   * @param allowEmpty Indicates whether to include an empty ("no credential selected") option in the listbox.
    *
    * @return A suitably filled listbox model.
    */
