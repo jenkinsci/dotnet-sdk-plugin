@@ -101,6 +101,21 @@ public final class MSBuildCommandTests extends CommandTests {
     }, check -> check.expectCommand().withArgument("-p:MyProperty=Value Containing=An Equals Sign"));
     super.runCommandAndValidateProcessExecution(() -> {
       final MSBuildCommand command = new MSBuildCommand();
+      command.setProperties("SingleIdentifier");
+      return command;
+    }, check -> check.expectCommand().withArgument("-p:SingleIdentifier="));
+    super.runCommandAndValidateProcessExecution(() -> {
+      final MSBuildCommand command = new MSBuildCommand();
+      command.setProperties("  ");
+      return command;
+    }, CommandLineChecker::expectCommand);
+    super.runCommandAndValidateProcessExecution(() -> {
+      final MSBuildCommand command = new MSBuildCommand();
+      command.setProperties("");
+      return command;
+    }, CommandLineChecker::expectCommand);
+    super.runCommandAndValidateProcessExecution(() -> {
+      final MSBuildCommand command = new MSBuildCommand();
       command.setProperties(null);
       return command;
     }, CommandLineChecker::expectCommand);
