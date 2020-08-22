@@ -28,7 +28,7 @@ public class Publish extends MSBuildCommand {
    *   <li>Any arguments added by {@link MSBuildCommand#addCommandLineArguments(DotNetArguments)}.</li>
    *   <li>{@code --force}, if requested via {@link #setForce(boolean)}.</li>
    *   <li>{@code -f:xxx}, if a target framework moniker has been specified via {@link #setFramework(String)}.</li>
-   *   <li>{@code --manifest xxx} for each manifest specified via {@link #setManifests(String[])}.</li>
+   *   <li>{@code --manifest xxx} for each manifest specified via {@link #setManifests(String)}.</li>
    *   <li>{@code --no-build}, if requested via {@link #setNoBuild(boolean)}.</li>
    *   <li>{@code --no-dependencies}, if requested via {@link #setNoDependencies(boolean)}.</li>
    *   <li>{@code --no-restore}, if requested via {@link #setNoRestore(boolean)}.</li>
