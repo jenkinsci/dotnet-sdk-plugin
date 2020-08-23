@@ -23,6 +23,7 @@ public final class Restore extends Command {
    * <ol>
    *   <li>{@code restore}</li>
    *   <li>The project specified via {@link #setProject(String)}.</li>
+   *   <li>{@code --configfile xxx}, if a config file was specified via {@link #setConfigfile(String)}.</li>
    *   <li>{@code --disable-parallel}, if requested via {@link #setDisableParallel(boolean)}.</li>
    *   <li>{@code --force}, if requested via {@link #setForce(boolean)}.</li>
    *   <li>{@code --force-evaluate}, if requested via {@link #setForceEvaluate(boolean)}.</li>
@@ -42,6 +43,7 @@ public final class Restore extends Command {
   protected void addCommandLineArguments(@NonNull DotNetArguments args) {
     args.add("restore");
     args.addOption(this.project);
+    args.addOption("configfile", this.configfile);
     args.addFlag("disable-parallel", this.disableParallel);
     args.addFlag("force", this.force);
     args.addFlag("force-evaluate", this.forceEvaluate);
@@ -58,6 +60,27 @@ public final class Restore extends Command {
   }
 
   //region Properties
+
+  private String configfile;
+
+  /**
+   * Gets the NuGet configuration (nuget.config) file to use.
+   *
+   * @return The NuGet configuration (nuget.config) file to use.
+   */
+  public String getConfigfile() {
+    return this.configfile;
+  }
+
+  /**
+   * Sets the NuGet configuration (nuget.config) file to use.
+   *
+   * @param configfile The NuGet configuration (nuget.config) file to use.
+   */
+  @DataBoundSetter
+  public void setConfigfile(String configfile) {
+    this.configfile = Util.fixEmptyAndTrim(configfile);
+  }
 
   private boolean disableParallel;
 

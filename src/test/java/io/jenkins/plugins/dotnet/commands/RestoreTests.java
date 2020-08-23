@@ -22,6 +22,22 @@ public final class RestoreTests extends CommandTests {
     }, check -> check.expectCommand().withArguments("restore", RestoreTests.PROJECT));
   }
 
+  private static final String CONFIGFILE = "/path/to/OldGet.config";
+
+  @Test
+  public void configfileOptionWorks() throws Exception {
+    super.runCommandAndValidateProcessExecution(() -> {
+      final Restore command = new Restore();
+      command.setConfigfile(RestoreTests.CONFIGFILE);
+      return command;
+    }, check -> check.expectCommand().withArguments("restore", "--configfile", RestoreTests.CONFIGFILE));
+    super.runCommandAndValidateProcessExecution(() -> {
+      final Restore command = new Restore();
+      command.setConfigfile(null);
+      return command;
+    }, check -> check.expectCommand().withArguments("restore"));
+  }
+
   @Test
   public void disableParallelFlagWorks() throws Exception {
     super.runCommandAndValidateProcessExecution(() -> {
