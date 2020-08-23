@@ -19,9 +19,12 @@ This includes:
   - `dotnetPublish`: runs "`dotnet publish`"
   - `dotnetRestore`: runs "`dotnet restore`"
   - `dotnetTest`: runs "`dotnet test`"
+  - `dotnetToolRestore`: runs "`dotnet tool restore`"
 
 The builders are just for convenience; when using the build wrapper, any dotnet command line can
 be executed using a batch or shell step, as applicable.
+
+*Note:* There is __no guarantee__ that names of commands/parameters/... won't change before the 1.0 release.
 
 ## Release Notes
 
