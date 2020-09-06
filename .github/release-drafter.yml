@@ -1,0 +1,4 @@
+# Inherit base settings from  https://github.com/jenkinsci/.github/blob/master/.github/release-drafter.yml
+_extends: .github
+name-template: .NET SDK Support $NEXT_PATCH_VERSION
+tag-template: dotnet-sdk-$NEXT_PATCH_VERSION
