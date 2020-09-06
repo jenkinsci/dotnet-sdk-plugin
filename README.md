@@ -38,4 +38,4 @@ File them under the `JENKINS` project, making sure to add the `dotnet-sdk-plugin
 
 ## Release Notes
 
-Available in the [Change Log](ChangeLog.md).
+Available as part of the [GitHub Releases](https://github.com/jenkinsci/dotnet-sdk-plugin/releases).
