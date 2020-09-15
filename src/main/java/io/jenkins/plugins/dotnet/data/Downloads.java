@@ -206,8 +206,17 @@ public final class Downloads extends DownloadService.Downloadable {
       }
       {
         final Object value = json.get("status");
-        if (value instanceof String)
-          this.status = Enum.valueOf(Status.class, (String) value);
+        if (value instanceof String) {
+          Status status;
+          try {
+            status = Enum.valueOf(Status.class, (String) value);
+          }
+          catch (Throwable t) {
+            Downloads.LOGGER.warning(String.format("Encountered an unsupported version status ('%s').", value));
+            status = Status.UNKNOWN;
+          }
+          this.status = status;
+        }
         else
           this.status = Status.UNKNOWN;
       }
@@ -241,6 +250,9 @@ public final class Downloads extends DownloadService.Downloadable {
       /** This is a preview of the next version of .NET. */
       PREVIEW,
 
+      /** This is release candidate for the next version of .NET. */
+      RC,
+
       /** The status of the version is unknown. */
       UNKNOWN,
 
@@ -264,6 +276,8 @@ public final class Downloads extends DownloadService.Downloadable {
             return Messages.Downloads_Version_Status_Maintenance();
           case PREVIEW:
             return Messages.Downloads_Version_Status_Preview();
+          case RC:
+            return Messages.Downloads_Version_Status_ReleaseCandidate();
           case UNKNOWN:
             return Messages.Downloads_Version_Status_Unknown();
           default:
