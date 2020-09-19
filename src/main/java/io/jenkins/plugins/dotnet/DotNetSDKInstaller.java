@@ -5,11 +5,11 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.Util;
-import hudson.model.AbstractProject;
 import hudson.model.AutoCompletionCandidates;
 import hudson.model.FreeStyleProject;
 import hudson.model.Node;
 import hudson.model.TaskListener;
+import hudson.model.labels.LabelExpression;
 import hudson.tools.ToolInstallation;
 import hudson.tools.ToolInstaller;
 import hudson.tools.ToolInstallerDescriptor;
@@ -216,7 +216,7 @@ public final class DotNetSDKInstaller extends ToolInstaller {
     @SuppressWarnings("unused")
     @NonNull
     public FormValidation doCheckLabel(@CheckForNull @QueryParameter String value) {
-      return AbstractProject.AbstractProjectDescriptor.validateLabelExpression(value, null);
+      return LabelExpression.validate(value, null);
     }
 
     /**
