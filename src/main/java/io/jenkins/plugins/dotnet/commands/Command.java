@@ -67,6 +67,7 @@ public class Command extends Builder implements SimpleBuildStep {
    *
    * @param run       The run context for the command.
    * @param workspace The base working directory for the command.
+   * @param env       The environment variables that apply for the command.
    * @param launcher  The launcher to use to execute the command.
    * @param listener  The listener to report command output to.
    *
@@ -74,9 +75,7 @@ public class Command extends Builder implements SimpleBuildStep {
    * @throws IOException          When an I/O error occurs.
    */
   @Override
-  public void perform(@NonNull Run<?, ?> run, @NonNull FilePath workspace, @NonNull Launcher launcher, @NonNull TaskListener listener) throws InterruptedException, IOException {
-    // * @param env       The environment variables that apply for the command.
-    final EnvVars env = run.getEnvironment(listener);
+  public void perform(@NonNull Run<?, ?> run, @NonNull FilePath workspace, @NonNull EnvVars env, @NonNull Launcher launcher, @NonNull TaskListener listener) throws InterruptedException, IOException {
     final Charset cs = run.getCharset();
     final DotNetSDK sdkInstance;
     if (this.sdk == null)
