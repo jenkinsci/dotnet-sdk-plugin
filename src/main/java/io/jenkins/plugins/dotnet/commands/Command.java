@@ -18,6 +18,7 @@ import hudson.tools.ToolInstallation;
 import hudson.util.ArgumentListBuilder;
 import io.jenkins.plugins.dotnet.DotNetSDK;
 import io.jenkins.plugins.dotnet.console.DiagnosticScanner;
+import jenkins.tasks.SimpleBuildStep;
 import org.kohsuke.stapler.DataBoundSetter;
 
 import java.io.IOException;
@@ -25,7 +26,7 @@ import java.nio.charset.Charset;
 import java.util.Map;
 
 /** A build step executing a .NET CLI command. */
-public class Command extends Builder {
+public class Command extends Builder implements SimpleBuildStep {
 
   /** {@inheritDoc} */
   @Override
@@ -61,42 +62,26 @@ public class Command extends Builder {
     return sdkDescriptor;
   }
 
-  /** {@inheritDoc} */
-  @Override
-  public boolean perform(@NonNull AbstractBuild<?, ?> build, @NonNull Launcher launcher, @NonNull BuildListener listener) throws InterruptedException, IOException {
-    final FilePath workspace = build.getWorkspace();
-    if (workspace == null)
-      throw new AbortException(Messages.Command_NoWorkspace());
-    final EnvVars env = build.getEnvironment(listener);
-    for (Map.Entry<String, String> e : build.getBuildVariables().entrySet())
-      env.put(e.getKey(), e.getValue());
-    final Result r = this.run(build, workspace, env, launcher, listener, build.getCharset());
-    if (r != Result.SUCCESS)
-      build.setResult(r);
-    return true;
-  }
-
   /**
    * Runs this .NET command.
    *
-   * @param run      The run context for the command.
-   * @param wd       The base working directory for the command.
-   * @param env      The environment variables that apply for the command.
-   * @param launcher The launcher to use to execute the command.
-   * @param listener The listener to report command output to.
-   * @param cs       The character set to use for command output.
+   * @param run       The run context for the command.
+   * @param workspace The base working directory for the command.
+   * @param env       The environment variables that apply for the command.
+   * @param launcher  The launcher to use to execute the command.
+   * @param listener  The listener to report command output to.
    *
-   * @return The command's result.
    * @throws InterruptedException When execution is interrupted.
    * @throws IOException          When an I/O error occurs.
    */
-  @NonNull
-  public Result run(@NonNull Run<?, ?> run, @NonNull FilePath wd, @NonNull EnvVars env, @NonNull Launcher launcher, @NonNull TaskListener listener, @NonNull Charset cs) throws InterruptedException, IOException {
+  @Override
+  public void perform(@NonNull Run<?, ?> run, @NonNull FilePath workspace, @NonNull EnvVars env, @NonNull Launcher launcher, @NonNull TaskListener listener) throws InterruptedException, IOException {
+    final Charset cs = run.getCharset();
     final DotNetSDK sdkInstance;
     if (this.sdk == null)
       sdkInstance = null;
     else
-      sdkInstance = Command.getSdkDescriptor().prepareAndValidateInstance(this.sdk, wd, env, listener);
+      sdkInstance = Command.getSdkDescriptor().prepareAndValidateInstance(this.sdk, workspace, env, listener);
     final String executable;
     if (sdkInstance != null) {
       executable = sdkInstance.ensureExecutableExists(launcher);
@@ -113,22 +98,22 @@ public class Command extends Builder {
       }
     }
     if (this.workDirectory != null)
-      wd = wd.child(this.workDirectory);
+      workspace = workspace.child(this.workDirectory);
     try {
       if (sdkInstance != null && this.specificSdkVersion)
-        sdkInstance.createGlobalJson(wd, listener);
+        sdkInstance.createGlobalJson(workspace, listener);
       // Note: this MUST NOT BE CLOSED, because that also closes the build listener, causing all further output to go bye-bye
       final DiagnosticScanner scanner = new DiagnosticScanner(listener.getLogger(), cs);
       if (this.showSdkInfo) {
         final ArgumentListBuilder cmdLine = new ArgumentListBuilder(executable, "--info");
-        launcher.launch().cmds(cmdLine).envs(env).stdout(scanner).pwd(wd).join();
+        launcher.launch().cmds(cmdLine).envs(env).stdout(scanner).pwd(workspace).join();
       }
       int rc = -1;
       {
         final ArgumentListBuilder cmdLine = new ArgumentListBuilder(executable);
         this.addCommandLineArguments(new DotNetArguments(run, cmdLine));
         try {
-          rc = launcher.launch().cmds(cmdLine).envs(env).stdout(scanner).pwd(wd).join();
+          rc = launcher.launch().cmds(cmdLine).envs(env).stdout(scanner).pwd(workspace).join();
         }
         finally {
           scanner.writeCompletionMessage(rc);
@@ -136,16 +121,15 @@ public class Command extends Builder {
       }
       if (this.shutDownBuildServers) {
         final ArgumentListBuilder cmdLine = new ArgumentListBuilder(executable, "build-server", "shutdown");
-        launcher.launch().cmds(cmdLine).envs(env).stdout(scanner).pwd(wd).join();
+        launcher.launch().cmds(cmdLine).envs(env).stdout(scanner).pwd(workspace).join();
       }
       // TODO: Maybe also add configuration to set the build as either failed or unstable based on return code
       if (rc != 0)
-        return Result.FAILURE;
-      if (scanner.getErrors() > 0)
-        return Result.FAILURE;
-      if (this.unstableIfWarnings && scanner.getWarnings() > 0)
-        return Result.UNSTABLE;
-      return Result.SUCCESS;
+        run.setResult(Result.FAILURE);
+      else if (scanner.getErrors() > 0)
+        run.setResult(Result.FAILURE);
+      else if (this.unstableIfWarnings && scanner.getWarnings() > 0)
+        run.setResult(Result.UNSTABLE);
     }
     catch (Throwable t) {
       Functions.printStackTrace(t, listener.fatalError(Messages.Command_ExecutionFailed()));
@@ -153,7 +137,7 @@ public class Command extends Builder {
     }
     finally {
       if (sdkInstance != null && this.specificSdkVersion)
-        DotNetSDK.removeGlobalJson(wd, listener);
+        DotNetSDK.removeGlobalJson(workspace, listener);
     }
   }
 
