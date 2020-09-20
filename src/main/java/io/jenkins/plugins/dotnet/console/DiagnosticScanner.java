@@ -142,7 +142,11 @@ public final class DiagnosticScanner extends LineTransformationOutputStream {
       if (m.matches())
         this.warnings = Integer.parseInt(m.group(1));
     }
-    if (DiagnosticNote.appliesTo(line))
+    // FIXME: Sadly, this can't usually correctly detect that another DiagnosticScanner is at work. For example, when a command is
+    // FIXME: used inside a wrapper, the decorator added by the wrapper gets wrapped in a PrintStream before being passed to the
+    // FIXME: command, making it unrecognizable.
+    // FIXME: This _could_ look for an encoded DiagnosticNote in the line bytes, but that currently doesn't seem worth it.
+    if (!(this.out instanceof DiagnosticScanner) && DiagnosticNote.appliesTo(line))
       this.out.write(this.diagnosticNote);
     this.out.write(lineBytes, 0, lineLength);
   }
