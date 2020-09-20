@@ -80,6 +80,7 @@ public final class DiagnosticNote extends ConsoleNote<Object> {
   @SuppressWarnings("rawtypes")
   @Override
   public ConsoleAnnotator annotate(@NonNull Object context, MarkupText text, int charPos) {
+    // FIXME: This logic should probably avoid adding markup to a line that already includes it.
     final String t = text.getText().replaceAll("\r?\n$", "");
     {
       Matcher m = DiagnosticNote.RE_ERROR_LINE.matcher(t);
