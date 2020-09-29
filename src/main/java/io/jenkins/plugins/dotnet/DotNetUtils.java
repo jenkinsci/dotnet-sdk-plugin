@@ -28,6 +28,40 @@ public interface DotNetUtils {
   VariableResolver<String> RESOLVE_NOTHING = name -> null;
 
   /**
+   * Performs the inverse operation of {@link Util#tokenize(String)}.
+   *
+   * @param tokens    The tokens to combine.
+   * @param delimiter The delimiter to use.
+   *
+   * @return A single string that tokenizes to the same set of tokens (with empty entries elided), or {@code null} when no tokens
+   * were provided.
+   */
+  @CheckForNull
+  static String detokenize(@CheckForNull String[] tokens, char delimiter) {
+    if (tokens == null)
+      return null;
+    final StringBuilder sb = new StringBuilder();
+    for (String token : tokens) {
+      token = Util.fixEmptyAndTrim(token);
+      if (token == null)
+        continue;
+      if (sb.length() > 0)
+        sb.append(delimiter);
+      if (token.indexOf(delimiter) >= 0)
+        token = Util.singleQuote(token);
+      else {
+        final String[] subTokens = Util.tokenize(token);
+        if (subTokens.length != 1)
+          token = Util.singleQuote(token);
+      }
+      sb.append(token);
+    }
+    if (sb.length() == 0)
+      return null;
+    return sb.toString();
+  }
+
+  /**
    * Creates an instance of a {@link hudson.console.ConsoleNote} and encodes it as bytes.
    *
    * @param createInstance A means of creating an instance. Typically this will be a constructor reference.

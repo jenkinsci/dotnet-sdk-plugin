@@ -16,6 +16,7 @@ import org.jenkinsci.plugins.plaincredentials.StringCredentials;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 /**
  * Convenience class for handling the adding of command line arguments, including variable expansions and masking of sensitive
@@ -256,6 +257,32 @@ public final class DotNetArguments {
       value = Util.fixEmptyAndTrim(value);
       if (value != null)
         this.cmdLine.add("-" + option + ":" + value);
+    }
+    return this;
+  }
+
+  /**
+   * Adds option arguments.
+   *
+   * @param option    The name of the option (without the {@code -} prefix or the {@code :} suffix).
+   * @param values    A string containing option arguments to add; it will have variable substitution applied and will then be
+   *                  tokenized to produce the options. Any parts evaluating to {@code null} will not be added.
+   * @param delimiter An additional delimiter to use when tokenizing {@code values}.
+   *
+   * @return This .NET CLI argument processor.
+   */
+  public DotNetArguments addOptions(char option, @CheckForNull String values, char delimiter) {
+    values = this.expand(values);
+    if (values == null)
+      return this;
+    for (final String value : Util.tokenize(values)) {
+      if (value == null)
+        continue;
+      for (String part : value.split(Pattern.quote(Character.toString(delimiter)))) {
+        part = Util.fixEmptyAndTrim(part);
+        if (part != null)
+          this.cmdLine.add("-" + option + ":" + part);
+      }
     }
     return this;
   }

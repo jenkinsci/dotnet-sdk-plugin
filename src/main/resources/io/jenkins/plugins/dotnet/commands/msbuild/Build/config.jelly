@@ -3,7 +3,7 @@
 
   <s:include page="options.jelly" class="io.jenkins.plugins.dotnet.commands.msbuild.MSBuildCommand"/>
 
-  <f:entry title="${%Targets}" field="targets">
+  <f:entry title="${%Targets}" field="targetString">
     <f:textbox/>
   </f:entry>
 

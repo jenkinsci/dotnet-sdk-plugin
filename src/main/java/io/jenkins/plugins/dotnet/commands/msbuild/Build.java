@@ -4,6 +4,7 @@ import edu.umd.cs.findbugs.annotations.CheckForNull;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.Util;
+import io.jenkins.plugins.dotnet.DotNetUtils;
 import io.jenkins.plugins.dotnet.commands.DotNetArguments;
 import io.jenkins.plugins.dotnet.commands.Messages;
 import org.jenkinsci.Symbol;
@@ -31,7 +32,7 @@ public final class Build extends MSBuildCommand {
    *   <li>{@code --no-restore}, if requested via {@link #setNoRestore(boolean)}.</li>
    *   <li>{@code -f:xxx}, if a target framework moniker has been specified via {@link #setFramework(String)}.</li>
    *   <li>{@code -r:xxx}, if a runtime identifier has been specified via {@link #setRuntime(String)}.</li>
-   *   <li>{@code -t:xxx} for each target specified via {@link #setTargets(String)}.</li>
+   *   <li>{@code -t:xxx} for each target specified via {@link #setTargetString(String)}.</li>
    *   <li>{@code --version-suffix xxx}, if a version suffix has been specified via {@link #setRuntime(String)}.</li>
    * </ol>
    */
@@ -44,7 +45,7 @@ public final class Build extends MSBuildCommand {
     args.addFlag("no-restore", this.noRestore);
     args.addOption('f', this.framework);
     args.addOption('r', this.runtime);
-    args.addOptions('t', this.targets);
+    args.addOptions('t', this.targets, ';');
     args.addOption("version-suffix", this.versionSuffix);
   }
 
@@ -186,7 +187,7 @@ public final class Build extends MSBuildCommand {
    * @return The targets to build.
    */
   @CheckForNull
-  public String getTargets() {
+  public String getTargetString() {
     return this.targets;
   }
 
@@ -196,8 +197,18 @@ public final class Build extends MSBuildCommand {
    * @param targets The targets to build.
    */
   @DataBoundSetter
-  public void setTargets(@CheckForNull String targets) {
+  public void setTargetString(@CheckForNull String targets) {
     this.targets = Util.fixEmptyAndTrim(targets);
+  }
+
+  /**
+   * Sets the targets to build.
+   *
+   * @param targets The targets to build.
+   */
+  @DataBoundSetter
+  public void setTargets(@CheckForNull String... targets) {
+    this.targets = DotNetUtils.detokenize(targets, ';');
   }
 
   private String versionSuffix;
