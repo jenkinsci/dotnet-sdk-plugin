@@ -45,9 +45,11 @@ public final class Build extends MSBuildCommand {
     args.addFlag("no-restore", this.noRestore);
     args.addOption('f', this.framework);
     args.addOption('r', this.runtime);
-    args.addOptions('t', this.targets, ';');
+    args.addOptions('t', this.targets, Build.TARGETS_DELIMITER);
     args.addOption("version-suffix", this.versionSuffix);
   }
+
+  private static final String TARGETS_DELIMITER = "; \t\n\r\f";
 
   //region Properties
 
@@ -185,7 +187,10 @@ public final class Build extends MSBuildCommand {
    * Gets the targets to build.
    *
    * @return The targets to build.
+   *
+   * @deprecated Use {@link #getTargets()} instead.
    */
+  @Deprecated
   @CheckForNull
   public String getTargetString() {
     return this.targets;
@@ -195,10 +200,25 @@ public final class Build extends MSBuildCommand {
    * Sets the targets to build.
    *
    * @param targets The targets to build.
+   *
+   * @deprecated Use {@link #setTargets(String...)} instead.
    */
+  @Deprecated
   @DataBoundSetter
   public void setTargetString(@CheckForNull String targets) {
     this.targets = Util.fixEmptyAndTrim(targets);
+  }
+
+  /**
+   * Gets the targets to build.
+   *
+   * @return The targets to build.
+   */
+  @CheckForNull
+  public String[] getTargets() {
+    if (this.targets == null)
+      return null;
+    return Util.tokenize(this.targets, Build.TARGETS_DELIMITER);
   }
 
   /**
