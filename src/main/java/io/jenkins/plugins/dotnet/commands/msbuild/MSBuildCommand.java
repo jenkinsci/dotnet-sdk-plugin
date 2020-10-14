@@ -3,14 +3,18 @@ package io.jenkins.plugins.dotnet.commands.msbuild;
 import edu.umd.cs.findbugs.annotations.CheckForNull;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Util;
+import io.jenkins.plugins.dotnet.DotNetUtils;
 import io.jenkins.plugins.dotnet.commands.Command;
 import io.jenkins.plugins.dotnet.commands.DotNetArguments;
 import io.jenkins.plugins.dotnet.commands.Messages;
 import org.kohsuke.stapler.DataBoundSetter;
 
 import java.io.IOException;
+import java.util.Map;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /** A build step executing an MSBuild-based .NET CLI command. */
 public class MSBuildCommand extends Command {
@@ -118,8 +122,10 @@ public class MSBuildCommand extends Command {
    * @return Additional options to pass to the command.
    */
   @CheckForNull
-  public String getOptions() {
-    return this.options;
+  public String[] getOptions() {
+    if (this.options == null)
+      return null;
+    return Util.tokenize(this.options);
   }
 
   /**
@@ -129,7 +135,35 @@ public class MSBuildCommand extends Command {
    * @param options Additional options to pass to the command.
    */
   @DataBoundSetter
-  public void setOptions(@CheckForNull String options) {
+  public void setOptions(@CheckForNull String... options) {
+    this.options = DotNetUtils.detokenize(options, ' ');
+  }
+
+  /**
+   * Gets additional options to pass to the command.
+   * Options specified via more specific settings will take precedence over options specified here.
+   *
+   * @return Additional options to pass to the command.
+   *
+   * @deprecated Use {@link #getOptions()} instead.
+   */
+  @CheckForNull
+  @Deprecated
+  public String getOptionsString() {
+    return this.options;
+  }
+
+  /**
+   * Sets additional options to pass to the command.
+   * Options specified via more specific settings will take precedence over options specified here.
+   *
+   * @param options Additional options to pass to the command.
+   *
+   * @deprecated Use {@link #setOptions(String...)} instead.
+   */
+  @DataBoundSetter
+  @Deprecated
+  public void setOptionsString(@CheckForNull String options) {
     this.options = Util.fixEmptyAndTrim(options);
   }
 
@@ -195,7 +229,33 @@ public class MSBuildCommand extends Command {
    * @return MSBuild properties to be applied to the command (one key=value setting per line).
    */
   @CheckForNull
-  public String getProperties() {
+  public Map<String, String> getProperties() throws IOException {
+    if (this.properties == null)
+      return null;
+    final Properties properties = Util.loadProperties(this.properties);
+    return properties.entrySet().stream().collect(Collectors.toMap(e -> (String) e.getKey(), e-> (String) e.getValue()));
+  }
+
+  /**
+   * Sets MSBuild properties to be applied to the command.
+   *
+   * @param properties MSBuild properties to be applied to the command (one key=value setting per line).
+   */
+  @DataBoundSetter
+  public void setProperties(@CheckForNull Map<String, String> properties) {
+    // TODO
+  }
+
+  /**
+   * Gets MSBuild properties to be applied to the command.
+   *
+   * @return MSBuild properties to be applied to the command (one key=value setting per line).
+   *
+   * @deprecated Use {@link #getProperties()} instead.
+   */
+  @CheckForNull
+  @Deprecated
+  public String getPropertiesString() {
     return this.properties;
   }
 
@@ -205,7 +265,8 @@ public class MSBuildCommand extends Command {
    * @param properties MSBuild properties to be applied to the command (one key=value setting per line).
    */
   @DataBoundSetter
-  public void setProperties(@CheckForNull String properties) {
+  @Deprecated
+  public void setPropertiesString(@CheckForNull String properties) {
     this.properties = Util.fixEmpty(properties);
   }
 

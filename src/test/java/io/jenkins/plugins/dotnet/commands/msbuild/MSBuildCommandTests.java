@@ -58,12 +58,12 @@ public final class MSBuildCommandTests extends CommandTests {
   public void optionsOptionWorks() throws Exception {
     super.runCommandAndValidateProcessExecution(() -> {
       final MSBuildCommand command = new MSBuildCommand();
-      command.setOptions(MSBuildCommandTests.OPTIONS);
+      command.setOptionsString(MSBuildCommandTests.OPTIONS);
       return command;
     }, check -> check.expectCommand().withArguments(Util.tokenize(MSBuildCommandTests.OPTIONS)));
     super.runCommandAndValidateProcessExecution(() -> {
       final MSBuildCommand command = new MSBuildCommand();
-      command.setOptions(null);
+      command.setOptionsString(null);
       return command;
     }, CommandLineChecker::expectCommand);
   }
@@ -96,27 +96,27 @@ public final class MSBuildCommandTests extends CommandTests {
     // Note: this cannot test a string with multiple properties, because their order in the result cannot be guaranteed.
     super.runCommandAndValidateProcessExecution(() -> {
       final MSBuildCommand command = new MSBuildCommand();
-      command.setProperties(MSBuildCommandTests.PROPERTIES);
+      command.setPropertiesString(MSBuildCommandTests.PROPERTIES);
       return command;
     }, check -> check.expectCommand().withArgument("-p:MyProperty=Value Containing=An Equals Sign"));
     super.runCommandAndValidateProcessExecution(() -> {
       final MSBuildCommand command = new MSBuildCommand();
-      command.setProperties("SingleIdentifier");
+      command.setPropertiesString("SingleIdentifier");
       return command;
     }, check -> check.expectCommand().withArgument("-p:SingleIdentifier="));
     super.runCommandAndValidateProcessExecution(() -> {
       final MSBuildCommand command = new MSBuildCommand();
-      command.setProperties("  ");
+      command.setPropertiesString("  ");
       return command;
     }, CommandLineChecker::expectCommand);
     super.runCommandAndValidateProcessExecution(() -> {
       final MSBuildCommand command = new MSBuildCommand();
-      command.setProperties("");
+      command.setPropertiesString("");
       return command;
     }, CommandLineChecker::expectCommand);
     super.runCommandAndValidateProcessExecution(() -> {
       final MSBuildCommand command = new MSBuildCommand();
-      command.setProperties(null);
+      command.setPropertiesString(null);
       return command;
     }, CommandLineChecker::expectCommand);
   }
