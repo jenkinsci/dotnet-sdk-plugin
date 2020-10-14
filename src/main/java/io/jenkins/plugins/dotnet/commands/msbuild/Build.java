@@ -187,32 +187,6 @@ public final class Build extends MSBuildCommand {
    * Gets the targets to build.
    *
    * @return The targets to build.
-   *
-   * @deprecated Use {@link #getTargets()} instead.
-   */
-  @Deprecated
-  @CheckForNull
-  public String getTargetString() {
-    return this.targets;
-  }
-
-  /**
-   * Sets the targets to build.
-   *
-   * @param targets The targets to build.
-   *
-   * @deprecated Use {@link #setTargets(String...)} instead.
-   */
-  @Deprecated
-  @DataBoundSetter
-  public void setTargetString(@CheckForNull String targets) {
-    this.targets = Util.fixEmptyAndTrim(targets);
-  }
-
-  /**
-   * Gets the targets to build.
-   *
-   * @return The targets to build.
    */
   @CheckForNull
   public String[] getTargets() {
@@ -229,6 +203,32 @@ public final class Build extends MSBuildCommand {
   @DataBoundSetter
   public void setTargets(@CheckForNull String... targets) {
     this.targets = DotNetUtils.detokenize(targets, ';');
+  }
+
+  /**
+   * Gets the targets to build.
+   *
+   * @return The targets to build.
+   *
+   * @deprecated Use {@link #getTargets()} instead.
+   */
+  @CheckForNull
+  @Deprecated
+  public String getTargetsString() {
+    return this.targets;
+  }
+
+  /**
+   * Sets the targets to build.
+   *
+   * @param targets The targets to build.
+   *
+   * @deprecated Use {@link #setTargets(String...)} instead.
+   */
+  @DataBoundSetter
+  @Deprecated
+  public void setTargetsString(@CheckForNull String targets) {
+    this.targets = Util.fixEmptyAndTrim(targets);
   }
 
   private String versionSuffix;

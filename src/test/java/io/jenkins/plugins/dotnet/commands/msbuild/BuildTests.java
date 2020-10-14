@@ -117,7 +117,7 @@ public final class BuildTests extends CommandTests {
   public void targetStringOptionWorks() throws Exception {
     super.runCommandAndValidateProcessExecution(() -> {
       final Build command = new Build();
-      command.setTargetString(String.join(" ", BuildTests.TARGETS));
+      command.setTargetsString(String.join(" ", BuildTests.TARGETS));
       return command;
     }, check -> {
       final String[] targets = Stream.of(BuildTests.TARGETS).map(s -> "-t:" + s).toArray(String[]::new);
@@ -125,7 +125,7 @@ public final class BuildTests extends CommandTests {
     });
     super.runCommandAndValidateProcessExecution(() -> {
       final Build command = new Build();
-      command.setTargetString(String.join(";", BuildTests.TARGETS));
+      command.setTargetsString(String.join(";", BuildTests.TARGETS));
       return command;
     }, check -> {
       final String[] targets = Stream.of(BuildTests.TARGETS).map(s -> "-t:" + s).toArray(String[]::new);
@@ -133,12 +133,12 @@ public final class BuildTests extends CommandTests {
     });
     super.runCommandAndValidateProcessExecution(() -> {
       final Build command = new Build();
-      command.setTargetString(BuildTests.TARGETS[0]);
+      command.setTargetsString(BuildTests.TARGETS[0]);
       return command;
     }, check -> check.expectCommand().withArguments("build", "-t:" + BuildTests.TARGETS[0]));
     super.runCommandAndValidateProcessExecution(() -> {
       final Build command = new Build();
-      command.setTargetString(null);
+      command.setTargetsString(null);
       return command;
     }, check -> check.expectCommand().withArguments("build"));
   }
