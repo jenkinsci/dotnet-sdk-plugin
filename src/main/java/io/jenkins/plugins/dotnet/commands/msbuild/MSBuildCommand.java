@@ -36,11 +36,11 @@ public class MSBuildCommand extends Command {
    * <ol>
    *   <li>The command name, if applicable.</li>
    *   <li>The project specified via {@link #setProject(String)}.</li>
-   *   <li>Any raw options specified via {@link #setOptions(String)}.</li>
+   *   <li>Any raw options specified via {@link #setOptions(String...)}.</li>
    *   <li>{@code -c:xxx}, if a configuration has been specified via {@link #setConfiguration(String)}.</li>
    *   <li>{@code --nologo}, if requested via {@link #setNologo(boolean)}.</li>
    *   <li>{@code --output xxx}, if an output directory has been specified via {@link #setOutputDirectory(String)}.</li>
-   *   <li>{@code -p:name=value}, for all properties specified via {@link #setProperties(String)}.</li>
+   *   <li>{@code -p:name=value}, for all properties specified via {@link #setProperties(Map<String,String>)}.</li>
    *   <li>{@code -v:xxx}, if a verbosity has been specified via {@link #setVerbosity(String)}.</li>
    * </ol>
    */

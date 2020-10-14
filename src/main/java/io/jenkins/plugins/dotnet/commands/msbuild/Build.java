@@ -32,7 +32,7 @@ public final class Build extends MSBuildCommand {
    *   <li>{@code --no-restore}, if requested via {@link #setNoRestore(boolean)}.</li>
    *   <li>{@code -f:xxx}, if a target framework moniker has been specified via {@link #setFramework(String)}.</li>
    *   <li>{@code -r:xxx}, if a runtime identifier has been specified via {@link #setRuntime(String)}.</li>
-   *   <li>{@code -t:xxx} for each target specified via {@link #setTargetString(String)}.</li>
+   *   <li>{@code -t:xxx} for each target specified via {@link #setTargets(String...)}.</li>
    *   <li>{@code --version-suffix xxx}, if a version suffix has been specified via {@link #setRuntime(String)}.</li>
    * </ol>
    */

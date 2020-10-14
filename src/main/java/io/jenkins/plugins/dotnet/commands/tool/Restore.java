@@ -26,12 +26,12 @@ public final class Restore extends ToolCommand {
    * This adds:
    * <ol>
    *   <li>Any arguments added by {@link ToolCommand#addCommandLineArguments(DotNetArguments)}.</li>
-   *   <li>{@code --add-source xxx}, for each source specified via {@link #setAdditionalSources(String)} (String)}.</li>
+   *   <li>{@code --add-source xxx}, for each source specified via {@link #setAdditionalSources(String)}.</li>
    *   <li>{@code --configfile xxx}, if a config file was specified via {@link #setConfigfile(String)}.</li>
    *   <li>{@code --disable-parallel}, if requested via {@link #setDisableParallel(boolean)}.</li>
    *   <li>{@code --ignore-failed-sources}, if requested via {@link #setIgnoreFailedSources(boolean)}.</li>
    *   <li>{@code --no-cache}, if requested via {@link #setNoCache(boolean)}.</li>
-   *   <li>{@code --tool-manifest xxx}, if a tool manifest was specified via {@link #setToolManifest(String)} (String)}.</li>
+   *   <li>{@code --tool-manifest xxx}, if a tool manifest was specified via {@link #setToolManifest(String)}.</li>
    *   <li>{@code -v:xxx}, if a verbosity has been specified via {@link #setVerbosity(String)}.</li>
    * </ol>
    */
