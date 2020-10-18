@@ -109,7 +109,7 @@ public abstract class CommandDescriptor extends BuildStepDescriptor<Builder> imp
    */
   @SuppressWarnings("unused")
   @NonNull
-  public FormValidation doCheckFrameworks(@CheckForNull @QueryParameter String value) {
+  public FormValidation doCheckFrameworksString(@CheckForNull @QueryParameter String value) {
     return Framework.getInstance().checkMonikers(value);
   }
 
@@ -135,7 +135,7 @@ public abstract class CommandDescriptor extends BuildStepDescriptor<Builder> imp
    */
   @SuppressWarnings("unused")
   @NonNull
-  public FormValidation doCheckRuntimes(@CheckForNull @QueryParameter String value) {
+  public FormValidation doCheckRuntimesString(@CheckForNull @QueryParameter String value) {
     return Runtime.getInstance().checkIdentifiers(value);
   }
 
