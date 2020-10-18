@@ -56,7 +56,53 @@ public final class PublishTests extends CommandTests {
   private static final String[] MANIFESTS = { "/path/to/first/manifest", "E:\\Second\\Manifest" };
 
   @Test
+  public void manifestOptionWorks() throws Exception {
+    super.runCommandAndValidateProcessExecution(() -> {
+      final Publish command = new Publish();
+      command.setManifest(PublishTests.MANIFESTS[0]);
+      return command;
+    }, check -> check.expectCommand().withArguments("publish", "--manifest", PublishTests.MANIFESTS[0]));
+    super.runCommandAndValidateProcessExecution(() -> {
+      final Publish command = new Publish();
+      command.setManifest(" ");
+      return command;
+    }, check -> check.expectCommand().withArgument("publish"));
+    super.runCommandAndValidateProcessExecution(() -> {
+      final Publish command = new Publish();
+      command.setManifest(null);
+      return command;
+    }, check -> check.expectCommand().withArgument("publish"));
+  }
+
+  @Test
   public void manifestsOptionWorks() throws Exception {
+    super.runCommandAndValidateProcessExecution(() -> {
+      final Publish command = new Publish();
+      command.setManifests(PublishTests.MANIFESTS);
+      return command;
+    }, check -> {
+      final String[] manifests = Stream.of(PublishTests.MANIFESTS).flatMap(s -> Stream.of("--manifest", s)).toArray(String[]::new);
+      check.expectCommand().withArgument("publish").withArguments(manifests);
+    });
+    super.runCommandAndValidateProcessExecution(() -> {
+      final Publish command = new Publish();
+      command.setManifests(PublishTests.MANIFESTS[0]);
+      return command;
+    }, check -> check.expectCommand().withArguments("publish", "--manifest", PublishTests.MANIFESTS[0]));
+    super.runCommandAndValidateProcessExecution(() -> {
+      final Publish command = new Publish();
+      command.setManifests("", "  ", null);
+      return command;
+    }, check -> check.expectCommand().withArgument("publish"));
+    super.runCommandAndValidateProcessExecution(() -> {
+      final Publish command = new Publish();
+      command.setManifests((String[]) null);
+      return command;
+    }, check -> check.expectCommand().withArgument("publish"));
+  }
+
+  @Test
+  public void manifestsStringOptionWorks() throws Exception {
     super.runCommandAndValidateProcessExecution(() -> {
       final Publish command = new Publish();
       command.setManifestsString(String.join(" ", PublishTests.MANIFESTS));

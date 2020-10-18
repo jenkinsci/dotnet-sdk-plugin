@@ -1,6 +1,5 @@
 package io.jenkins.plugins.dotnet.commands.msbuild;
 
-import hudson.Util;
 import io.jenkins.plugins.dotnet.commands.CommandTests;
 import org.junit.Test;
 
@@ -52,15 +51,69 @@ public final class MSBuildCommandTests extends CommandTests {
     }, CommandLineChecker::expectCommand);
   }
 
-  private static final String OPTIONS = "--random -o:ptions 'Including Whatever'";
+  private static final String[] OPTIONS = { "--random", "-o:ptions", "Including Whatever" };
+  private static final String OPTIONS_STRING = "--random -o:ptions 'Including Whatever'";
+
+  @Test
+  public void optionOptionWorks() throws Exception {
+    super.runCommandAndValidateProcessExecution(() -> {
+      final MSBuildCommand command = new MSBuildCommand();
+      command.setOption(MSBuildCommandTests.OPTIONS[0]);
+      return command;
+    }, check -> check.expectCommand().withArgument(MSBuildCommandTests.OPTIONS[0]));
+    super.runCommandAndValidateProcessExecution(() -> {
+      final MSBuildCommand command = new MSBuildCommand();
+      command.setOption(MSBuildCommandTests.OPTIONS[1]);
+      return command;
+    }, check -> check.expectCommand().withArgument(MSBuildCommandTests.OPTIONS[1]));
+    super.runCommandAndValidateProcessExecution(() -> {
+      final MSBuildCommand command = new MSBuildCommand();
+      command.setOption(MSBuildCommandTests.OPTIONS[2]);
+      return command;
+    }, check -> check.expectCommand().withArgument(MSBuildCommandTests.OPTIONS[2]));
+    super.runCommandAndValidateProcessExecution(() -> {
+      final MSBuildCommand command = new MSBuildCommand();
+      command.setOption(" ");
+      return command;
+    }, CommandLineChecker::expectCommand);
+    super.runCommandAndValidateProcessExecution(() -> {
+      final MSBuildCommand command = new MSBuildCommand();
+      command.setOption(null);
+      return command;
+    }, CommandLineChecker::expectCommand);
+  }
 
   @Test
   public void optionsOptionWorks() throws Exception {
     super.runCommandAndValidateProcessExecution(() -> {
       final MSBuildCommand command = new MSBuildCommand();
-      command.setOptionsString(MSBuildCommandTests.OPTIONS);
+      command.setOptions(MSBuildCommandTests.OPTIONS);
       return command;
-    }, check -> check.expectCommand().withArguments(Util.tokenize(MSBuildCommandTests.OPTIONS)));
+    }, check -> check.expectCommand().withArguments(MSBuildCommandTests.OPTIONS));
+    super.runCommandAndValidateProcessExecution(() -> {
+      final MSBuildCommand command = new MSBuildCommand();
+      command.setOptions(MSBuildCommandTests.OPTIONS_STRING);
+      return command;
+    }, check -> check.expectCommand().withArgument(MSBuildCommandTests.OPTIONS_STRING));
+    super.runCommandAndValidateProcessExecution(() -> {
+      final MSBuildCommand command = new MSBuildCommand();
+      command.setOptions(null, "", "  ");
+      return command;
+    }, CommandLineChecker::expectCommand);
+    super.runCommandAndValidateProcessExecution(() -> {
+      final MSBuildCommand command = new MSBuildCommand();
+      command.setOptions((String[]) null);
+      return command;
+    }, CommandLineChecker::expectCommand);
+  }
+
+  @Test
+  public void optionsStringOptionWorks() throws Exception {
+    super.runCommandAndValidateProcessExecution(() -> {
+      final MSBuildCommand command = new MSBuildCommand();
+      command.setOptionsString(MSBuildCommandTests.OPTIONS_STRING);
+      return command;
+    }, check -> check.expectCommand().withArguments(MSBuildCommandTests.OPTIONS));
     super.runCommandAndValidateProcessExecution(() -> {
       final MSBuildCommand command = new MSBuildCommand();
       command.setOptionsString(null);
@@ -84,7 +137,7 @@ public final class MSBuildCommandTests extends CommandTests {
     }, CommandLineChecker::expectCommand);
   }
 
-  private static final String PROPERTIES = "# A comment\n" +
+  private static final String PROPERTIES_STRING = "# A comment\n" +
     "\n" +
     "# That was a blank line\n" +
     "MyProperty=Value \\\n" +
@@ -92,11 +145,11 @@ public final class MSBuildCommandTests extends CommandTests {
     "# A Comment";
 
   @Test
-  public void propertiesOptionWorks() throws Exception {
+  public void propertiesStringOptionWorks() throws Exception {
     // Note: this cannot test a string with multiple properties, because their order in the result cannot be guaranteed.
     super.runCommandAndValidateProcessExecution(() -> {
       final MSBuildCommand command = new MSBuildCommand();
-      command.setPropertiesString(MSBuildCommandTests.PROPERTIES);
+      command.setPropertiesString(MSBuildCommandTests.PROPERTIES_STRING);
       return command;
     }, check -> check.expectCommand().withArgument("-p:MyProperty=Value Containing=An Equals Sign"));
     super.runCommandAndValidateProcessExecution(() -> {
