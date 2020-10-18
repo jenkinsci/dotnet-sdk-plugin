@@ -38,8 +38,14 @@ public final class Restore extends Command {
    *   <li>{@code --no-cache}, if requested via {@link #setNoCache(boolean)}.</li>
    *   <li>{@code --no-dependencies}, if requested via {@link #setNoDependencies(boolean)}.</li>
    *   <li>{@code --packages xxx}, if a package directory was specified via {@link #setPackages(String)}.</li>
-   *   <li>{@code -r:xxx} for each runtime identifier specified via {@link #setRuntimesString(String)}.</li>
-   *   <li>{@code -s:xxx} for each source specified via {@link #setSourcesString(String)}.</li>
+   *   <li>
+   *     {@code -r:xxx} for each runtime identifier specified via {@link #setRuntime(String)}, {@link #setRuntimes(String...)} or
+   *     {@link #setRuntimesString(String)}.
+   *   </li>
+   *   <li>
+   *     {@code -s:xxx} for each source specified via {@link #setSourcesString(String)}, {@link #setSources(String...)} or
+   *     {@link #setSourcesString(String)}.
+   *   </li>
    *   <li>{@code --use-lock-file}, if requested via {@link #setUseLockFile(boolean)}.</li>
    *   <li>{@code -v:xxx}, if a verbosity has been specified via {@link #setVerbosity(String)}.</li>
    * </ol>
@@ -319,6 +325,8 @@ public final class Restore extends Command {
 
   /**
    * Sets the sole runtime identifier to use.
+   * <p>
+   * To set more than one, use {@link #setRuntimes(String...)} instead.
    *
    * @param runtime The sole runtime identifier to use.
    */
@@ -388,6 +396,8 @@ public final class Restore extends Command {
 
   /**
    * Sets the sole package source to use.
+   * <p>
+   * To set more than one, use {@link #setSources(String...)} instead.
    *
    * @param source The sole package source to use.
    */

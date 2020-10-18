@@ -31,7 +31,10 @@ public final class Restore extends ToolCommand {
    * This adds:
    * <ol>
    *   <li>Any arguments added by {@link ToolCommand#addCommandLineArguments(DotNetArguments)}.</li>
-   *   <li>{@code --add-source xxx}, for each source specified via {@link #setAdditionalSourcesString(String)}.</li>
+   *   <li>
+   *     {@code --add-source xxx}, for each source specified via {@link #setAdditionalSource(String)},
+   *     {@link #setAdditionalSources(String...)} or {@link #setAdditionalSourcesString(String)}.
+   *   </li>
    *   <li>{@code --configfile xxx}, if a config file was specified via {@link #setConfigfile(String)}.</li>
    *   <li>{@code --disable-parallel}, if requested via {@link #setDisableParallel(boolean)}.</li>
    *   <li>{@code --ignore-failed-sources}, if requested via {@link #setIgnoreFailedSources(boolean)}.</li>
@@ -72,6 +75,8 @@ public final class Restore extends ToolCommand {
 
   /**
    * Sets the sole additional source to use for the restore.
+   * <p>
+   * To set more than one, use {@link #setAdditionalSources(String...)} instead.
    *
    * @param additionalSource The sole additional source to use for the restore.
    */

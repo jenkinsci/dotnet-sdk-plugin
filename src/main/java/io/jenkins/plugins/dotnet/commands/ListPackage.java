@@ -33,7 +33,10 @@ public final class ListPackage extends Command {
    *   <li>{@code package}</li>
    *   <li>{@code --deprecated}, if requested via {@link #setDeprecated(boolean)}.</li>
    *   <li>{@code --outdated}, if requested via {@link #setOutdated(boolean)}.</li>
-   *   <li>{@code --framework xxx} for each target framework moniker specified via {@link #setFrameworksString(String)}.</li>
+   *   <li>
+   *     {@code --framework xxx} for each target framework moniker specified via {@link #setFramework(String)},
+   *     {@link #setFrameworks(String...)} or {@link #setFrameworksString(String)}.
+   *   </li>
    *   <li>{@code --include-transitive}, if requested via {@link #setIncludeTransitive(boolean)}.</li>
    * </ol>
    * If either outdated or deprecated packages are requested, this also adds:
@@ -42,7 +45,10 @@ public final class ListPackage extends Command {
    *   <li>{@code --highest-minor}, if requested via {@link #setHighestMinor(boolean)}.</li>
    *   <li>{@code --highest-patch}, if requested via {@link #setHighestPatch(boolean)}.</li>
    *   <li>{@code --config xxx}, if a configuration file was specified via {@link #setConfig(String)}.</li>
-   *   <li>{@code --source xxx} for each source specified via {@link #setSourcesString(String)}.</li>
+   *   <li>
+   *     {@code --source xxx} for each source specified via {@link #setSource(String)}, {@link #setSources(String...)} or
+   *     {@link #setSourcesString(String)}.
+   *   </li>
    * </ol>
    */
   @Override
@@ -127,6 +133,8 @@ public final class ListPackage extends Command {
 
   /**
    * Sets the sole target framework moniker to use.
+   * <p>
+   * To set more than one, use {@link #setFrameworks(String...)} instead.
    *
    * @param framework The sole target framework moniker to use.
    */
@@ -325,6 +333,8 @@ public final class ListPackage extends Command {
 
   /**
    * Sets the sole package source to use.
+   * <p>
+   * To set more than one, use {@link #setSources(String...)} instead.
    *
    * @param source The sole package source to use.
    */

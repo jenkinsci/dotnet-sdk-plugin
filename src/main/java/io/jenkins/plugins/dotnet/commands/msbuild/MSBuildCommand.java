@@ -152,7 +152,7 @@ public class MSBuildCommand extends Command {
   /**
    * Gets additional options to pass to the command.
    *
-   * @return Additional options to pass to the command, or {@code null} when none have been specified.
+   * @return Additional options to pass to the command.
    */
   @CheckForNull
   public String[] getOptions() {

@@ -220,7 +220,7 @@ public final class Build extends MSBuildCommand {
   /**
    * Gets the targets to build.
    *
-   * @return The targets to build, or {@code null} when none have been specified.
+   * @return The targets to build.
    */
   @CheckForNull
   public String[] getTargets() {
