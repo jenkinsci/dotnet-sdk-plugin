@@ -5,11 +5,16 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.AbortException;
 import hudson.Extension;
 import hudson.Util;
+import io.jenkins.plugins.dotnet.DotNetUtils;
 import io.jenkins.plugins.dotnet.commands.DotNetArguments;
 import io.jenkins.plugins.dotnet.commands.Messages;
 import org.jenkinsci.Symbol;
+import org.jenkinsci.plugins.structs.describable.UninstantiatedDescribable;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /** A build step to run "{@code dotnet tool restore}", restoring local tools as described in a tool manifest. */
 public final class Restore extends ToolCommand {
@@ -50,6 +55,51 @@ public final class Restore extends ToolCommand {
   //region Properties
 
   private String additionalSources;
+
+  /**
+   * Gets the sole additional source to use for the restore.
+   *
+   * @return The sole additional source to use for the restore, or {@code null} when there is not exactly one additional source set.
+   */
+  public String getAdditionalSource() {
+    if (this.additionalSources == null)
+      return null;
+    final String[] additionalSources = Util.tokenize(this.additionalSources);
+    if (additionalSources.length != 1)
+      return null;
+    return additionalSources[0];
+  }
+
+  /**
+   * Sets the sole additional source to use for the restore.
+   *
+   * @param additionalSource The sole additional source to use for the restore.
+   */
+  @DataBoundSetter
+  public void setAdditionalSource(String additionalSource) {
+    this.additionalSources = Util.fixEmptyAndTrim(additionalSource);
+  }
+
+  /**
+   * Gets the list of additional sources to use for the restore.
+   *
+   * @return The list of additional sources to use for the restore.
+   */
+  public String[] getAdditionalSources() {
+    if (this.additionalSources == null)
+      return null;
+    return Util.tokenize(this.additionalSources);
+  }
+
+  /**
+   * Sets the list of additional sources to use for the restore.
+   *
+   * @param additionalSources The list of additional sources to use for the restore.
+   */
+  @DataBoundSetter
+  public void setAdditionalSources(String... additionalSources) {
+    this.additionalSources = DotNetUtils.detokenize(additionalSources, ' ');
+  }
 
   /**
    * Gets the list of additional sources to use for the restore.
@@ -219,6 +269,23 @@ public final class Restore extends ToolCommand {
     @NonNull
     public String getDisplayName() {
       return Messages.Tool_Restore_DisplayName();
+    }
+
+    @NonNull
+    @Override
+    public UninstantiatedDescribable customUninstantiate(@NonNull UninstantiatedDescribable ud) {
+      ud = super.customUninstantiate(ud);
+      final Map<String, ?> oldArgs = ud.getArguments();
+      final Map<String, Object> newArgs = new HashMap<>();
+      for (final Map.Entry<String, ?> arg : oldArgs.entrySet()) {
+        final String name = arg.getKey();
+        if ("additionalSources".equals(name) && oldArgs.containsKey("additionalSource"))
+          continue;
+        if ("additionalSourcesString".equals(name))
+          continue;
+        newArgs.put(name, arg.getValue());
+      }
+      return new UninstantiatedDescribable(ud.getSymbol(), ud.getKlass(), newArgs);
     }
 
   }
