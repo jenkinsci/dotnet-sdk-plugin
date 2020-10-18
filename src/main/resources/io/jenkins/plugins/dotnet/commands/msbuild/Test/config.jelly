@@ -21,7 +21,7 @@
       <f:textbox/>
     </f:entry>
 
-    <f:entry title="${%Inline RunSettings}" field="runSettings">
+    <f:entry title="${%Inline RunSettings}" field="runSettingsString">
       <f:expandableTextbox/>
     </f:entry>
 

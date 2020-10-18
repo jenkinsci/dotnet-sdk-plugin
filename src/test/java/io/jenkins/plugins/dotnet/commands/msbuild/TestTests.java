@@ -200,27 +200,27 @@ public final class TestTests extends CommandTests {
     // Note: this cannot test a string with multiple settings, because their order in the result cannot be guaranteed.
     super.runCommandAndValidateProcessExecution(() -> {
       final Test command = new Test();
-      command.setRunSettings(TestTests.RUNSETTINGS);
+      command.setRunSettingsString(TestTests.RUNSETTINGS);
       return command;
     }, check -> check.expectCommand().withArguments("test", "--", "MyRunSetting=Value Containing=An Equals Sign"));
     super.runCommandAndValidateProcessExecution(() -> {
       final Test command = new Test();
-      command.setRunSettings("SingleIdentifier");
+      command.setRunSettingsString("SingleIdentifier");
       return command;
     }, check -> check.expectCommand().withArguments("test", "--", "SingleIdentifier="));
     super.runCommandAndValidateProcessExecution(() -> {
       final Test command = new Test();
-      command.setRunSettings("  ");
+      command.setRunSettingsString("  ");
       return command;
     }, check -> check.expectCommand().withArguments("test", "--"));
     super.runCommandAndValidateProcessExecution(() -> {
       final Test command = new Test();
-      command.setRunSettings("");
+      command.setRunSettingsString("");
       return command;
     }, check -> check.expectCommand().withArgument("test"));
     super.runCommandAndValidateProcessExecution(() -> {
       final Test command = new Test();
-      command.setRunSettings(null);
+      command.setRunSettingsString(null);
       return command;
     }, check -> check.expectCommand().withArgument("test"));
   }

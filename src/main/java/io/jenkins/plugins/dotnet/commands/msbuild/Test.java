@@ -5,15 +5,19 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.Util;
 import hudson.util.FormValidation;
+import io.jenkins.plugins.dotnet.DotNetUtils;
 import io.jenkins.plugins.dotnet.commands.DotNetArguments;
 import io.jenkins.plugins.dotnet.commands.Messages;
 import org.jenkinsci.Symbol;
+import org.jenkinsci.plugins.structs.describable.UninstantiatedDescribable;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -46,7 +50,10 @@ public final class Test extends MSBuildCommand {
    *   <li>{@code --results-directory xxx}, if a results directory has been specified via {@link #setResultsDirectory(String)}.</li>
    *   <li>{@code --settings xxx}, if a {@code .runsettings} file has been specified via {@link #setSettings(String)}.</li>
    *   <li>{@code --test-adapter-path xxx}, if a test adapter path has been specified via {@link #setTestAdapterPath(String)}.</li>
-   *   <li>{@code -- name=value [name=value]}, for all settings specified via {@link #setRunSettings(String)}.</li>
+   *   <li>
+   *     {@code -- name=value [name=value]}, for all settings specified via {@link #setRunSettings(Map)} or
+   *     {@link #setRunSettingsString(String)}.
+   *   </li>
    * </ol>
    */
   @Override
@@ -305,7 +312,27 @@ public final class Test extends MSBuildCommand {
    * @return The inline run setings to use.
    */
   @CheckForNull
-  public String getRunSettings() {
+  public Map<String, String> getRunSettings() throws IOException {
+    return DotNetUtils.createPropertyMap(this.runSettings);
+  }
+
+  /**
+   * Sets the inline run setings to use.
+   *
+   * @param runSettings The inline run setings to use.
+   */
+  @DataBoundSetter
+  public void setRunSettings(@CheckForNull Map<String, String> runSettings) throws IOException {
+    this.runSettings = DotNetUtils.createPropertyString(runSettings);
+  }
+
+  /**
+   * Gets the inline run setings to use.
+   *
+   * @return The inline run setings to use.
+   */
+  @CheckForNull
+  public String getRunSettingsString() {
     return this.runSettings;
   }
 
@@ -315,7 +342,7 @@ public final class Test extends MSBuildCommand {
    * @param runSettings The inline run setings to use.
    */
   @DataBoundSetter
-  public void setRunSettings(@CheckForNull String runSettings) {
+  public void setRunSettingsString(@CheckForNull String runSettings) {
     this.runSettings = Util.fixEmpty(runSettings);
   }
 
@@ -429,6 +456,20 @@ public final class Test extends MSBuildCommand {
     @NonNull
     public String getDisplayName() {
       return Messages.MSBuild_Test_DisplayName();
+    }
+
+    @NonNull
+    @Override
+    public UninstantiatedDescribable customUninstantiate(@NonNull UninstantiatedDescribable ud) {
+      ud = super.customUninstantiate(ud);
+      final Map<String, Object> args = new HashMap<>();
+      for (final Map.Entry<String, ?> arg : ud.getArguments().entrySet()) {
+        final String name = arg.getKey();
+        if ("runSettingsString".equals(name))
+          continue;
+        args.put(name, arg.getValue());
+      }
+      return new UninstantiatedDescribable(ud.getSymbol(), ud.getKlass(), args);
     }
 
   }
