@@ -52,32 +52,50 @@ public interface DotNetUtils {
   }
 
   /**
-   * Performs the inverse operation of {@link Util#tokenize(String)}.
+   * Performs the inverse operation of {@link DotNetUtils#tokenize(String)} for a single token.
    *
-   * @param tokens    The tokens to combine.
    * @param delimiter The delimiter to use.
+   * @param token     The token to process.
+   *
+   * @return A single string that tokenizes to the same single token, or {@code null} when no token was provided were provided.
+   */
+  @CheckForNull
+  static String detokenize(char delimiter, @CheckForNull String token) {
+    token = Util.fixEmptyAndTrim(token);
+    if (token == null)
+      return null;
+    if (token.indexOf(delimiter) >= 0)
+      token = Util.singleQuote(token);
+    else {
+      final String[] subTokens = Util.tokenize(token);
+      if (subTokens.length != 1)
+        token = Util.singleQuote(token);
+    }
+    return token;
+  }
+
+  /**
+   * Performs the inverse operation of {@link DotNetUtils#tokenize(String)}.
+   *
+   * @param delimiter The delimiter to use.
+   * @param tokens    The tokens to combine.
    *
    * @return A single string that tokenizes to the same set of tokens (with empty entries elided), or {@code null} when no tokens
    * were provided.
    */
   @CheckForNull
-  static String detokenize(@CheckForNull String[] tokens, char delimiter) {
-    if (tokens == null)
+  static String detokenize(char delimiter, @CheckForNull String... tokens) {
+    if (tokens == null || tokens.length == 0)
       return null;
+    if (tokens.length == 1)
+      return DotNetUtils.detokenize(delimiter, tokens[0]);
     final StringBuilder sb = new StringBuilder();
     for (String token : tokens) {
-      token = Util.fixEmptyAndTrim(token);
+      token = DotNetUtils.detokenize(delimiter, token);
       if (token == null)
         continue;
       if (sb.length() > 0)
         sb.append(delimiter);
-      if (token.indexOf(delimiter) >= 0)
-        token = Util.singleQuote(token);
-      else {
-        final String[] subTokens = Util.tokenize(token);
-        if (subTokens.length != 1)
-          token = Util.singleQuote(token);
-      }
       sb.append(token);
     }
     if (sb.length() == 0)

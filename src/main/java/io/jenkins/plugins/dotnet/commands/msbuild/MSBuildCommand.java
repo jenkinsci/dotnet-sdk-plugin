@@ -141,7 +141,7 @@ public class MSBuildCommand extends Command {
    */
   @DataBoundSetter
   public void setOption(@CheckForNull String option) {
-    this.options = Util.fixEmptyAndTrim(option);
+    this.options = DotNetUtils.detokenize(' ', option);
   }
 
   /**
@@ -162,7 +162,7 @@ public class MSBuildCommand extends Command {
    */
   @DataBoundSetter
   public void setOptions(@CheckForNull String... options) {
-    this.options = DotNetUtils.detokenize(options, ' ');
+    this.options = DotNetUtils.detokenize(' ', options);
   }
 
   /**

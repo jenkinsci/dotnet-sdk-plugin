@@ -327,7 +327,7 @@ public final class Restore extends Command {
    */
   @DataBoundSetter
   public void setRuntime(@CheckForNull String runtime) {
-    this.runtimes = Util.fixEmptyAndTrim(runtime);
+    this.runtimes = DotNetUtils.detokenize(' ', runtime);
   }
 
   /**
@@ -347,7 +347,7 @@ public final class Restore extends Command {
    */
   @DataBoundSetter
   public void setRuntimes(@CheckForNull String... runtimes) {
-    this.runtimes = DotNetUtils.detokenize(runtimes, ' ');
+    this.runtimes = DotNetUtils.detokenize(' ', runtimes);
   }
 
   /**
@@ -391,7 +391,7 @@ public final class Restore extends Command {
    */
   @DataBoundSetter
   public void setSource(@CheckForNull String source) {
-    this.sources = Util.fixEmptyAndTrim(source);
+    this.sources = DotNetUtils.detokenize(' ', source);
   }
 
   /**
@@ -411,7 +411,7 @@ public final class Restore extends Command {
    */
   @DataBoundSetter
   public void setSources(@CheckForNull String... sources) {
-    this.sources = DotNetUtils.detokenize(sources, ' ');
+    this.sources = DotNetUtils.detokenize(' ', sources);
   }
 
   /**

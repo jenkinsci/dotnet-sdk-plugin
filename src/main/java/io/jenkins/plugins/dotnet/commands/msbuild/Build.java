@@ -209,7 +209,7 @@ public final class Build extends MSBuildCommand {
    */
   @DataBoundSetter
   public void setTarget(@CheckForNull String target) {
-    this.targets = Util.fixEmptyAndTrim(target);
+    this.targets = DotNetUtils.detokenize(';', target);
   }
 
   /**
@@ -229,7 +229,7 @@ public final class Build extends MSBuildCommand {
    */
   @DataBoundSetter
   public void setTargets(@CheckForNull String... targets) {
-    this.targets = DotNetUtils.detokenize(targets, ';');
+    this.targets = DotNetUtils.detokenize(';', targets);
   }
 
   /**

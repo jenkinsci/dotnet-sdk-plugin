@@ -125,10 +125,7 @@ public final class Publish extends MSBuildCommand {
    */
   @DataBoundSetter
   public void setManifest(@CheckForNull String manifest) {
-    if (manifest == null)
-      this.manifests = null;
-    else
-      this.setManifests(manifest);
+    this.manifests = DotNetUtils.detokenize(' ', manifest);
   }
 
   /**
@@ -148,7 +145,7 @@ public final class Publish extends MSBuildCommand {
    */
   @DataBoundSetter
   public void setManifests(@CheckForNull String... manifests) {
-    this.manifests = DotNetUtils.detokenize(manifests, ' ');
+    this.manifests = DotNetUtils.detokenize(' ', manifests);
   }
 
   /**

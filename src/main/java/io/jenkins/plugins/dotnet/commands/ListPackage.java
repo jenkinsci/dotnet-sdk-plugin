@@ -135,7 +135,7 @@ public final class ListPackage extends Command {
    */
   @DataBoundSetter
   public void setFramework(@CheckForNull String framework) {
-    this.frameworks = Util.fixEmptyAndTrim(framework);
+    this.frameworks = DotNetUtils.detokenize(' ', framework);
   }
 
   /**
@@ -155,7 +155,7 @@ public final class ListPackage extends Command {
    */
   @DataBoundSetter
   public void setFrameworks(@CheckForNull String... frameworks) {
-    this.frameworks = DotNetUtils.detokenize(frameworks, ' ');
+    this.frameworks = DotNetUtils.detokenize(' ', frameworks);
   }
 
   /**
@@ -328,7 +328,7 @@ public final class ListPackage extends Command {
    */
   @DataBoundSetter
   public void setSource(@CheckForNull String source) {
-    this.sources = Util.fixEmptyAndTrim(source);
+    this.sources = DotNetUtils.detokenize(' ', source);
   }
 
   /**
@@ -348,7 +348,7 @@ public final class ListPackage extends Command {
    */
   @DataBoundSetter
   public void setSources(@CheckForNull String... sources) {
-    this.sources = DotNetUtils.detokenize(sources, ' ');
+    this.sources = DotNetUtils.detokenize(' ', sources);
   }
 
   /**

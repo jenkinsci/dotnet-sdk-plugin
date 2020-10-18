@@ -77,7 +77,7 @@ public final class Restore extends ToolCommand {
    */
   @DataBoundSetter
   public void setAdditionalSource(String additionalSource) {
-    this.additionalSources = Util.fixEmptyAndTrim(additionalSource);
+    this.additionalSources = DotNetUtils.detokenize(' ', additionalSource);
   }
 
   /**
@@ -96,7 +96,7 @@ public final class Restore extends ToolCommand {
    */
   @DataBoundSetter
   public void setAdditionalSources(String... additionalSources) {
-    this.additionalSources = DotNetUtils.detokenize(additionalSources, ' ');
+    this.additionalSources = DotNetUtils.detokenize(' ', additionalSources);
   }
 
   /**
