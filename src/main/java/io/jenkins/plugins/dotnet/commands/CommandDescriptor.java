@@ -57,7 +57,7 @@ public abstract class CommandDescriptor extends BuildStepDescriptor<Builder> imp
    */
   @SuppressWarnings("unused")
   @NonNull
-  public final AutoCompletionCandidates doAutoCompleteFrameworks(@CheckForNull @QueryParameter String value) {
+  public final AutoCompletionCandidates doAutoCompleteFrameworksString(@CheckForNull @QueryParameter String value) {
     return Framework.getInstance().autoCompleteMoniker(value);
   }
 
@@ -83,7 +83,7 @@ public abstract class CommandDescriptor extends BuildStepDescriptor<Builder> imp
    */
   @SuppressWarnings("unused")
   @NonNull
-  public final AutoCompletionCandidates doAutoCompleteRuntimes(@CheckForNull @QueryParameter String value) {
+  public final AutoCompletionCandidates doAutoCompleteRuntimesString(@CheckForNull @QueryParameter String value) {
     return Runtime.getInstance().autoCompleteIdentifier(value);
   }
 
