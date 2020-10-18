@@ -174,7 +174,7 @@ public final class RestoreTests extends CommandTests {
   public void runtimesOptionWorks() throws Exception {
     super.runCommandAndValidateProcessExecution(() -> {
       final Restore command = new Restore();
-      command.setRuntimes(String.join(" ", RestoreTests.RUNTIMES));
+      command.setRuntimesString(String.join(" ", RestoreTests.RUNTIMES));
       return command;
     }, check -> {
       final String[] sources = Stream.of(RestoreTests.RUNTIMES).map(s -> "-r:" + s).toArray(String[]::new);
@@ -182,12 +182,12 @@ public final class RestoreTests extends CommandTests {
     });
     super.runCommandAndValidateProcessExecution(() -> {
       final Restore command = new Restore();
-      command.setRuntimes(RestoreTests.RUNTIMES[0]);
+      command.setRuntimesString(RestoreTests.RUNTIMES[0]);
       return command;
     }, check -> check.expectCommand().withArguments("restore", "-r:" + RestoreTests.RUNTIMES[0]));
     super.runCommandAndValidateProcessExecution(() -> {
       final Restore command = new Restore();
-      command.setRuntimes(null);
+      command.setRuntimesString(null);
       return command;
     }, check -> check.expectCommand().withArguments("restore"));
   }

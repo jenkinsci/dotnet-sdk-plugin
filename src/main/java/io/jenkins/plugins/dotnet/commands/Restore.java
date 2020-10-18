@@ -33,7 +33,7 @@ public final class Restore extends Command {
    *   <li>{@code --no-cache}, if requested via {@link #setNoCache(boolean)}.</li>
    *   <li>{@code --no-dependencies}, if requested via {@link #setNoDependencies(boolean)}.</li>
    *   <li>{@code --packages xxx}, if a package directory was specified via {@link #setPackages(String)}.</li>
-   *   <li>{@code -r:xxx} for each runtime identifier specified via {@link #setRuntimes(String)}.</li>
+   *   <li>{@code -r:xxx} for each runtime identifier specified via {@link #setRuntimesString(String)}.</li>
    *   <li>{@code -s:xxx} for each source specified via {@link #setSources(String)}.</li>
    *   <li>{@code --use-lock-file}, if requested via {@link #setUseLockFile(boolean)}.</li>
    *   <li>{@code -v:xxx}, if a verbosity has been specified via {@link #setVerbosity(String)}.</li>
@@ -303,7 +303,7 @@ public final class Restore extends Command {
    * @return The runtime identifiers to use.
    */
   @CheckForNull
-  public String getRuntimes() {
+  public String getRuntimesString() {
     return this.runtimes;
   }
 
@@ -313,7 +313,7 @@ public final class Restore extends Command {
    * @param runtimes The runtime identifiers to use.
    */
   @DataBoundSetter
-  public void setRuntimes(@CheckForNull String runtimes) {
+  public void setRuntimesString(@CheckForNull String runtimes) {
     this.runtimes = Util.fixEmptyAndTrim(runtimes);
   }
 

@@ -28,7 +28,7 @@ public final class ListPackage extends Command {
    *   <li>{@code package}</li>
    *   <li>{@code --deprecated}, if requested via {@link #setDeprecated(boolean)}.</li>
    *   <li>{@code --outdated}, if requested via {@link #setOutdated(boolean)}.</li>
-   *   <li>{@code --framework xxx} for each target framework moniker specified via {@link #setFrameworks(String)}.</li>
+   *   <li>{@code --framework xxx} for each target framework moniker specified via {@link #setFrameworksString(String)}.</li>
    *   <li>{@code --include-transitive}, if requested via {@link #setIncludeTransitive(boolean)}.</li>
    * </ol>
    * If either outdated or deprecated packages are requested, this also adds:
@@ -37,7 +37,7 @@ public final class ListPackage extends Command {
    *   <li>{@code --highest-minor}, if requested via {@link #setHighestMinor(boolean)}.</li>
    *   <li>{@code --highest-patch}, if requested via {@link #setHighestPatch(boolean)}.</li>
    *   <li>{@code --config xxx}, if a configuration file was specified via {@link #setConfig(String)}.</li>
-   *   <li>{@code --source xxx} for each source specified via {@link #setSources(String)}.</li>
+   *   <li>{@code --source xxx} for each source specified via {@link #setSourcesString(String)}.</li>
    * </ol>
    */
   @Override
@@ -111,7 +111,7 @@ public final class ListPackage extends Command {
    * @return The target framework monikers to use.
    */
   @CheckForNull
-  public String getFrameworks() {
+  public String getFrameworksString() {
     return this.frameworks;
   }
 
@@ -121,7 +121,7 @@ public final class ListPackage extends Command {
    * @param frameworks The target framework monikers to use.
    */
   @DataBoundSetter
-  public void setFrameworks(@CheckForNull String frameworks) {
+  public void setFrameworksString(@CheckForNull String frameworks) {
     this.frameworks = Util.fixEmptyAndTrim(frameworks);
   }
 
@@ -262,7 +262,7 @@ public final class ListPackage extends Command {
    * @return The package sources to use.
    */
   @CheckForNull
-  public String getSources() {
+  public String getSourcesString() {
     return this.sources;
   }
 
@@ -272,7 +272,7 @@ public final class ListPackage extends Command {
    * @param sources The package sources to use.
    */
   @DataBoundSetter
-  public void setSources(@CheckForNull String sources) {
+  public void setSourcesString(@CheckForNull String sources) {
     this.sources = Util.fixEmptyAndTrim(sources);
   }
 

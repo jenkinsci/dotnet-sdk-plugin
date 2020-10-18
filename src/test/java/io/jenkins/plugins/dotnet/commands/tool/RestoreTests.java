@@ -18,7 +18,7 @@ public final class RestoreTests extends CommandTests {
   public void additionalSourcesOptionWorks() throws Exception {
     super.runCommandAndValidateProcessExecution(() -> {
       final Restore command = new Restore();
-      command.setAdditionalSources(String.join(" ", RestoreTests.ADDITIONAL_SOURCES));
+      command.setAdditionalSourcesString(String.join(" ", RestoreTests.ADDITIONAL_SOURCES));
       return command;
     }, check -> {
       final String[] sources = Stream.of(RestoreTests.ADDITIONAL_SOURCES).flatMap(s -> Stream.of("--add-source", s)).toArray(String[]::new);
@@ -26,12 +26,12 @@ public final class RestoreTests extends CommandTests {
     });
     super.runCommandAndValidateProcessExecution(() -> {
       final Restore command = new Restore();
-      command.setAdditionalSources(RestoreTests.ADDITIONAL_SOURCES[0]);
+      command.setAdditionalSourcesString(RestoreTests.ADDITIONAL_SOURCES[0]);
       return command;
     }, check -> check.expectCommand().withArguments("tool", "restore", "--add-source", RestoreTests.ADDITIONAL_SOURCES[0]));
     super.runCommandAndValidateProcessExecution(() -> {
       final Restore command = new Restore();
-      command.setAdditionalSources(null);
+      command.setAdditionalSourcesString(null);
       return command;
     }, check -> check.expectCommand().withArguments("tool", "restore"));
   }

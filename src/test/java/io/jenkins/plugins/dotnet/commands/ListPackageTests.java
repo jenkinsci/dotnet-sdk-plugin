@@ -1,9 +1,7 @@
 package io.jenkins.plugins.dotnet.commands;
 
-import hudson.Util;
 import org.junit.Test;
 
-import java.util.Arrays;
 import java.util.stream.Stream;
 
 public final class ListPackageTests extends CommandTests {
@@ -72,7 +70,7 @@ public final class ListPackageTests extends CommandTests {
   public void frameworksOptionWorks() throws Exception {
     super.runCommandAndValidateProcessExecution(() -> {
       final ListPackage command = new ListPackage();
-      command.setFrameworks(String.join(" ", ListPackageTests.FRAMEWORKS));
+      command.setFrameworksString(String.join(" ", ListPackageTests.FRAMEWORKS));
       return command;
     }, check -> {
       final String[] frameworks = Stream.of(ListPackageTests.FRAMEWORKS).flatMap(s -> Stream.of("--framework", s)).toArray(String[]::new);
@@ -80,12 +78,12 @@ public final class ListPackageTests extends CommandTests {
     });
     super.runCommandAndValidateProcessExecution(() -> {
       final ListPackage command = new ListPackage();
-      command.setFrameworks(ListPackageTests.FRAMEWORKS[0]);
+      command.setFrameworksString(ListPackageTests.FRAMEWORKS[0]);
       return command;
     }, check -> check.expectCommand().withArguments("list", "package", "--framework", ListPackageTests.FRAMEWORKS[0]));
     super.runCommandAndValidateProcessExecution(() -> {
       final ListPackage command = new ListPackage();
-      command.setFrameworks(null);
+      command.setFrameworksString(null);
       return command;
     }, check -> check.expectCommand().withArguments("list", "package"));
   }
@@ -204,7 +202,7 @@ public final class ListPackageTests extends CommandTests {
     super.runCommandAndValidateProcessExecution(() -> {
       final ListPackage command = new ListPackage();
       command.setDeprecated(true);
-      command.setSources(ListPackageTests.SOURCES_STRING);
+      command.setSourcesString(ListPackageTests.SOURCES_STRING);
       return command;
     }, check -> {
       final String[] sources = Stream.of(ListPackageTests.SOURCES).flatMap(s -> Stream.of("--source", s)).toArray(String[]::new);
@@ -213,13 +211,13 @@ public final class ListPackageTests extends CommandTests {
     super.runCommandAndValidateProcessExecution(() -> {
       final ListPackage command = new ListPackage();
       command.setDeprecated(true);
-      command.setSources(ListPackageTests.SOURCES[0]);
+      command.setSourcesString(ListPackageTests.SOURCES[0]);
       return command;
     }, check -> check.expectCommand().withArguments("list", "package", "--deprecated", "--source", ListPackageTests.SOURCES[0]));
     super.runCommandAndValidateProcessExecution(() -> {
       final ListPackage command = new ListPackage();
       command.setOutdated(true);
-      command.setSources(ListPackageTests.SOURCES_STRING);
+      command.setSourcesString(ListPackageTests.SOURCES_STRING);
       return command;
     }, check -> {
       final String[] sources = Stream.of(ListPackageTests.SOURCES).flatMap(s -> Stream.of("--source", s)).toArray(String[]::new);
@@ -228,22 +226,22 @@ public final class ListPackageTests extends CommandTests {
     super.runCommandAndValidateProcessExecution(() -> {
       final ListPackage command = new ListPackage();
       command.setOutdated(true);
-      command.setSources(ListPackageTests.SOURCES[0]);
+      command.setSourcesString(ListPackageTests.SOURCES[0]);
       return command;
     }, check -> check.expectCommand().withArguments("list", "package", "--outdated", "--source", ListPackageTests.SOURCES[0]));
     super.runCommandAndValidateProcessExecution(() -> {
       final ListPackage command = new ListPackage();
-      command.setSources(null);
+      command.setSourcesString(null);
       return command;
     }, check -> check.expectCommand().withArguments("list", "package"));
     super.runCommandAndValidateProcessExecution(() -> {
       final ListPackage command = new ListPackage();
-      command.setSources(String.join(" ", ListPackageTests.SOURCES));
+      command.setSourcesString(String.join(" ", ListPackageTests.SOURCES));
       return command;
     }, check -> check.expectCommand().withArguments("list", "package"));
     super.runCommandAndValidateProcessExecution(() -> {
       final ListPackage command = new ListPackage();
-      command.setSources(String.join(" ", ListPackageTests.SOURCES[0]));
+      command.setSourcesString(String.join(" ", ListPackageTests.SOURCES[0]));
       return command;
     }, check -> check.expectCommand().withArguments("list", "package"));
   }

@@ -5,7 +5,7 @@
 
   <f:advanced title="${descriptor.moreOptions}">
 
-    <f:entry title="${%Additional Sources to Use}" field="additionalSources">
+    <f:entry title="${%Additional Sources to Use}" field="additionalSourcesString">
       <f:textbox/>
     </f:entry>
 
