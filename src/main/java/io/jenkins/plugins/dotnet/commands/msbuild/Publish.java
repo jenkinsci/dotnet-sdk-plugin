@@ -5,14 +5,19 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.Util;
 import hudson.util.ListBoxModel;
+import io.jenkins.plugins.dotnet.DotNetUtils;
 import io.jenkins.plugins.dotnet.commands.DotNetArguments;
 import io.jenkins.plugins.dotnet.commands.Messages;
 import org.jenkinsci.Symbol;
+import org.jenkinsci.plugins.structs.describable.UninstantiatedDescribable;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /** A build step to run "{@code dotnet publish}", publishing a project. */
-public class Publish extends MSBuildCommand {
+public final class Publish extends MSBuildCommand {
 
   /** Creates a new "{@code dotnet publish}" build step. */
   @DataBoundConstructor
@@ -28,7 +33,10 @@ public class Publish extends MSBuildCommand {
    *   <li>Any arguments added by {@link MSBuildCommand#addCommandLineArguments(DotNetArguments)}.</li>
    *   <li>{@code --force}, if requested via {@link #setForce(boolean)}.</li>
    *   <li>{@code -f:xxx}, if a target framework moniker has been specified via {@link #setFramework(String)}.</li>
-   *   <li>{@code --manifest xxx} for each manifest specified via {@link #setManifests(String)}.</li>
+   *   <li>
+   *     {@code --manifest xxx} for each manifest specified via {@link #setManifest(String)}, {@link #setManifests(String...)} or
+   *     {@link #setManifestsString(String)}.
+   *   </li>
    *   <li>{@code --no-build}, if requested via {@link #setNoBuild(boolean)}.</li>
    *   <li>{@code --no-dependencies}, if requested via {@link #setNoDependencies(boolean)}.</li>
    *   <li>{@code --no-restore}, if requested via {@link #setNoRestore(boolean)}.</li>
@@ -99,12 +107,64 @@ public class Publish extends MSBuildCommand {
   private String manifests;
 
   /**
+   * Gets the sole manifest to use.
+   *
+   * @return The sole manifest to use, or {@code null} when there is not exactly one manifest set.
+   */
+  @CheckForNull
+  public String getManifest() {
+    if (this.manifests == null)
+      return null;
+    final String[] manifests = Util.tokenize(this.manifests);
+    if (manifests.length != 1)
+      return null;
+    return manifests[0];
+  }
+
+  /**
+   * Sets the sole manifest to use.
+   * <p>
+   * To set more than one, use {@link #setManifests(String...)} instead.
+   *
+   * @param manifest The sole manifest to use.
+   */
+  @DataBoundSetter
+  public void setManifest(@CheckForNull String manifest) {
+    if (manifest == null)
+      this.manifests = null;
+    else
+      this.setManifests(manifest);
+  }
+
+  /**
    * Gets the manifests to use.
    *
    * @return The manifests to use.
    */
   @CheckForNull
-  public String getManifests() {
+  public String[] getManifests() {
+    if (this.manifests == null)
+      return null;
+    return Util.tokenize(this.manifests);
+  }
+
+  /**
+   * Sets the manifests to use.
+   *
+   * @param manifests The manifests to use.
+   */
+  @DataBoundSetter
+  public void setManifests(@CheckForNull String... manifests) {
+    this.manifests = DotNetUtils.detokenize(manifests, ' ');
+  }
+
+  /**
+   * Gets the manifests to use.
+   *
+   * @return The manifests to use.
+   */
+  @CheckForNull
+  public String getManifestsString() {
     return this.manifests;
   }
 
@@ -114,8 +174,8 @@ public class Publish extends MSBuildCommand {
    * @param manifests The manifests to use.
    */
   @DataBoundSetter
-  public void setManifests(@CheckForNull String manifests) {
-    this.manifests = manifests;
+  public void setManifestsString(@CheckForNull String manifests) {
+    this.manifests = Util.fixEmptyAndTrim(manifests);
   }
 
   private boolean noBuild;
@@ -284,6 +344,23 @@ public class Publish extends MSBuildCommand {
     @NonNull
     public String getDisplayName() {
       return Messages.MSBuild_Publish_DisplayName();
+    }
+
+    @NonNull
+    @Override
+    public UninstantiatedDescribable customUninstantiate(@NonNull UninstantiatedDescribable ud) {
+      ud = super.customUninstantiate(ud);
+      final Map<String, ?> oldArgs = ud.getArguments();
+      final Map<String, Object> newArgs = new HashMap<>();
+      for (final Map.Entry<String, ?> arg : oldArgs.entrySet()) {
+        final String name = arg.getKey();
+        if ("manifests".equals(name) && oldArgs.containsKey("manifest"))
+          continue;
+        if ("manifestsString".equals(name))
+          continue;
+        newArgs.put(name, arg.getValue());
+      }
+      return new UninstantiatedDescribable(ud.getSymbol(), ud.getKlass(), newArgs);
     }
 
   }

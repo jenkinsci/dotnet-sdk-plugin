@@ -59,7 +59,7 @@ public final class PublishTests extends CommandTests {
   public void manifestsOptionWorks() throws Exception {
     super.runCommandAndValidateProcessExecution(() -> {
       final Publish command = new Publish();
-      command.setManifests(String.join(" ", PublishTests.MANIFESTS));
+      command.setManifestsString(String.join(" ", PublishTests.MANIFESTS));
       return command;
     }, check -> {
       final String[] manifests = Stream.of(PublishTests.MANIFESTS).flatMap(s -> Stream.of("--manifest", s)).toArray(String[]::new);
@@ -67,12 +67,12 @@ public final class PublishTests extends CommandTests {
     });
     super.runCommandAndValidateProcessExecution(() -> {
       final Publish command = new Publish();
-      command.setManifests(PublishTests.MANIFESTS[0]);
+      command.setManifestsString(PublishTests.MANIFESTS[0]);
       return command;
     }, check -> check.expectCommand().withArguments("publish", "--manifest", PublishTests.MANIFESTS[0]));
     super.runCommandAndValidateProcessExecution(() -> {
       final Publish command = new Publish();
-      command.setManifests(null);
+      command.setManifestsString(null);
       return command;
     }, check -> check.expectCommand().withArgument("publish"));
   }

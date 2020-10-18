@@ -13,7 +13,7 @@
       <f:textbox/>
     </f:entry>
 
-    <f:entry title="${%Manifests}" field="manifests">
+    <f:entry title="${%Manifests}" field="manifestsString">
       <f:expandableTextbox/>
     </f:entry>
 
