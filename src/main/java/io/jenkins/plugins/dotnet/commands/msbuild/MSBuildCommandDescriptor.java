@@ -5,9 +5,12 @@ import hudson.util.ComboBoxModel;
 import hudson.util.FormValidation;
 import io.jenkins.plugins.dotnet.commands.CommandDescriptor;
 import io.jenkins.plugins.dotnet.commands.Messages;
+import org.jenkinsci.plugins.structs.describable.UninstantiatedDescribable;
 import org.kohsuke.stapler.QueryParameter;
 
 import java.io.StringReader;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 /** A descriptor for an MSBuild-based .NET command. */
@@ -62,6 +65,25 @@ public abstract class MSBuildCommandDescriptor extends CommandDescriptor {
     model.add("Debug");
     model.add("Release");
     return model;
+  }
+
+  @NonNull
+  @Override
+  public UninstantiatedDescribable customUninstantiate(@NonNull UninstantiatedDescribable ud) {
+    ud = super.customUninstantiate(ud);
+    final Map<String, ?> oldArgs = ud.getArguments();
+    final Map<String, Object> newArgs = new HashMap<>();
+    for (final Map.Entry<String, ?> arg : oldArgs.entrySet()) {
+      final String name = arg.getKey();
+      if ("options".equals(name) && oldArgs.containsKey("option"))
+        continue;
+      if ("optionsString".equals(name))
+        continue;
+      if ("propertiesString".equals(name))
+        continue;
+      newArgs.put(name, arg.getValue());
+    }
+    return new UninstantiatedDescribable(ud.getSymbol(), ud.getKlass(), newArgs);
   }
 
 }

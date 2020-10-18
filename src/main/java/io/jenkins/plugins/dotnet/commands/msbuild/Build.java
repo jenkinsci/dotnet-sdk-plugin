@@ -8,8 +8,12 @@ import io.jenkins.plugins.dotnet.DotNetUtils;
 import io.jenkins.plugins.dotnet.commands.DotNetArguments;
 import io.jenkins.plugins.dotnet.commands.Messages;
 import org.jenkinsci.Symbol;
+import org.jenkinsci.plugins.structs.describable.UninstantiatedDescribable;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /** A build step to run "{@code dotnet build}", building a project. */
 public final class Build extends MSBuildCommand {
@@ -32,7 +36,10 @@ public final class Build extends MSBuildCommand {
    *   <li>{@code --no-restore}, if requested via {@link #setNoRestore(boolean)}.</li>
    *   <li>{@code -f:xxx}, if a target framework moniker has been specified via {@link #setFramework(String)}.</li>
    *   <li>{@code -r:xxx}, if a runtime identifier has been specified via {@link #setRuntime(String)}.</li>
-   *   <li>{@code -t:xxx} for each target specified via {@link #setTargets(String...)}.</li>
+   *   <li>
+   *     {@code -t:xxx} for each target specified via {@link #setTarget(String)}, {@link #setTargets(String...)} or
+   *     {@link #setTargetsString(String)}.
+   *   </li>
    *   <li>{@code --version-suffix xxx}, if a version suffix has been specified via {@link #setRuntime(String)}.</li>
    * </ol>
    */
@@ -184,9 +191,36 @@ public final class Build extends MSBuildCommand {
   private String targets;
 
   /**
+   * Gets the sole target to build.
+   *
+   * @return The sole target to build, or {@code null} when there is not exactly one target set.
+   */
+  @CheckForNull
+  public String getTarget() {
+    if (this.targets == null)
+      return null;
+    final String[] targets = Util.tokenize(this.targets, Build.TARGETS_DELIMITER);
+    if (targets.length != 1)
+      return null;
+    return targets[0];
+  }
+
+  /**
+   * Sets the sole target to build.
+   * <p>
+   * To set more than one, use {@link #setTargets(String...)} instead.
+   *
+   * @param target The sole target to build.
+   */
+  @DataBoundSetter
+  public void setTarget(@CheckForNull String target) {
+    this.targets = Util.fixEmptyAndTrim(target);
+  }
+
+  /**
    * Gets the targets to build.
    *
-   * @return The targets to build.
+   * @return The targets to build, or {@code null} when none have been specified.
    */
   @CheckForNull
   public String[] getTargets() {
@@ -209,11 +243,8 @@ public final class Build extends MSBuildCommand {
    * Gets the targets to build.
    *
    * @return The targets to build.
-   *
-   * @deprecated Use {@link #getTargets()} instead.
    */
   @CheckForNull
-  @Deprecated
   public String getTargetsString() {
     return this.targets;
   }
@@ -222,11 +253,8 @@ public final class Build extends MSBuildCommand {
    * Sets the targets to build.
    *
    * @param targets The targets to build.
-   *
-   * @deprecated Use {@link #setTargets(String...)} instead.
    */
   @DataBoundSetter
-  @Deprecated
   public void setTargetsString(@CheckForNull String targets) {
     this.targets = Util.fixEmptyAndTrim(targets);
   }
@@ -275,6 +303,23 @@ public final class Build extends MSBuildCommand {
     @NonNull
     public String getDisplayName() {
       return Messages.MSBuild_Build_DisplayName();
+    }
+
+    @NonNull
+    @Override
+    public UninstantiatedDescribable customUninstantiate(@NonNull UninstantiatedDescribable ud) {
+      ud = super.customUninstantiate(ud);
+      final Map<String, ?> oldArgs = ud.getArguments();
+      final Map<String, Object> newArgs = new HashMap<>();
+      for (final Map.Entry<String, ?> arg : oldArgs.entrySet()) {
+        final String name = arg.getKey();
+        if ("targets".equals(name) && oldArgs.containsKey("target"))
+          continue;
+        if ("targetsString".equals(name))
+          continue;
+        newArgs.put(name, arg.getValue());
+      }
+      return new UninstantiatedDescribable(ud.getSymbol(), ud.getKlass(), newArgs);
     }
 
   }

@@ -11,10 +11,11 @@ import hudson.util.ListBoxModel;
 import io.jenkins.plugins.dotnet.DotNetSDK;
 import io.jenkins.plugins.dotnet.data.Framework;
 import io.jenkins.plugins.dotnet.data.Runtime;
+import org.jenkinsci.plugins.structs.describable.CustomDescribableModel;
 import org.kohsuke.stapler.QueryParameter;
 
 /** A descriptor for a .NET command. */
-public abstract class CommandDescriptor extends BuildStepDescriptor<Builder> {
+public abstract class CommandDescriptor extends BuildStepDescriptor<Builder> implements CustomDescribableModel {
 
   /**
    * Creates a new .NET command descriptor instance.

@@ -18,14 +18,38 @@ import org.jenkinsci.plugins.plaincredentials.StringCredentials;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.util.Collections;
+import java.util.Map;
+import java.util.Properties;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 /** Utility methods used by the plugin. */
 public interface DotNetUtils {
 
   /** A string variable resolver that does not resolve any variables. */
   VariableResolver<String> RESOLVE_NOTHING = name -> null;
+
+  @CheckForNull
+  static Map<String, String> createPropertyMap(@CheckForNull String propertyString) throws IOException {
+    if (Util.fixEmpty(propertyString) == null)
+      return null;
+    final Properties properties = Util.loadProperties(propertyString);
+    return properties.entrySet().stream().collect(Collectors.toMap(e -> (String) e.getKey(), e-> (String) e.getValue()));
+  }
+
+  @CheckForNull
+  static String createPropertyString(@CheckForNull Map<String, String> propertyMap) throws IOException {
+    if (propertyMap == null || propertyMap.isEmpty())
+      return null;
+    final Properties properties = new Properties();
+    properties.putAll(propertyMap);
+    try (final StringWriter sw = new StringWriter()) {
+      properties.store(sw, null);
+      return sw.toString().replaceAll("^#.*?\r?\n", "");
+    }
+  }
 
   /**
    * Performs the inverse operation of {@link Util#tokenize(String)}.

@@ -11,10 +11,8 @@ import org.kohsuke.stapler.DataBoundSetter;
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 /** A build step executing an MSBuild-based .NET CLI command. */
 public class MSBuildCommand extends Command {
@@ -36,11 +34,17 @@ public class MSBuildCommand extends Command {
    * <ol>
    *   <li>The command name, if applicable.</li>
    *   <li>The project specified via {@link #setProject(String)}.</li>
-   *   <li>Any raw options specified via {@link #setOptions(String...)}.</li>
+   *   <li>
+   *     Any raw options specified via {@link #setOption(String)}, {@link #setOptions(String...)} or
+   *     {@link #setOptionsString(String)}.
+   *   </li>
    *   <li>{@code -c:xxx}, if a configuration has been specified via {@link #setConfiguration(String)}.</li>
    *   <li>{@code --nologo}, if requested via {@link #setNologo(boolean)}.</li>
    *   <li>{@code --output xxx}, if an output directory has been specified via {@link #setOutputDirectory(String)}.</li>
-   *   <li>{@code -p:name=value}, for all properties specified via {@link #setProperties(Map<String,String>)}.</li>
+   *   <li>
+   *     {@code -p:name=value}, for all properties specified via {@link #setProperties(Map)} or
+   *     {@link #setPropertiesString(String)}.
+   *   </li>
    *   <li>{@code -v:xxx}, if a verbosity has been specified via {@link #setVerbosity(String)}.</li>
    * </ol>
    */
@@ -111,15 +115,44 @@ public class MSBuildCommand extends Command {
     this.nologo = noLogo;
   }
 
-  /** Additional options to pass to the command. */
+  /**
+   * Additional options to pass to the command.
+   * Options specified via more specific settings will take precedence over options specified here.
+   */
   @CheckForNull
   protected String options;
 
   /**
-   * Gets additional options to pass to the command.
-   * Options specified via more specific settings will take precedence over options specified here.
+   * Gets the single additional option to pass to the command.
    *
-   * @return Additional options to pass to the command.
+   * @return An additional option to pass to the command, or {@code null} when there is not exactly one such option set.
+   */
+  @CheckForNull
+  public String getOption() {
+    if (this.options == null)
+      return null;
+    final String[] options = Util.tokenize(this.options);
+    if (options.length != 1)
+      return null;
+    return options[0];
+  }
+
+  /**
+   * Sets a single additional option to pass to the command.
+   * <p>
+   * To set more than one, use {@link #setOptions(String...)} instead.
+   *
+   * @param option An additional option to pass to the command.
+   */
+  @DataBoundSetter
+  public void setOption(@CheckForNull String option) {
+    this.options = Util.fixEmptyAndTrim(option);
+  }
+
+  /**
+   * Gets additional options to pass to the command.
+   *
+   * @return Additional options to pass to the command, or {@code null} when none have been specified.
    */
   @CheckForNull
   public String[] getOptions() {
@@ -144,11 +177,8 @@ public class MSBuildCommand extends Command {
    * Options specified via more specific settings will take precedence over options specified here.
    *
    * @return Additional options to pass to the command.
-   *
-   * @deprecated Use {@link #getOptions()} instead.
    */
   @CheckForNull
-  @Deprecated
   public String getOptionsString() {
     return this.options;
   }
@@ -158,11 +188,8 @@ public class MSBuildCommand extends Command {
    * Options specified via more specific settings will take precedence over options specified here.
    *
    * @param options Additional options to pass to the command.
-   *
-   * @deprecated Use {@link #setOptions(String...)} instead.
    */
   @DataBoundSetter
-  @Deprecated
   public void setOptionsString(@CheckForNull String options) {
     this.options = Util.fixEmptyAndTrim(options);
   }
@@ -230,10 +257,7 @@ public class MSBuildCommand extends Command {
    */
   @CheckForNull
   public Map<String, String> getProperties() throws IOException {
-    if (this.properties == null)
-      return null;
-    final Properties properties = Util.loadProperties(this.properties);
-    return properties.entrySet().stream().collect(Collectors.toMap(e -> (String) e.getKey(), e-> (String) e.getValue()));
+    return DotNetUtils.createPropertyMap(this.properties);
   }
 
   /**
@@ -242,19 +266,16 @@ public class MSBuildCommand extends Command {
    * @param properties MSBuild properties to be applied to the command (one key=value setting per line).
    */
   @DataBoundSetter
-  public void setProperties(@CheckForNull Map<String, String> properties) {
-    // TODO
+  public void setProperties(@CheckForNull Map<String, String> properties) throws IOException {
+    this.properties = DotNetUtils.createPropertyString(properties);
   }
 
   /**
    * Gets MSBuild properties to be applied to the command.
    *
    * @return MSBuild properties to be applied to the command (one key=value setting per line).
-   *
-   * @deprecated Use {@link #getProperties()} instead.
    */
   @CheckForNull
-  @Deprecated
   public String getPropertiesString() {
     return this.properties;
   }
@@ -265,7 +286,6 @@ public class MSBuildCommand extends Command {
    * @param properties MSBuild properties to be applied to the command (one key=value setting per line).
    */
   @DataBoundSetter
-  @Deprecated
   public void setPropertiesString(@CheckForNull String properties) {
     this.properties = Util.fixEmpty(properties);
   }
