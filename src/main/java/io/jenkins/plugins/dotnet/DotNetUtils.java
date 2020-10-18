@@ -36,7 +36,7 @@ public interface DotNetUtils {
     if (Util.fixEmpty(propertyString) == null)
       return null;
     final Properties properties = Util.loadProperties(propertyString);
-    return properties.entrySet().stream().collect(Collectors.toMap(e -> (String) e.getKey(), e-> (String) e.getValue()));
+    return properties.entrySet().stream().collect(Collectors.toMap(e -> (String) e.getKey(), e -> (String) e.getValue()));
   }
 
   @CheckForNull
@@ -122,6 +122,76 @@ public interface DotNetUtils {
       return model;
     model = model.includeMatchingAs(ACL.SYSTEM, context, StringCredentials.class, Collections.emptyList(), CredentialsMatchers.always());
     return model;
+  }
+
+  /**
+   * Tokenizes text separated by (default) delimiters and returns the sole resulting token.
+   *
+   * @param s A string containing tokens.
+   *
+   * @return The sole token contained in {@code s}, or {@code null} when it did not contain exactly one token.
+   * @see Util#tokenize(String)
+   */
+  @CheckForNull
+  static String singleToken(@CheckForNull String s) {
+    final String[] tokens = DotNetUtils.tokenize(s);
+    if (tokens == null || tokens.length != 1)
+      return null;
+    return tokens[0];
+  }
+
+  /**
+   * Tokenizes text separated by delimiters and returns the sole resulting token.
+   *
+   * @param s          A string containing tokens.
+   * @param delimiters A string containing the delimiters to use.
+   *
+   * @return The sole token contained in {@code s}, or {@code null} when it did not contain exactly one token.
+   * @see Util#tokenize(String, String)
+   */
+  @CheckForNull
+  static String singleToken(@CheckForNull String s, @CheckForNull String delimiters) {
+    final String[] tokens = DotNetUtils.tokenize(s, delimiters);
+    if (tokens == null || tokens.length != 1)
+      return null;
+    return tokens[0];
+  }
+
+  /**
+   * Tokenizes text separated by (default) delimiters.
+   *
+   * @param s A string containing tokens.
+   *
+   * @return The tokens contained in {@code s}, or {@code null} when it did not contain any.
+   * @see Util#tokenize(String)
+   */
+  @CheckForNull
+  static String[] tokenize(@CheckForNull String s) {
+    if (s == null)
+      return null;
+    final String[] tokens = Util.tokenize(s);
+    if (tokens.length == 0)
+      return null;
+    return tokens;
+  }
+
+  /**
+   * Tokenizes text separated by delimiters.
+   *
+   * @param s          A string containing tokens.
+   * @param delimiters A string containing the delimiters to use.
+   *
+   * @return The tokens contained in {@code s}, or {@code null} when it did not contain any.
+   * @see Util#tokenize(String, String)
+   */
+  @CheckForNull
+  static String[] tokenize(@CheckForNull String s, @CheckForNull String delimiters) {
+    if (s == null)
+      return null;
+    final String[] tokens = Util.tokenize(s, delimiters);
+    if (tokens.length == 0)
+      return null;
+    return tokens;
   }
 
 }

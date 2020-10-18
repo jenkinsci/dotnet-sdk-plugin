@@ -129,12 +129,7 @@ public class MSBuildCommand extends Command {
    */
   @CheckForNull
   public String getOption() {
-    if (this.options == null)
-      return null;
-    final String[] options = Util.tokenize(this.options);
-    if (options.length != 1)
-      return null;
-    return options[0];
+    return DotNetUtils.singleToken(this.options);
   }
 
   /**
@@ -156,9 +151,7 @@ public class MSBuildCommand extends Command {
    */
   @CheckForNull
   public String[] getOptions() {
-    if (this.options == null)
-      return null;
-    return Util.tokenize(this.options);
+    return DotNetUtils.tokenize(this.options);
   }
 
   /**

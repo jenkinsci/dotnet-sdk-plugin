@@ -123,12 +123,7 @@ public final class ListPackage extends Command {
    */
   @CheckForNull
   public String getFramework() {
-    if (this.frameworks == null)
-      return null;
-    final String[] frameworks = Util.tokenize(this.frameworks);
-    if (frameworks.length != 1)
-      return null;
-    return frameworks[0];
+    return DotNetUtils.singleToken(this.frameworks);
   }
 
   /**
@@ -150,9 +145,7 @@ public final class ListPackage extends Command {
    */
   @CheckForNull
   public String[] getFrameworks() {
-    if (this.frameworks == null)
-      return null;
-    return Util.tokenize(this.frameworks);
+    return DotNetUtils.tokenize(this.frameworks);
   }
 
   /**
@@ -323,12 +316,7 @@ public final class ListPackage extends Command {
    */
   @CheckForNull
   public String getSource() {
-    if (this.sources == null)
-      return null;
-    final String[] sources = Util.tokenize(this.sources);
-    if (sources.length != 1)
-      return null;
-    return sources[0];
+    return DotNetUtils.singleToken(this.sources);
   }
 
   /**
@@ -350,9 +338,7 @@ public final class ListPackage extends Command {
    */
   @CheckForNull
   public String[] getSources() {
-    if (this.sources == null)
-      return null;
-    return Util.tokenize(this.sources);
+    return DotNetUtils.tokenize(this.sources);
   }
 
   /**

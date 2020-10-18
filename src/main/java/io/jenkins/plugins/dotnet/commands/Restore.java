@@ -315,12 +315,7 @@ public final class Restore extends Command {
    */
   @CheckForNull
   public String getRuntime() {
-    if (this.runtimes == null)
-      return null;
-    final String[] runtimes = Util.tokenize(this.runtimes);
-    if (runtimes.length != 1)
-      return null;
-    return runtimes[0];
+    return DotNetUtils.singleToken(this.runtimes);
   }
 
   /**
@@ -342,9 +337,7 @@ public final class Restore extends Command {
    */
   @CheckForNull
   public String[] getRuntimes() {
-    if (this.runtimes == null)
-      return null;
-    return Util.tokenize(this.runtimes);
+    return DotNetUtils.tokenize(this.runtimes);
   }
 
   /**
@@ -386,12 +379,7 @@ public final class Restore extends Command {
    */
   @CheckForNull
   public String getSource() {
-    if (this.sources == null)
-      return null;
-    final String[] sources = Util.tokenize(this.sources);
-    if (sources.length != 1)
-      return null;
-    return sources[0];
+    return DotNetUtils.singleToken(this.sources);
   }
 
   /**
@@ -413,9 +401,7 @@ public final class Restore extends Command {
    */
   @CheckForNull
   public String[] getSources() {
-    if (this.sources == null)
-      return null;
-    return Util.tokenize(this.sources);
+    return DotNetUtils.tokenize(this.sources);
   }
 
   /**

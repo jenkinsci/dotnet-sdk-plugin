@@ -197,12 +197,7 @@ public final class Build extends MSBuildCommand {
    */
   @CheckForNull
   public String getTarget() {
-    if (this.targets == null)
-      return null;
-    final String[] targets = Util.tokenize(this.targets, Build.TARGETS_DELIMITER);
-    if (targets.length != 1)
-      return null;
-    return targets[0];
+    return DotNetUtils.singleToken(this.targets, Build.TARGETS_DELIMITER);
   }
 
   /**
@@ -224,9 +219,7 @@ public final class Build extends MSBuildCommand {
    */
   @CheckForNull
   public String[] getTargets() {
-    if (this.targets == null)
-      return null;
-    return Util.tokenize(this.targets, Build.TARGETS_DELIMITER);
+    return DotNetUtils.tokenize(this.targets, Build.TARGETS_DELIMITER);
   }
 
   /**

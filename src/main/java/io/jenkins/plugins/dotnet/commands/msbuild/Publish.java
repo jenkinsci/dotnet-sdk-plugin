@@ -113,12 +113,7 @@ public final class Publish extends MSBuildCommand {
    */
   @CheckForNull
   public String getManifest() {
-    if (this.manifests == null)
-      return null;
-    final String[] manifests = Util.tokenize(this.manifests);
-    if (manifests.length != 1)
-      return null;
-    return manifests[0];
+    return DotNetUtils.singleToken(this.manifests);
   }
 
   /**
@@ -143,9 +138,7 @@ public final class Publish extends MSBuildCommand {
    */
   @CheckForNull
   public String[] getManifests() {
-    if (this.manifests == null)
-      return null;
-    return Util.tokenize(this.manifests);
+    return DotNetUtils.tokenize(this.manifests);
   }
 
   /**

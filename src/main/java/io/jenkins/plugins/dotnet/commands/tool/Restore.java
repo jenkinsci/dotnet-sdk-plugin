@@ -65,12 +65,7 @@ public final class Restore extends ToolCommand {
    * @return The sole additional source to use for the restore, or {@code null} when there is not exactly one additional source set.
    */
   public String getAdditionalSource() {
-    if (this.additionalSources == null)
-      return null;
-    final String[] additionalSources = Util.tokenize(this.additionalSources);
-    if (additionalSources.length != 1)
-      return null;
-    return additionalSources[0];
+    return DotNetUtils.singleToken(this.additionalSources);
   }
 
   /**
@@ -91,9 +86,7 @@ public final class Restore extends ToolCommand {
    * @return The list of additional sources to use for the restore.
    */
   public String[] getAdditionalSources() {
-    if (this.additionalSources == null)
-      return null;
-    return Util.tokenize(this.additionalSources);
+    return DotNetUtils.tokenize(this.additionalSources);
   }
 
   /**
