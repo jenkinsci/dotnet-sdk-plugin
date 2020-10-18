@@ -64,13 +64,15 @@ public interface DotNetUtils {
     token = Util.fixEmptyAndTrim(token);
     if (token == null)
       return null;
+    final boolean needQuoting;
     if (token.indexOf(delimiter) >= 0)
-      token = Util.singleQuote(token);
+      needQuoting = true;
     else {
       final String[] subTokens = Util.tokenize(token);
-      if (subTokens.length != 1)
-        token = Util.singleQuote(token);
+      needQuoting = subTokens.length != 1;
     }
+    if (needQuoting) // FIXME: This is not ideal. A smarter method that uses either ' or " based on nicest result would be useful.
+      token = Util.singleQuote(token.replace("'", "\\'"));
     return token;
   }
 
