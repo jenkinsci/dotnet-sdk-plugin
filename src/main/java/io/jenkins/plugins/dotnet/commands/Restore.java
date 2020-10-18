@@ -4,9 +4,14 @@ import edu.umd.cs.findbugs.annotations.CheckForNull;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.Util;
+import io.jenkins.plugins.dotnet.DotNetUtils;
 import org.jenkinsci.Symbol;
+import org.jenkinsci.plugins.structs.describable.UninstantiatedDescribable;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /** A build step to run "{@code dotnet restore}", restoring packages for a project. */
 public final class Restore extends Command {
@@ -34,7 +39,7 @@ public final class Restore extends Command {
    *   <li>{@code --no-dependencies}, if requested via {@link #setNoDependencies(boolean)}.</li>
    *   <li>{@code --packages xxx}, if a package directory was specified via {@link #setPackages(String)}.</li>
    *   <li>{@code -r:xxx} for each runtime identifier specified via {@link #setRuntimesString(String)}.</li>
-   *   <li>{@code -s:xxx} for each source specified via {@link #setSources(String)}.</li>
+   *   <li>{@code -s:xxx} for each source specified via {@link #setSourcesString(String)}.</li>
    *   <li>{@code --use-lock-file}, if requested via {@link #setUseLockFile(boolean)}.</li>
    *   <li>{@code -v:xxx}, if a verbosity has been specified via {@link #setVerbosity(String)}.</li>
    * </ol>
@@ -303,6 +308,53 @@ public final class Restore extends Command {
    * @return The runtime identifiers to use.
    */
   @CheckForNull
+  public String getRuntime() {
+    if (this.runtimes == null)
+      return null;
+    final String[] runtimes = Util.tokenize(this.runtimes);
+    if (runtimes.length != 1)
+      return null;
+    return runtimes[0];
+  }
+
+  /**
+   * Sets the sole runtime identifier to use.
+   *
+   * @param runtime The sole runtime identifier to use.
+   */
+  @DataBoundSetter
+  public void setRuntime(@CheckForNull String runtime) {
+    this.runtimes = Util.fixEmptyAndTrim(runtime);
+  }
+
+  /**
+   * Gets the runtime identifiers to use.
+   *
+   * @return The runtime identifiers to use.
+   */
+  @CheckForNull
+  public String[] getRuntimes() {
+    if (this.runtimes == null)
+      return null;
+    return Util.tokenize(this.runtimes);
+  }
+
+  /**
+   * Sets the runtime identifiers to use.
+   *
+   * @param runtimes The runtime identifiers to use.
+   */
+  @DataBoundSetter
+  public void setRuntimes(@CheckForNull String... runtimes) {
+    this.runtimes = DotNetUtils.detokenize(runtimes, ' ');
+  }
+
+  /**
+   * Gets the runtime identifiers to use.
+   *
+   * @return The runtime identifiers to use.
+   */
+  @CheckForNull
   public String getRuntimesString() {
     return this.runtimes;
   }
@@ -320,12 +372,59 @@ public final class Restore extends Command {
   private String sources;
 
   /**
+   * Gets the sole package source to use.
+   *
+   * @return The sole package source to use, or {@code null} when there is not exactly one package source set.
+   */
+  @CheckForNull
+  public String getSource() {
+    if (this.sources == null)
+      return null;
+    final String[] sources = Util.tokenize(this.sources);
+    if (sources.length != 1)
+      return null;
+    return sources[0];
+  }
+
+  /**
+   * Sets the sole package source to use.
+   *
+   * @param source The sole package source to use.
+   */
+  @DataBoundSetter
+  public void setSource(@CheckForNull String source) {
+    this.sources = Util.fixEmptyAndTrim(source);
+  }
+
+  /**
    * Gets the package sources to use.
    *
    * @return The package sources to use.
    */
   @CheckForNull
-  public String getSources() {
+  public String[] getSources() {
+    if (this.sources == null)
+      return null;
+    return Util.tokenize(this.sources);
+  }
+
+  /**
+   * Sets the package sources to use.
+   *
+   * @param sources The package sources to use.
+   */
+  @DataBoundSetter
+  public void setSources(@CheckForNull String... sources) {
+    this.sources = DotNetUtils.detokenize(sources, ' ');
+  }
+
+  /**
+   * Gets the package sources to use.
+   *
+   * @return The package sources to use.
+   */
+  @CheckForNull
+  public String getSourcesString() {
     return this.sources;
   }
 
@@ -335,7 +434,7 @@ public final class Restore extends Command {
    * @param sources The package sources to use.
    */
   @DataBoundSetter
-  public void setSources(@CheckForNull String sources) {
+  public void setSourcesString(@CheckForNull String sources) {
     this.sources = Util.fixEmptyAndTrim(sources);
   }
 
@@ -404,6 +503,27 @@ public final class Restore extends Command {
     @NonNull
     public String getDisplayName() {
       return Messages.Restore_DisplayName();
+    }
+
+    @NonNull
+    @Override
+    public UninstantiatedDescribable customUninstantiate(@NonNull UninstantiatedDescribable ud) {
+      ud = super.customUninstantiate(ud);
+      final Map<String, ?> oldArgs = ud.getArguments();
+      final Map<String, Object> newArgs = new HashMap<>();
+      for (final Map.Entry<String, ?> arg : oldArgs.entrySet()) {
+        final String name = arg.getKey();
+        if ("runtimes".equals(name) && oldArgs.containsKey("runtime"))
+          continue;
+        if ("runtimesString".equals(name))
+          continue;
+        if ("sources".equals(name) && oldArgs.containsKey("source"))
+          continue;
+        if ("sourcesString".equals(name))
+          continue;
+        newArgs.put(name, arg.getValue());
+      }
+      return new UninstantiatedDescribable(ud.getSymbol(), ud.getKlass(), newArgs);
     }
 
   }

@@ -198,7 +198,7 @@ public final class RestoreTests extends CommandTests {
   public void sourcesOptionWorks() throws Exception {
     super.runCommandAndValidateProcessExecution(() -> {
       final Restore command = new Restore();
-      command.setSources(String.join(" ", RestoreTests.SOURCES));
+      command.setSourcesString(String.join(" ", RestoreTests.SOURCES));
       return command;
     }, check -> {
       final String[] sources = Stream.of(RestoreTests.SOURCES).map(s -> "-s:" + s).toArray(String[]::new);
@@ -206,12 +206,12 @@ public final class RestoreTests extends CommandTests {
     });
     super.runCommandAndValidateProcessExecution(() -> {
       final Restore command = new Restore();
-      command.setSources(RestoreTests.SOURCES[0]);
+      command.setSourcesString(RestoreTests.SOURCES[0]);
       return command;
     }, check -> check.expectCommand().withArguments("restore", "-s:" + RestoreTests.SOURCES[0]));
     super.runCommandAndValidateProcessExecution(() -> {
       final Restore command = new Restore();
-      command.setSources(null);
+      command.setSourcesString(null);
       return command;
     }, check -> check.expectCommand().withArguments("restore"));
   }
