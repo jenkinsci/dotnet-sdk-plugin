@@ -11,10 +11,11 @@ import hudson.util.ListBoxModel;
 import io.jenkins.plugins.dotnet.DotNetSDK;
 import io.jenkins.plugins.dotnet.data.Framework;
 import io.jenkins.plugins.dotnet.data.Runtime;
+import org.jenkinsci.plugins.structs.describable.CustomDescribableModel;
 import org.kohsuke.stapler.QueryParameter;
 
 /** A descriptor for a .NET command. */
-public abstract class CommandDescriptor extends BuildStepDescriptor<Builder> {
+public abstract class CommandDescriptor extends BuildStepDescriptor<Builder> implements CustomDescribableModel {
 
   /**
    * Creates a new .NET command descriptor instance.
@@ -56,7 +57,7 @@ public abstract class CommandDescriptor extends BuildStepDescriptor<Builder> {
    */
   @SuppressWarnings("unused")
   @NonNull
-  public final AutoCompletionCandidates doAutoCompleteFrameworks(@CheckForNull @QueryParameter String value) {
+  public final AutoCompletionCandidates doAutoCompleteFrameworksString(@CheckForNull @QueryParameter String value) {
     return Framework.getInstance().autoCompleteMoniker(value);
   }
 
@@ -82,7 +83,7 @@ public abstract class CommandDescriptor extends BuildStepDescriptor<Builder> {
    */
   @SuppressWarnings("unused")
   @NonNull
-  public final AutoCompletionCandidates doAutoCompleteRuntimes(@CheckForNull @QueryParameter String value) {
+  public final AutoCompletionCandidates doAutoCompleteRuntimesString(@CheckForNull @QueryParameter String value) {
     return Runtime.getInstance().autoCompleteIdentifier(value);
   }
 
@@ -108,7 +109,7 @@ public abstract class CommandDescriptor extends BuildStepDescriptor<Builder> {
    */
   @SuppressWarnings("unused")
   @NonNull
-  public FormValidation doCheckFrameworks(@CheckForNull @QueryParameter String value) {
+  public FormValidation doCheckFrameworksString(@CheckForNull @QueryParameter String value) {
     return Framework.getInstance().checkMonikers(value);
   }
 
@@ -134,7 +135,7 @@ public abstract class CommandDescriptor extends BuildStepDescriptor<Builder> {
    */
   @SuppressWarnings("unused")
   @NonNull
-  public FormValidation doCheckRuntimes(@CheckForNull @QueryParameter String value) {
+  public FormValidation doCheckRuntimesString(@CheckForNull @QueryParameter String value) {
     return Runtime.getInstance().checkIdentifiers(value);
   }
 

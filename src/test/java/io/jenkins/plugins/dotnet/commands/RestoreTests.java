@@ -171,10 +171,29 @@ public final class RestoreTests extends CommandTests {
   private static final String[] RUNTIMES = { "win10", "ios" };
 
   @Test
+  public void runtimeOptionWorks() throws Exception {
+    super.runCommandAndValidateProcessExecution(() -> {
+      final Restore command = new Restore();
+      command.setRuntime(RestoreTests.RUNTIMES[0]);
+      return command;
+    }, check -> check.expectCommand().withArguments("restore", "-r:" + RestoreTests.RUNTIMES[0]));
+    super.runCommandAndValidateProcessExecution(() -> {
+      final Restore command = new Restore();
+      command.setRuntime(" ");
+      return command;
+    }, check -> check.expectCommand().withArguments("restore"));
+    super.runCommandAndValidateProcessExecution(() -> {
+      final Restore command = new Restore();
+      command.setRuntime(null);
+      return command;
+    }, check -> check.expectCommand().withArguments("restore"));
+  }
+
+  @Test
   public void runtimesOptionWorks() throws Exception {
     super.runCommandAndValidateProcessExecution(() -> {
       final Restore command = new Restore();
-      command.setRuntimes(String.join(" ", RestoreTests.RUNTIMES));
+      command.setRuntimes(RestoreTests.RUNTIMES);
       return command;
     }, check -> {
       final String[] sources = Stream.of(RestoreTests.RUNTIMES).map(s -> "-r:" + s).toArray(String[]::new);
@@ -187,7 +206,34 @@ public final class RestoreTests extends CommandTests {
     }, check -> check.expectCommand().withArguments("restore", "-r:" + RestoreTests.RUNTIMES[0]));
     super.runCommandAndValidateProcessExecution(() -> {
       final Restore command = new Restore();
-      command.setRuntimes(null);
+      command.setRuntimes("  ", null, "");
+      return command;
+    }, check -> check.expectCommand().withArguments("restore"));
+    super.runCommandAndValidateProcessExecution(() -> {
+      final Restore command = new Restore();
+      command.setRuntimes((String[]) null);
+      return command;
+    }, check -> check.expectCommand().withArguments("restore"));
+  }
+
+  @Test
+  public void runtimesStringOptionWorks() throws Exception {
+    super.runCommandAndValidateProcessExecution(() -> {
+      final Restore command = new Restore();
+      command.setRuntimesString(String.join(" ", RestoreTests.RUNTIMES));
+      return command;
+    }, check -> {
+      final String[] sources = Stream.of(RestoreTests.RUNTIMES).map(s -> "-r:" + s).toArray(String[]::new);
+      check.expectCommand().withArgument("restore").withArguments(sources);
+    });
+    super.runCommandAndValidateProcessExecution(() -> {
+      final Restore command = new Restore();
+      command.setRuntimesString(RestoreTests.RUNTIMES[0]);
+      return command;
+    }, check -> check.expectCommand().withArguments("restore", "-r:" + RestoreTests.RUNTIMES[0]));
+    super.runCommandAndValidateProcessExecution(() -> {
+      final Restore command = new Restore();
+      command.setRuntimesString(null);
       return command;
     }, check -> check.expectCommand().withArguments("restore"));
   }
@@ -195,10 +241,29 @@ public final class RestoreTests extends CommandTests {
   private static final String[] SOURCES = { "source1", "source2" };
 
   @Test
+  public void sourceOptionWorks() throws Exception {
+    super.runCommandAndValidateProcessExecution(() -> {
+      final Restore command = new Restore();
+      command.setSource(RestoreTests.SOURCES[0]);
+      return command;
+    }, check -> check.expectCommand().withArguments("restore", "-s:" + RestoreTests.SOURCES[0]));
+    super.runCommandAndValidateProcessExecution(() -> {
+      final Restore command = new Restore();
+      command.setSource("");
+      return command;
+    }, check -> check.expectCommand().withArguments("restore"));
+    super.runCommandAndValidateProcessExecution(() -> {
+      final Restore command = new Restore();
+      command.setSource(null);
+      return command;
+    }, check -> check.expectCommand().withArguments("restore"));
+  }
+
+  @Test
   public void sourcesOptionWorks() throws Exception {
     super.runCommandAndValidateProcessExecution(() -> {
       final Restore command = new Restore();
-      command.setSources(String.join(" ", RestoreTests.SOURCES));
+      command.setSources(RestoreTests.SOURCES);
       return command;
     }, check -> {
       final String[] sources = Stream.of(RestoreTests.SOURCES).map(s -> "-s:" + s).toArray(String[]::new);
@@ -211,7 +276,34 @@ public final class RestoreTests extends CommandTests {
     }, check -> check.expectCommand().withArguments("restore", "-s:" + RestoreTests.SOURCES[0]));
     super.runCommandAndValidateProcessExecution(() -> {
       final Restore command = new Restore();
-      command.setSources(null);
+      command.setSources(null, null);
+      return command;
+    }, check -> check.expectCommand().withArguments("restore"));
+    super.runCommandAndValidateProcessExecution(() -> {
+      final Restore command = new Restore();
+      command.setSources((String[]) null);
+      return command;
+    }, check -> check.expectCommand().withArguments("restore"));
+  }
+
+  @Test
+  public void sourcesStringOptionWorks() throws Exception {
+    super.runCommandAndValidateProcessExecution(() -> {
+      final Restore command = new Restore();
+      command.setSourcesString(String.join(" ", RestoreTests.SOURCES));
+      return command;
+    }, check -> {
+      final String[] sources = Stream.of(RestoreTests.SOURCES).map(s -> "-s:" + s).toArray(String[]::new);
+      check.expectCommand().withArgument("restore").withArguments(sources);
+    });
+    super.runCommandAndValidateProcessExecution(() -> {
+      final Restore command = new Restore();
+      command.setSourcesString(RestoreTests.SOURCES[0]);
+      return command;
+    }, check -> check.expectCommand().withArguments("restore", "-s:" + RestoreTests.SOURCES[0]));
+    super.runCommandAndValidateProcessExecution(() -> {
+      final Restore command = new Restore();
+      command.setSourcesString(null);
       return command;
     }, check -> check.expectCommand().withArguments("restore"));
   }

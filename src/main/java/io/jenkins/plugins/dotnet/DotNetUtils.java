@@ -18,14 +18,92 @@ import org.jenkinsci.plugins.plaincredentials.StringCredentials;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.util.Collections;
+import java.util.Map;
+import java.util.Properties;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 /** Utility methods used by the plugin. */
 public interface DotNetUtils {
 
   /** A string variable resolver that does not resolve any variables. */
   VariableResolver<String> RESOLVE_NOTHING = name -> null;
+
+  @CheckForNull
+  static Map<String, String> createPropertyMap(@CheckForNull String propertyString) throws IOException {
+    if (Util.fixEmpty(propertyString) == null)
+      return null;
+    final Properties properties = Util.loadProperties(propertyString);
+    return properties.entrySet().stream().collect(Collectors.toMap(e -> (String) e.getKey(), e -> (String) e.getValue()));
+  }
+
+  @CheckForNull
+  static String createPropertyString(@CheckForNull Map<String, String> propertyMap) throws IOException {
+    if (propertyMap == null || propertyMap.isEmpty())
+      return null;
+    final Properties properties = new Properties();
+    properties.putAll(propertyMap);
+    try (final StringWriter sw = new StringWriter()) {
+      properties.store(sw, null);
+      return sw.toString().replaceAll("^#.*?\r?\n", "");
+    }
+  }
+
+  /**
+   * Performs the inverse operation of {@link DotNetUtils#tokenize(String)} for a single token.
+   *
+   * @param delimiter The delimiter to use.
+   * @param token     The token to process.
+   *
+   * @return A single string that tokenizes to the same single token, or {@code null} when no token was provided were provided.
+   */
+  @CheckForNull
+  static String detokenize(char delimiter, @CheckForNull String token) {
+    token = Util.fixEmptyAndTrim(token);
+    if (token == null)
+      return null;
+    final boolean needQuoting;
+    if (token.indexOf(delimiter) >= 0)
+      needQuoting = true;
+    else {
+      final String[] subTokens = Util.tokenize(token);
+      needQuoting = subTokens.length != 1;
+    }
+    if (needQuoting) // FIXME: This is not ideal. A smarter method that uses either ' or " based on nicest result would be useful.
+      token = Util.singleQuote(token.replace("'", "\\'"));
+    return token;
+  }
+
+  /**
+   * Performs the inverse operation of {@link DotNetUtils#tokenize(String)}.
+   *
+   * @param delimiter The delimiter to use.
+   * @param tokens    The tokens to combine.
+   *
+   * @return A single string that tokenizes to the same set of tokens (with empty entries elided), or {@code null} when no tokens
+   * were provided.
+   */
+  @CheckForNull
+  static String detokenize(char delimiter, @CheckForNull String... tokens) {
+    if (tokens == null || tokens.length == 0)
+      return null;
+    if (tokens.length == 1)
+      return DotNetUtils.detokenize(delimiter, tokens[0]);
+    final StringBuilder sb = new StringBuilder();
+    for (String token : tokens) {
+      token = DotNetUtils.detokenize(delimiter, token);
+      if (token == null)
+        continue;
+      if (sb.length() > 0)
+        sb.append(delimiter);
+      sb.append(token);
+    }
+    if (sb.length() == 0)
+      return null;
+    return sb.toString();
+  }
 
   /**
    * Creates an instance of a {@link hudson.console.ConsoleNote} and encodes it as bytes.
@@ -64,6 +142,76 @@ public interface DotNetUtils {
       return model;
     model = model.includeMatchingAs(ACL.SYSTEM, context, StringCredentials.class, Collections.emptyList(), CredentialsMatchers.always());
     return model;
+  }
+
+  /**
+   * Tokenizes text separated by (default) delimiters and returns the sole resulting token.
+   *
+   * @param s A string containing tokens.
+   *
+   * @return The sole token contained in {@code s}, or {@code null} when it did not contain exactly one token.
+   * @see Util#tokenize(String)
+   */
+  @CheckForNull
+  static String singleToken(@CheckForNull String s) {
+    final String[] tokens = DotNetUtils.tokenize(s);
+    if (tokens == null || tokens.length != 1)
+      return null;
+    return tokens[0];
+  }
+
+  /**
+   * Tokenizes text separated by delimiters and returns the sole resulting token.
+   *
+   * @param s          A string containing tokens.
+   * @param delimiters A string containing the delimiters to use.
+   *
+   * @return The sole token contained in {@code s}, or {@code null} when it did not contain exactly one token.
+   * @see Util#tokenize(String, String)
+   */
+  @CheckForNull
+  static String singleToken(@CheckForNull String s, @CheckForNull String delimiters) {
+    final String[] tokens = DotNetUtils.tokenize(s, delimiters);
+    if (tokens == null || tokens.length != 1)
+      return null;
+    return tokens[0];
+  }
+
+  /**
+   * Tokenizes text separated by (default) delimiters.
+   *
+   * @param s A string containing tokens.
+   *
+   * @return The tokens contained in {@code s}, or {@code null} when it did not contain any.
+   * @see Util#tokenize(String)
+   */
+  @CheckForNull
+  static String[] tokenize(@CheckForNull String s) {
+    if (s == null)
+      return null;
+    final String[] tokens = Util.tokenize(s);
+    if (tokens.length == 0)
+      return null;
+    return tokens;
+  }
+
+  /**
+   * Tokenizes text separated by delimiters.
+   *
+   * @param s          A string containing tokens.
+   * @param delimiters A string containing the delimiters to use.
+   *
+   * @return The tokens contained in {@code s}, or {@code null} when it did not contain any.
+   * @see Util#tokenize(String, String)
+   */
+  @CheckForNull
+  static String[] tokenize(@CheckForNull String s, @CheckForNull String delimiters) {
+    if (s == null)
+      return null;
+    final String[] tokens = Util.tokenize(s, delimiters);
+    if (tokens.length == 0)
+      return null;
+    return tokens;
   }
 
 }

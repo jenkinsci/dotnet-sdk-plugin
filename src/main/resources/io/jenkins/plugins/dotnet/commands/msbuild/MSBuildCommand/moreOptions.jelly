@@ -1,11 +1,11 @@
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form" xmlns:s="jelly:stapler">
 
-  <f:entry title="${%MSBuild Options}" field="options">
+  <f:entry title="${%MSBuild Options}" field="optionsString">
     <f:textbox/>
   </f:entry>
 
-  <f:entry title="${%MSBuild Properties}" field="properties">
+  <f:entry title="${%MSBuild Properties}" field="propertiesString">
     <f:expandableTextbox/>
   </f:entry>
 

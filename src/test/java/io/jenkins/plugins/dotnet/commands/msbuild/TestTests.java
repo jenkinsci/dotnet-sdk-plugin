@@ -188,7 +188,7 @@ public final class TestTests extends CommandTests {
     }, check -> check.expectCommand().withArgument("test"));
   }
 
-  private static final String RUNSETTINGS = "# A comment\n" +
+  private static final String RUNSETTINGS_STRING = "# A comment\n" +
     "\n" +
     "# That was a blank line\n" +
     "MyRunSetting=Value \\\n" +
@@ -196,31 +196,31 @@ public final class TestTests extends CommandTests {
     "# A Comment";
 
   @org.junit.Test
-  public void runSettingsOptionWorks() throws Exception {
+  public void runSettingsStringOptionWorks() throws Exception {
     // Note: this cannot test a string with multiple settings, because their order in the result cannot be guaranteed.
     super.runCommandAndValidateProcessExecution(() -> {
       final Test command = new Test();
-      command.setRunSettings(TestTests.RUNSETTINGS);
+      command.setRunSettingsString(TestTests.RUNSETTINGS_STRING);
       return command;
     }, check -> check.expectCommand().withArguments("test", "--", "MyRunSetting=Value Containing=An Equals Sign"));
     super.runCommandAndValidateProcessExecution(() -> {
       final Test command = new Test();
-      command.setRunSettings("SingleIdentifier");
+      command.setRunSettingsString("SingleIdentifier");
       return command;
     }, check -> check.expectCommand().withArguments("test", "--", "SingleIdentifier="));
     super.runCommandAndValidateProcessExecution(() -> {
       final Test command = new Test();
-      command.setRunSettings("  ");
+      command.setRunSettingsString("  ");
       return command;
     }, check -> check.expectCommand().withArguments("test", "--"));
     super.runCommandAndValidateProcessExecution(() -> {
       final Test command = new Test();
-      command.setRunSettings("");
+      command.setRunSettingsString("");
       return command;
     }, check -> check.expectCommand().withArgument("test"));
     super.runCommandAndValidateProcessExecution(() -> {
       final Test command = new Test();
-      command.setRunSettings(null);
+      command.setRunSettingsString(null);
       return command;
     }, check -> check.expectCommand().withArgument("test"));
   }

@@ -5,11 +5,16 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.AbortException;
 import hudson.Extension;
 import hudson.Util;
+import io.jenkins.plugins.dotnet.DotNetUtils;
 import io.jenkins.plugins.dotnet.commands.DotNetArguments;
 import io.jenkins.plugins.dotnet.commands.Messages;
 import org.jenkinsci.Symbol;
+import org.jenkinsci.plugins.structs.describable.UninstantiatedDescribable;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /** A build step to run "{@code dotnet tool restore}", restoring local tools as described in a tool manifest. */
 public final class Restore extends ToolCommand {
@@ -26,12 +31,15 @@ public final class Restore extends ToolCommand {
    * This adds:
    * <ol>
    *   <li>Any arguments added by {@link ToolCommand#addCommandLineArguments(DotNetArguments)}.</li>
-   *   <li>{@code --add-source xxx}, for each source specified via {@link #setAdditionalSources(String)} (String)}.</li>
+   *   <li>
+   *     {@code --add-source xxx}, for each source specified via {@link #setAdditionalSource(String)},
+   *     {@link #setAdditionalSources(String...)} or {@link #setAdditionalSourcesString(String)}.
+   *   </li>
    *   <li>{@code --configfile xxx}, if a config file was specified via {@link #setConfigfile(String)}.</li>
    *   <li>{@code --disable-parallel}, if requested via {@link #setDisableParallel(boolean)}.</li>
    *   <li>{@code --ignore-failed-sources}, if requested via {@link #setIgnoreFailedSources(boolean)}.</li>
    *   <li>{@code --no-cache}, if requested via {@link #setNoCache(boolean)}.</li>
-   *   <li>{@code --tool-manifest xxx}, if a tool manifest was specified via {@link #setToolManifest(String)} (String)}.</li>
+   *   <li>{@code --tool-manifest xxx}, if a tool manifest was specified via {@link #setToolManifest(String)}.</li>
    *   <li>{@code -v:xxx}, if a verbosity has been specified via {@link #setVerbosity(String)}.</li>
    * </ol>
    */
@@ -52,11 +60,51 @@ public final class Restore extends ToolCommand {
   private String additionalSources;
 
   /**
+   * Gets the sole additional source to use for the restore.
+   *
+   * @return The sole additional source to use for the restore, or {@code null} when there is not exactly one additional source set.
+   */
+  public String getAdditionalSource() {
+    return DotNetUtils.singleToken(this.additionalSources);
+  }
+
+  /**
+   * Sets the sole additional source to use for the restore.
+   * <p>
+   * To set more than one, use {@link #setAdditionalSources(String...)} instead.
+   *
+   * @param additionalSource The sole additional source to use for the restore.
+   */
+  @DataBoundSetter
+  public void setAdditionalSource(String additionalSource) {
+    this.additionalSources = DotNetUtils.detokenize(' ', additionalSource);
+  }
+
+  /**
    * Gets the list of additional sources to use for the restore.
    *
    * @return The list of additional sources to use for the restore.
    */
-  public String getAdditionalSources() {
+  public String[] getAdditionalSources() {
+    return DotNetUtils.tokenize(this.additionalSources);
+  }
+
+  /**
+   * Sets the list of additional sources to use for the restore.
+   *
+   * @param additionalSources The list of additional sources to use for the restore.
+   */
+  @DataBoundSetter
+  public void setAdditionalSources(String... additionalSources) {
+    this.additionalSources = DotNetUtils.detokenize(' ', additionalSources);
+  }
+
+  /**
+   * Gets the list of additional sources to use for the restore.
+   *
+   * @return The list of additional sources to use for the restore.
+   */
+  public String getAdditionalSourcesString() {
     return this.additionalSources;
   }
 
@@ -66,7 +114,7 @@ public final class Restore extends ToolCommand {
    * @param additionalSources The list of additional sources to use for the restore.
    */
   @DataBoundSetter
-  public void setAdditionalSources(String additionalSources) {
+  public void setAdditionalSourcesString(String additionalSources) {
     this.additionalSources = Util.fixEmptyAndTrim(additionalSources);
   }
 
@@ -219,6 +267,23 @@ public final class Restore extends ToolCommand {
     @NonNull
     public String getDisplayName() {
       return Messages.Tool_Restore_DisplayName();
+    }
+
+    @NonNull
+    @Override
+    public UninstantiatedDescribable customUninstantiate(@NonNull UninstantiatedDescribable ud) {
+      ud = super.customUninstantiate(ud);
+      final Map<String, ?> oldArgs = ud.getArguments();
+      final Map<String, Object> newArgs = new HashMap<>();
+      for (final Map.Entry<String, ?> arg : oldArgs.entrySet()) {
+        final String name = arg.getKey();
+        if ("additionalSources".equals(name) && oldArgs.containsKey("additionalSource"))
+          continue;
+        if ("additionalSourcesString".equals(name))
+          continue;
+        newArgs.put(name, arg.getValue());
+      }
+      return new UninstantiatedDescribable(ud.getSymbol(), ud.getKlass(), newArgs);
     }
 
   }

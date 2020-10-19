@@ -4,11 +4,16 @@ import edu.umd.cs.findbugs.annotations.CheckForNull;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.Util;
+import io.jenkins.plugins.dotnet.DotNetUtils;
 import io.jenkins.plugins.dotnet.commands.DotNetArguments;
 import io.jenkins.plugins.dotnet.commands.Messages;
 import org.jenkinsci.Symbol;
+import org.jenkinsci.plugins.structs.describable.UninstantiatedDescribable;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /** A build step to run "{@code dotnet build}", building a project. */
 public final class Build extends MSBuildCommand {
@@ -31,7 +36,10 @@ public final class Build extends MSBuildCommand {
    *   <li>{@code --no-restore}, if requested via {@link #setNoRestore(boolean)}.</li>
    *   <li>{@code -f:xxx}, if a target framework moniker has been specified via {@link #setFramework(String)}.</li>
    *   <li>{@code -r:xxx}, if a runtime identifier has been specified via {@link #setRuntime(String)}.</li>
-   *   <li>{@code -t:xxx} for each target specified via {@link #setTargets(String)}.</li>
+   *   <li>
+   *     {@code -t:xxx} for each target specified via {@link #setTarget(String)}, {@link #setTargets(String...)} or
+   *     {@link #setTargetsString(String)}.
+   *   </li>
    *   <li>{@code --version-suffix xxx}, if a version suffix has been specified via {@link #setRuntime(String)}.</li>
    * </ol>
    */
@@ -44,9 +52,11 @@ public final class Build extends MSBuildCommand {
     args.addFlag("no-restore", this.noRestore);
     args.addOption('f', this.framework);
     args.addOption('r', this.runtime);
-    args.addOptions('t', this.targets);
+    args.addOptions('t', this.targets, Build.TARGETS_DELIMITER);
     args.addOption("version-suffix", this.versionSuffix);
   }
+
+  private static final String TARGETS_DELIMITER = "; \t\n\r\f";
 
   //region Properties
 
@@ -181,12 +191,54 @@ public final class Build extends MSBuildCommand {
   private String targets;
 
   /**
+   * Gets the sole target to build.
+   *
+   * @return The sole target to build, or {@code null} when there is not exactly one target set.
+   */
+  @CheckForNull
+  public String getTarget() {
+    return DotNetUtils.singleToken(this.targets, Build.TARGETS_DELIMITER);
+  }
+
+  /**
+   * Sets the sole target to build.
+   * <p>
+   * To set more than one, use {@link #setTargets(String...)} instead.
+   *
+   * @param target The sole target to build.
+   */
+  @DataBoundSetter
+  public void setTarget(@CheckForNull String target) {
+    this.targets = DotNetUtils.detokenize(';', target);
+  }
+
+  /**
    * Gets the targets to build.
    *
    * @return The targets to build.
    */
   @CheckForNull
-  public String getTargets() {
+  public String[] getTargets() {
+    return DotNetUtils.tokenize(this.targets, Build.TARGETS_DELIMITER);
+  }
+
+  /**
+   * Sets the targets to build.
+   *
+   * @param targets The targets to build.
+   */
+  @DataBoundSetter
+  public void setTargets(@CheckForNull String... targets) {
+    this.targets = DotNetUtils.detokenize(';', targets);
+  }
+
+  /**
+   * Gets the targets to build.
+   *
+   * @return The targets to build.
+   */
+  @CheckForNull
+  public String getTargetsString() {
     return this.targets;
   }
 
@@ -196,7 +248,7 @@ public final class Build extends MSBuildCommand {
    * @param targets The targets to build.
    */
   @DataBoundSetter
-  public void setTargets(@CheckForNull String targets) {
+  public void setTargetsString(@CheckForNull String targets) {
     this.targets = Util.fixEmptyAndTrim(targets);
   }
 
@@ -244,6 +296,23 @@ public final class Build extends MSBuildCommand {
     @NonNull
     public String getDisplayName() {
       return Messages.MSBuild_Build_DisplayName();
+    }
+
+    @NonNull
+    @Override
+    public UninstantiatedDescribable customUninstantiate(@NonNull UninstantiatedDescribable ud) {
+      ud = super.customUninstantiate(ud);
+      final Map<String, ?> oldArgs = ud.getArguments();
+      final Map<String, Object> newArgs = new HashMap<>();
+      for (final Map.Entry<String, ?> arg : oldArgs.entrySet()) {
+        final String name = arg.getKey();
+        if ("targets".equals(name) && oldArgs.containsKey("target"))
+          continue;
+        if ("targetsString".equals(name))
+          continue;
+        newArgs.put(name, arg.getValue());
+      }
+      return new UninstantiatedDescribable(ud.getSymbol(), ud.getKlass(), newArgs);
     }
 
   }

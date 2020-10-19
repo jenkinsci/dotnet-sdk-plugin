@@ -3,12 +3,14 @@ package io.jenkins.plugins.dotnet.commands.msbuild;
 import edu.umd.cs.findbugs.annotations.CheckForNull;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Util;
+import io.jenkins.plugins.dotnet.DotNetUtils;
 import io.jenkins.plugins.dotnet.commands.Command;
 import io.jenkins.plugins.dotnet.commands.DotNetArguments;
 import io.jenkins.plugins.dotnet.commands.Messages;
 import org.kohsuke.stapler.DataBoundSetter;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -32,11 +34,17 @@ public class MSBuildCommand extends Command {
    * <ol>
    *   <li>The command name, if applicable.</li>
    *   <li>The project specified via {@link #setProject(String)}.</li>
-   *   <li>Any raw options specified via {@link #setOptions(String)}.</li>
+   *   <li>
+   *     Any raw options specified via {@link #setOption(String)}, {@link #setOptions(String...)} or
+   *     {@link #setOptionsString(String)}.
+   *   </li>
    *   <li>{@code -c:xxx}, if a configuration has been specified via {@link #setConfiguration(String)}.</li>
    *   <li>{@code --nologo}, if requested via {@link #setNologo(boolean)}.</li>
    *   <li>{@code --output xxx}, if an output directory has been specified via {@link #setOutputDirectory(String)}.</li>
-   *   <li>{@code -p:name=value}, for all properties specified via {@link #setProperties(String)}.</li>
+   *   <li>
+   *     {@code -p:name=value}, for all properties specified via {@link #setProperties(Map)} or
+   *     {@link #setPropertiesString(String)}.
+   *   </li>
    *   <li>{@code -v:xxx}, if a verbosity has been specified via {@link #setVerbosity(String)}.</li>
    * </ol>
    */
@@ -107,9 +115,55 @@ public class MSBuildCommand extends Command {
     this.nologo = noLogo;
   }
 
-  /** Additional options to pass to the command. */
+  /**
+   * Additional options to pass to the command.
+   * Options specified via more specific settings will take precedence over options specified here.
+   */
   @CheckForNull
   protected String options;
+
+  /**
+   * Gets the single additional option to pass to the command.
+   *
+   * @return An additional option to pass to the command, or {@code null} when there is not exactly one such option set.
+   */
+  @CheckForNull
+  public String getOption() {
+    return DotNetUtils.singleToken(this.options);
+  }
+
+  /**
+   * Sets a single additional option to pass to the command.
+   * <p>
+   * To set more than one, use {@link #setOptions(String...)} instead.
+   *
+   * @param option An additional option to pass to the command.
+   */
+  @DataBoundSetter
+  public void setOption(@CheckForNull String option) {
+    this.options = DotNetUtils.detokenize(' ', option);
+  }
+
+  /**
+   * Gets additional options to pass to the command.
+   *
+   * @return Additional options to pass to the command.
+   */
+  @CheckForNull
+  public String[] getOptions() {
+    return DotNetUtils.tokenize(this.options);
+  }
+
+  /**
+   * Sets additional options to pass to the command.
+   * Options specified via more specific settings will take precedence over options specified here.
+   *
+   * @param options Additional options to pass to the command.
+   */
+  @DataBoundSetter
+  public void setOptions(@CheckForNull String... options) {
+    this.options = DotNetUtils.detokenize(' ', options);
+  }
 
   /**
    * Gets additional options to pass to the command.
@@ -118,7 +172,7 @@ public class MSBuildCommand extends Command {
    * @return Additional options to pass to the command.
    */
   @CheckForNull
-  public String getOptions() {
+  public String getOptionsString() {
     return this.options;
   }
 
@@ -129,7 +183,7 @@ public class MSBuildCommand extends Command {
    * @param options Additional options to pass to the command.
    */
   @DataBoundSetter
-  public void setOptions(@CheckForNull String options) {
+  public void setOptionsString(@CheckForNull String options) {
     this.options = Util.fixEmptyAndTrim(options);
   }
 
@@ -195,7 +249,27 @@ public class MSBuildCommand extends Command {
    * @return MSBuild properties to be applied to the command (one key=value setting per line).
    */
   @CheckForNull
-  public String getProperties() {
+  public Map<String, String> getProperties() throws IOException {
+    return DotNetUtils.createPropertyMap(this.properties);
+  }
+
+  /**
+   * Sets MSBuild properties to be applied to the command.
+   *
+   * @param properties MSBuild properties to be applied to the command (one key=value setting per line).
+   */
+  @DataBoundSetter
+  public void setProperties(@CheckForNull Map<String, String> properties) throws IOException {
+    this.properties = DotNetUtils.createPropertyString(properties);
+  }
+
+  /**
+   * Gets MSBuild properties to be applied to the command.
+   *
+   * @return MSBuild properties to be applied to the command (one key=value setting per line).
+   */
+  @CheckForNull
+  public String getPropertiesString() {
     return this.properties;
   }
 
@@ -205,7 +279,7 @@ public class MSBuildCommand extends Command {
    * @param properties MSBuild properties to be applied to the command (one key=value setting per line).
    */
   @DataBoundSetter
-  public void setProperties(@CheckForNull String properties) {
+  public void setPropertiesString(@CheckForNull String properties) {
     this.properties = Util.fixEmpty(properties);
   }
 

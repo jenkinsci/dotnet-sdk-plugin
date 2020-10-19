@@ -261,6 +261,28 @@ public final class DotNetArguments {
   }
 
   /**
+   * Adds option arguments.
+   *
+   * @param option    The name of the option (without the {@code -} prefix or the {@code :} suffix).
+   * @param values    A string containing option arguments to add; it will have variable substitution applied and will then be
+   *                  tokenized to produce the options. Any parts evaluating to {@code null} will not be added.
+   * @param delimiter The delimiter string to use for tokenization.
+   *
+   * @return This .NET CLI argument processor.
+   */
+  public DotNetArguments addOptions(char option, @CheckForNull String values, @NonNull String delimiter) {
+    values = this.expand(values);
+    if (values == null)
+      return this;
+    for (String value : Util.tokenize(values, delimiter)) {
+      value = Util.fixEmptyAndTrim(value);
+      if (value != null)
+        this.cmdLine.add("-" + option + ":" + value);
+    }
+    return this;
+  }
+
+  /**
    * Adds option arguments based on a Java-style property string.
    *
    * @param prefix         The prefix to apply to the options.
