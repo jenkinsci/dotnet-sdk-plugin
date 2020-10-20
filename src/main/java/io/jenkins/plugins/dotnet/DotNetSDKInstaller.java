@@ -202,8 +202,7 @@ public final class DotNetSDKInstaller extends ToolInstaller {
     @SuppressWarnings("unused")
     @NonNull
     public AutoCompletionCandidates doAutoCompleteLabel(@CheckForNull @QueryParameter String value) {
-      // JENKINS-26097: There is no available static method for Label completion
-      return new FreeStyleProject.DescriptorImpl().doAutoCompleteLabel(value);
+      return LabelExpression.autoComplete(value);
     }
 
     /**
