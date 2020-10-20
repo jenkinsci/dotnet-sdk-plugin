@@ -25,7 +25,7 @@
   </developers>
 
   <properties>
-    <revision>0.4.0</revision>
+    <revision>1.0.0</revision>
     <changelist>-SNAPSHOT</changelist>
     <jenkins.version>2.249.1</jenkins.version>
     <java.level>8</java.level>

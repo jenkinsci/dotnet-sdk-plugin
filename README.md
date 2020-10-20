@@ -29,8 +29,6 @@ This includes:
 The builders are just for convenience; when using the build wrapper, any dotnet command line can
 be executed using a batch or shell step, as applicable.
 
-*Note:* There is __no guarantee__ that names of commands/parameters/... won't change before the 1.0 release.
-
 ## Reporting Problems
 
 Please report issues in the [Jenkins Issue Tracker](https://issues.jenkins-ci.org/).
