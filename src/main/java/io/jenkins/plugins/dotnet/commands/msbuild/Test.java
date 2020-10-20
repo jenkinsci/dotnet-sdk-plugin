@@ -17,6 +17,7 @@ import org.kohsuke.stapler.QueryParameter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -305,9 +306,11 @@ public final class Test extends MSBuildCommand {
   private String runSettings;
 
   /**
-   * Gets the inline run setings to use.
+   * Gets the inline run settings to use.
    *
-   * @return The inline run setings to use.
+   * @return The inline run settings to use.
+   *
+   * @throws IOException When there is a problem loading the run settings into a Java {@link Properties} object.
    */
   @CheckForNull
   public Map<String, String> getRunSettings() throws IOException {
@@ -315,9 +318,11 @@ public final class Test extends MSBuildCommand {
   }
 
   /**
-   * Sets the inline run setings to use.
+   * Sets the inline run settings to use.
    *
-   * @param runSettings The inline run setings to use.
+   * @param runSettings The inline run settings to use.
+   *
+   * @throws IOException When there is a problem using a {@link Properties} object to generate a string form for the map.
    */
   @DataBoundSetter
   public void setRunSettings(@CheckForNull Map<String, String> runSettings) throws IOException {
@@ -325,9 +330,9 @@ public final class Test extends MSBuildCommand {
   }
 
   /**
-   * Gets the inline run setings to use.
+   * Gets the inline run settings to use.
    *
-   * @return The inline run setings to use.
+   * @return The inline run settings to use.
    */
   @CheckForNull
   public String getRunSettingsString() {
@@ -335,9 +340,9 @@ public final class Test extends MSBuildCommand {
   }
 
   /**
-   * Sets the inline run setings to use.
+   * Sets the inline run settings to use.
    *
-   * @param runSettings The inline run setings to use.
+   * @param runSettings The inline run settings to use.
    */
   @DataBoundSetter
   public void setRunSettingsString(@CheckForNull String runSettings) {

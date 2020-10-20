@@ -11,6 +11,7 @@ import org.kohsuke.stapler.DataBoundSetter;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -247,6 +248,8 @@ public class MSBuildCommand extends Command {
    * Gets MSBuild properties to be applied to the command.
    *
    * @return MSBuild properties to be applied to the command (one key=value setting per line).
+   *
+   * @throws IOException When there is a problem loading the properties into a Java {@link Properties} object.
    */
   @CheckForNull
   public Map<String, String> getProperties() throws IOException {
@@ -257,6 +260,8 @@ public class MSBuildCommand extends Command {
    * Sets MSBuild properties to be applied to the command.
    *
    * @param properties MSBuild properties to be applied to the command (one key=value setting per line).
+   *
+   * @throws IOException When there is a problem using a {@link Properties} object to generate a string form for the map.
    */
   @DataBoundSetter
   public void setProperties(@CheckForNull Map<String, String> properties) throws IOException {
