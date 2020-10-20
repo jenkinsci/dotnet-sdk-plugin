@@ -1,5 +1,14 @@
 # Inherit base settings from https://github.com/jenkinsci/.github/blob/master/.github/release-drafter.yml
 _extends: .github
-name-template: .NET SDK Support $NEXT_PATCH_VERSION
-tag-template: dotnet-sdk-$NEXT_PATCH_VERSION
+name-template: .NET SDK Support $RESOLVED_VERSION
+tag-template: dotnet-sdk-$RESOLVED_VERSION
 version-template: $MAJOR.$MINOR.$PATCH
+
+version-resolver:
+  major:
+    labels:
+      - 'major'
+  minor:
+    labels:
+      - 'minor'
+  default: patch
