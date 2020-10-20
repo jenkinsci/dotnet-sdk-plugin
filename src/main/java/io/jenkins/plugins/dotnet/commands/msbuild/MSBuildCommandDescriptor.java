@@ -9,10 +9,8 @@ import io.jenkins.plugins.dotnet.commands.Messages;
 import org.jenkinsci.plugins.structs.describable.UninstantiatedDescribable;
 import org.kohsuke.stapler.QueryParameter;
 
-import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 /** A descriptor for an MSBuild-based .NET command. */
 public abstract class MSBuildCommandDescriptor extends CommandDescriptor {

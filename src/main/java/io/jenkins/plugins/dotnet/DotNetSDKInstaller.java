@@ -6,7 +6,6 @@ import hudson.Extension;
 import hudson.FilePath;
 import hudson.Util;
 import hudson.model.AutoCompletionCandidates;
-import hudson.model.FreeStyleProject;
 import hudson.model.Node;
 import hudson.model.TaskListener;
 import hudson.model.labels.LabelExpression;

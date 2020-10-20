@@ -7,7 +7,6 @@ import hudson.Util;
 import hudson.model.AutoCompletionCandidates;
 import hudson.model.DownloadService;
 import hudson.util.FormValidation;
-import io.jenkins.plugins.dotnet.DotNetUtils;
 import net.sf.json.JSONObject;
 import org.kohsuke.stapler.DataBoundConstructor;
 

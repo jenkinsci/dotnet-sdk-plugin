@@ -7,7 +7,6 @@ import hudson.model.Run;
 import io.jenkins.plugins.dotnet.DotNetUtils;
 
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 

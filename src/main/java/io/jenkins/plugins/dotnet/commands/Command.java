@@ -8,8 +8,6 @@ import hudson.FilePath;
 import hudson.Functions;
 import hudson.Launcher;
 import hudson.Util;
-import hudson.model.AbstractBuild;
-import hudson.model.BuildListener;
 import hudson.model.Result;
 import hudson.model.Run;
 import hudson.model.TaskListener;
@@ -23,7 +21,6 @@ import org.kohsuke.stapler.DataBoundSetter;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.Map;
 
 /** A build step executing a .NET CLI command. */
 public class Command extends Builder implements SimpleBuildStep {

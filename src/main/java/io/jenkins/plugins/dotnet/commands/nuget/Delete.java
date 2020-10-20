@@ -8,7 +8,6 @@ import hudson.Util;
 import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
 import io.jenkins.plugins.dotnet.DotNetUtils;
-import io.jenkins.plugins.dotnet.commands.CommandDescriptor;
 import io.jenkins.plugins.dotnet.commands.DotNetArguments;
 import io.jenkins.plugins.dotnet.commands.Messages;
 import jenkins.model.Jenkins;
