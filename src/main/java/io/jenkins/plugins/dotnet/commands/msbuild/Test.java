@@ -435,11 +435,11 @@ public final class Test extends MSBuildCommand {
      */
     @SuppressWarnings("unused")
     @NonNull
-    public FormValidation doCheckRunSettings(@CheckForNull @QueryParameter String value) {
+    public FormValidation doCheckRunSettingsString(@CheckForNull @QueryParameter String value) {
       value = Util.fixEmptyAndTrim(value);
       if (value != null) {
         try {
-          new Properties().load(new StringReader(value));
+          Util.loadProperties(value);
         }
         catch (Throwable t) {
           return FormValidation.error(t, Messages.MSBuild_Test_InvalidRunSettings());

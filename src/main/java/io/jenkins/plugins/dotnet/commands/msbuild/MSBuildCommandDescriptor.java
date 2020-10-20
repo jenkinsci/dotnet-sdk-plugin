@@ -1,6 +1,7 @@
 package io.jenkins.plugins.dotnet.commands.msbuild;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
+import hudson.Util;
 import hudson.util.ComboBoxModel;
 import hudson.util.FormValidation;
 import io.jenkins.plugins.dotnet.commands.CommandDescriptor;
@@ -43,12 +44,15 @@ public abstract class MSBuildCommandDescriptor extends CommandDescriptor {
    */
   @SuppressWarnings("unused")
   @NonNull
-  public FormValidation doCheckProperties(@QueryParameter String value) {
-    try {
-      new Properties().load(new StringReader(value));
-    }
-    catch (Throwable t) {
-      return FormValidation.error(t, Messages.MSBuild_Command_InvalidProperties());
+  public FormValidation doCheckPropertiesString(@QueryParameter String value) {
+    value = Util.fixEmptyAndTrim(value);
+    if (value != null) {
+      try {
+        Util.loadProperties(value);
+      }
+      catch (Throwable t) {
+        return FormValidation.error(t, Messages.MSBuild_Command_InvalidProperties());
+      }
     }
     return FormValidation.ok();
   }

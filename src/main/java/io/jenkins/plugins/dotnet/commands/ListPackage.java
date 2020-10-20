@@ -496,7 +496,7 @@ public final class ListPackage extends Command {
      */
     @SuppressWarnings("unused")
     @NonNull
-    public FormValidation doCheckSources(@CheckForNull @QueryParameter String value, @QueryParameter boolean deprecated, @QueryParameter boolean outdated) {
+    public FormValidation doCheckSourcesString(@CheckForNull @QueryParameter String value, @QueryParameter boolean deprecated, @QueryParameter boolean outdated) {
       if (Util.fixEmptyAndTrim(value) != null && !deprecated && !outdated)
         return FormValidation.warning(Messages.ListPackage_OnlyForPackageUpdateSearch());
       return FormValidation.ok();
