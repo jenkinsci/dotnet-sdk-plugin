@@ -38,6 +38,7 @@ public final class ListPackage extends Command {
    *     {@link #setFrameworks(String...)} or {@link #setFrameworksString(String)}.
    *   </li>
    *   <li>{@code --include-transitive}, if requested via {@link #setIncludeTransitive(boolean)}.</li>
+   *   <li>{@code -v:xxx}, if a verbosity has been specified via {@link #setVerbosity(String)}.</li>
    * </ol>
    * If either outdated or deprecated packages are requested, this also adds:
    * <ol>
@@ -60,6 +61,7 @@ public final class ListPackage extends Command {
     args.addFlag("outdated", this.outdated);
     args.addOptions("framework", this.frameworks);
     args.addFlag("include-transitive", this.includeTransitive);
+    args.addOption('v', this.verbosity);
     if (this.outdated || this.deprecated) {
       args.addFlag("include-prerelease", this.includePrerelease);
       args.addFlag("highest-minor", this.highestMinor);
@@ -369,6 +371,28 @@ public final class ListPackage extends Command {
   @DataBoundSetter
   public void setSourcesString(@CheckForNull String sources) {
     this.sources = Util.fixEmptyAndTrim(sources);
+  }
+
+  private String verbosity;
+
+  /**
+   * Gets the verbosity to use for the command.
+   *
+   * @return The verbosity to use for the command.
+   */
+  @CheckForNull
+  public String getVerbosity() {
+    return this.verbosity;
+  }
+
+  /**
+   * Sets the verbosity to use for the command.
+   *
+   * @param verbosity The verbosity to use for the command.
+   */
+  @DataBoundSetter
+  public void setVerbosity(@CheckForNull String verbosity) {
+    this.verbosity = Util.fixEmptyAndTrim(verbosity);
   }
 
   //endregion
