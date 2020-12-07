@@ -1,0 +1,22 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form" xmlns:s="jelly:stapler">
+
+  <s:include page="arguments.jelly" class="io.jenkins.plugins.dotnet.commands.nuget.NuGetCommand"/>
+
+  <f:entry title="${%Cache Location}" field="cacheLocation">
+    <f:select default="all"/>
+  </f:entry>
+
+  <f:entry title="${%Operation}" field="operation">
+    <f:select default="list"/>
+  </f:entry>
+
+  <s:include page="options.jelly" class="io.jenkins.plugins.dotnet.commands.nuget.NuGetCommand"/>
+
+  <f:advanced title="${descriptor.moreOptions}">
+
+    <s:include page="moreOptions.jelly" class="io.jenkins.plugins.dotnet.commands.nuget.NuGetCommand"/>
+
+  </f:advanced>
+
+</j:jelly>
