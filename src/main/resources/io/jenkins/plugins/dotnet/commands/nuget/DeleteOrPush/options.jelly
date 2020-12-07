@@ -1,0 +1,10 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form" xmlns:s="jelly:stapler" xmlns:c="/lib/credentials">
+
+  <s:include page="options.jelly" class="io.jenkins.plugins.dotnet.commands.nuget.NuGetCommand"/>
+
+  <f:entry title="${%Package Server API Key}" field="apiKeyId">
+    <c:select/>
+  </f:entry>
+
+</j:jelly>

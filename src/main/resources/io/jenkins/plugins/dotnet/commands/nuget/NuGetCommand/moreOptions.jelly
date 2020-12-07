@@ -1,0 +1,10 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form" xmlns:s="jelly:stapler">
+
+  <f:entry title="${%Force English Output}" field="forceEnglishOutput">
+    <f:checkbox/>
+  </f:entry>
+
+  <s:include page="moreOptions.jelly" class="io.jenkins.plugins.dotnet.commands.Command"/>
+
+</j:jelly>

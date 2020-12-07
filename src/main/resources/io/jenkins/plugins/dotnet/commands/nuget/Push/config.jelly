@@ -1,31 +1,25 @@
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form" xmlns:s="jelly:stapler" xmlns:c="/lib/credentials">
 
-  <s:include page="options.jelly" class="io.jenkins.plugins.dotnet.commands.Command"/>
+  <s:include page="arguments.jelly" class="io.jenkins.plugins.dotnet.commands.nuget.DeleteOrPush"/>
 
   <f:entry title="${%Package Specification}" field="root">
     <f:textbox/>
-  </f:entry>
-
-  <f:entry title="${%Package Server API Key}" field="apiKeyId">
-    <c:select/>
   </f:entry>
 
   <f:entry title="${%Package Source}" field="source">
     <f:textbox/>
   </f:entry>
 
+  <s:include page="options.jelly" class="io.jenkins.plugins.dotnet.commands.nuget.DeleteOrPush"/>
+
+  <f:entry title="${%Symbol Server API Key}" field="symbolApiKeyId">
+    <c:select/>
+  </f:entry>
+
   <f:advanced title="${descriptor.moreOptions}">
 
     <f:entry title="${%Disable Buffering}" field="disableBuffering">
-      <f:checkbox/>
-    </f:entry>
-
-    <f:entry title="${%Force English Output}" field="forceEnglishOutput">
-      <f:checkbox/>
-    </f:entry>
-
-    <f:entry title="${%No Service Endpoint}" field="noServiceEndpoint">
       <f:checkbox/>
     </f:entry>
 
@@ -37,10 +31,6 @@
       <f:checkbox/>
     </f:entry>
 
-    <f:entry title="${%Symbol Server API Key}" field="symbolApiKeyId">
-      <c:select/>
-    </f:entry>
-
     <f:entry title="${%Symbol Source}" field="symbolSource">
       <f:textbox/>
     </f:entry>
@@ -49,7 +39,7 @@
       <f:number/>
     </f:entry>
 
-    <s:include page="moreOptions.jelly" class="io.jenkins.plugins.dotnet.commands.Command"/>
+    <s:include page="moreOptions.jelly" class="io.jenkins.plugins.dotnet.commands.nuget.DeleteOrPush"/>
 
   </f:advanced>
 
