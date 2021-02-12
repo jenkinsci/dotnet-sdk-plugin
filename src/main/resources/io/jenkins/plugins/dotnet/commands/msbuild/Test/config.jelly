@@ -55,9 +55,36 @@
       <f:textbox/>
     </f:entry>
 
-    <f:entry title="${%Blame Mode}" field="blame">
-      <f:checkbox/>
-    </f:entry>
+    <!-- FIXME: How to make this look different (e.g. add a border)? -->
+    <f:optionalBlock inline="true" title="${%Blame Mode}" field="blame">
+
+      <!-- FIXME: How to make it more apparent that the contents belong to the block (e.g. indentation)? -->
+
+      <f:optionalBlock title="${%Blame: Collect Crash Dumps}" field="blameCrash">
+
+        <f:entry title="${%Blame/Crash: Dump Type}" field="blameCrashDumpType">
+          <f:select/>
+        </f:entry>
+
+        <f:entry title="${%Blame/Crash: Collect Dump on Expected Termination}" field="blameCrashCollectAlways">
+          <f:checkbox/>
+        </f:entry>
+
+      </f:optionalBlock>
+
+      <f:optionalBlock inline="true" title="${%Blame: Hang Detection}" field="blameHang">
+
+        <f:entry title="${%Blame/Hang: Time-Out in Milliseconds}" field="blameHangTimeout">
+          <f:number/>
+        </f:entry>
+
+        <f:entry title="${%Blame/Hang: Dump Type}" field="blameHangDumpType">
+          <f:select/>
+        </f:entry>
+
+      </f:optionalBlock>
+
+    </f:optionalBlock>
 
     <f:entry title="${%Diagnostics File}" field="diag">
       <f:textbox/>

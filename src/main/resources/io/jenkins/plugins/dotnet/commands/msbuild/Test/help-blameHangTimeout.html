@@ -1,0 +1,12 @@
+<div>
+  <!-- Copied From: https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-test#options -->
+  Per-test timeout, in milliseconds, after which a hang dump is triggered and the test host process and all of its child processes
+  are dumped and terminated.<br/>
+  When used together with data driven tests, the timeout behavior depends on the test adapter used. For xUnit and NUnit the timeout
+  is renewed after every test case. For MSTest, the timeout is used for all test cases. This option is supported on Windows with
+  netcoreapp2.1 and later, on Linux with netcoreapp3.1 and later, and on macOS with net5.0 or later.
+  Implies <code>--blame</code> and <code>--blame-hang</code>.
+</div>
+<div>
+  <em><strong>Available since:</strong> .NET 5.0 preview SDK</em>
+</div>
