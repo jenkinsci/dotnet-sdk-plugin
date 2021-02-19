@@ -74,8 +74,6 @@ public final class Test extends MSBuildCommand {
     args.addFlag("blame-hang", this.blameHang);
     args.addOption("blame-hang-dump-type", this.blameHangDumpType);
     args.addOption("blame-hang-timeout", this.blameHangTimeout);
-    args.addOption("logger", this.logger);
-    args.addOption("logger", this.logger);
     args.addOption("collect", this.collect);
     args.addOption("diag", this.diag);
     args.addOption("filter", this.filter);
