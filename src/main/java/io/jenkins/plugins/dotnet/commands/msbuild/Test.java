@@ -5,6 +5,7 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.Util;
 import hudson.util.FormValidation;
+import hudson.util.ListBoxModel;
 import io.jenkins.plugins.dotnet.DotNetUtils;
 import io.jenkins.plugins.dotnet.commands.DotNetArguments;
 import io.jenkins.plugins.dotnet.commands.Messages;
@@ -39,6 +40,12 @@ public final class Test extends MSBuildCommand {
    *   <li>{@code -f:xxx}, if a target framework moniker has been specified via {@link #setFramework(String)}.</li>
    *   <li>{@code -r:xxx}, if a runtime identifier has been specified via {@link #setRuntime(String)}.</li>
    *   <li>{@code --blame}, if requested via {@link #setBlame(boolean)}.</li>
+   *   <li>{@code --blame-crash}, if requested via {@link #setBlameCrash(boolean)}.</li>
+   *   <li>{@code --blame-crash-collect-always}, if requested via {@link #setBlameCrashCollectAlways(boolean)}.</li>
+   *   <li>{@code --blame-crash-dump-type xxx}, if requested via {@link #setBlameCrashDumpType(String)}.</li>
+   *   <li>{@code --blame-hang}, if requested via {@link #setBlameHang(boolean)}.</li>
+   *   <li>{@code --blame-hang-dump-type xxx}, if requested via {@link #setBlameHangDumpType(String)}.</li>
+   *   <li>{@code --blame-hang-timeout nnn}, if requested via {@link #setBlameHangTimeout(Integer)}.</li>
    *   <li>{@code --collect xxx}, if a data collector has been specified via {@link #setCollect(String)}.</li>
    *   <li>{@code --diag xxx}, if a diagnostics file has been specified via {@link #setDiag(String)}.</li>
    *   <li>{@code --filter xxx}, if a filter expression has been specified via {@link #setFilter(String)}.</li>
@@ -61,6 +68,12 @@ public final class Test extends MSBuildCommand {
     args.addOption('f', this.framework);
     args.addOption('r', this.runtime);
     args.addFlag("blame", this.blame);
+    args.addFlag("blame-crash", this.blameCrash);
+    args.addFlag("blame-crash-collect-always", this.blameCrashCollectAlways);
+    args.addOption("blame-crash-dump-type", this.blameCrashDumpType);
+    args.addFlag("blame-hang", this.blameHang);
+    args.addOption("blame-hang-dump-type", this.blameHangDumpType);
+    args.addOption("blame-hang-timeout", this.blameHangTimeout);
     args.addOption("collect", this.collect);
     args.addOption("diag", this.diag);
     args.addOption("filter", this.filter);
@@ -90,7 +103,7 @@ public final class Test extends MSBuildCommand {
   private boolean blame;
 
   /**
-   * Determines whether or not tests should be run in blame mode, to diagnost test host crashes.
+   * Determines whether or not tests should be run in blame mode, to diagnose test host crashes.
    *
    * @return {@code true} when tests are run in blame mode; {@code false} otherwise.
    */
@@ -99,13 +112,143 @@ public final class Test extends MSBuildCommand {
   }
 
   /**
-   * Determines whether or not tests should be run in blame mode, to diagnost test host crashes.
+   * Determines whether or not tests should be run in blame mode, to diagnose test host crashes.
    *
    * @param blame {@code true} to run tests in blame mode; {@code false} otherwise.
    */
   @DataBoundSetter
   public void setBlame(boolean blame) {
     this.blame = blame;
+  }
+
+  private boolean blameCrash;
+
+  /**
+   * Determines whether or not crash dumps should be collected in blame mode.
+   *
+   * @return {@code true} when crash dumps are collected; {@code false} otherwise.
+   */
+  public boolean isBlameCrash() {
+    return this.blameCrash;
+  }
+
+  /**
+   * Determines whether or not crash dumps should be collected in blame mode.
+   *
+   * @param blameCrash {@code true} to collect crash dumps; {@code false} otherwise.
+   */
+  @DataBoundSetter
+  public void setBlameCrash(boolean blameCrash) {
+    this.blameCrash = blameCrash;
+  }
+
+  private boolean blameCrashCollectAlways;
+
+  /**
+   * Determines whether or not crash dumps should be collected in blame mode even for expected test host termination.
+   *
+   * @return {@code true} when crash dumps are collected even for expected test host termination; {@code false} otherwise.
+   */
+  public boolean isBlameCrashCollectAlways() {
+    return this.blameCrashCollectAlways;
+  }
+
+  /**
+   * Determines whether or not crash dumps should be collected in blame mode even for expected test host termination.
+   *
+   * @param blameCrashCollectAlways {@code true} to collect crash dumps even for expected test host termination; {@code false}
+   *                                otherwise.
+   */
+  @DataBoundSetter
+  public void setBlameCrashCollectAlways(boolean blameCrashCollectAlways) {
+    this.blameCrashCollectAlways = blameCrashCollectAlways;
+  }
+
+  private String blameCrashDumpType;
+
+  /**
+   * Gets the type of dump to collect when the test host terminates unexpectedly.
+   *
+   * @return The type of dump to collect when the test host terminates unexpectedly.
+   */
+  @CheckForNull
+  public String getBlameCrashDumpType() {
+    return this.blameCrashDumpType;
+  }
+
+  /**
+   * Sets the type of dump to collect when the test host terminates unexpectedly.
+   *
+   * @param blameCrashDumpType The type of dump to collect when the test host terminates unexpectedly.
+   */
+  @DataBoundSetter
+  public void setBlameCrashDumpType(@CheckForNull String blameCrashDumpType) {
+    this.blameCrashDumpType = Util.fixEmptyAndTrim(blameCrashDumpType);
+  }
+
+  private boolean blameHang;
+
+  /**
+   * Determines whether or not test timeouts should result in termination.
+   *
+   * @return {@code true} when test timeouts result in termination; {@code false} otherwise.
+   */
+  public boolean isBlameHang() {
+    return this.blameHang;
+  }
+
+  /**
+   * Determines whether or not test timeouts should result in termination.
+   *
+   * @param blameHang {@code true} to terminate execution when a test times out; {@code false} otherwise.
+   */
+  @DataBoundSetter
+  public void setBlameHang(boolean blameHang) {
+    this.blameHang = blameHang;
+  }
+
+  private String blameHangDumpType;
+
+  /**
+   * Gets the type of dump to collect when a test times out.
+   *
+   * @return The type of dump to collect when a test times out.
+   */
+  @CheckForNull
+  public String getBlameHangDumpType() {
+    return this.blameHangDumpType;
+  }
+
+  /**
+   * Sets the type of dump to collect when a test times out.
+   *
+   * @param blameHangDumpType The type of dump to collect when a test times out.
+   */
+  @DataBoundSetter
+  public void setBlameHangDumpType(@CheckForNull String blameHangDumpType) {
+    this.blameHangDumpType = Util.fixEmptyAndTrim(blameHangDumpType);
+  }
+
+  private Integer blameHangTimeout;
+
+  /**
+   * Gets the timeout (in milliseconds) to use for hang detection.
+   *
+   * @return The timeout (in milliseconds) to use for hang detection.
+   */
+  @CheckForNull
+  public Integer getBlameHangTimeout() {
+    return this.blameHangTimeout;
+  }
+
+  /**
+   * Sets the timeout (in milliseconds) to use for hang detection.
+   *
+   * @param blameHangTimeout The timeout (in milliseconds) to use for hang detection.
+   */
+  @DataBoundSetter
+  public void setBlameHangTimeout(@CheckForNull Integer blameHangTimeout) {
+    this.blameHangTimeout = blameHangTimeout;
   }
 
   private String collect;
@@ -429,6 +572,52 @@ public final class Test extends MSBuildCommand {
       this.load();
     }
 
+    @NonNull
+    @Override
+    public UninstantiatedDescribable customUninstantiate(@NonNull UninstantiatedDescribable ud) {
+      ud = super.customUninstantiate(ud);
+      final Map<String, Object> args = new HashMap<>();
+      for (final Map.Entry<String, ?> arg : ud.getArguments().entrySet()) {
+        final String name = arg.getKey();
+        if ("runSettingsString".equals(name))
+          continue;
+        args.put(name, arg.getValue());
+      }
+      return new UninstantiatedDescribable(ud.getSymbol(), ud.getKlass(), args);
+    }
+
+    /**
+     * Performs (basic) validation on a test timeout.
+     *
+     * @param value The timeout to validate.
+     *
+     * @return The validation result.
+     */
+    @SuppressWarnings("unused")
+    @NonNull
+    public FormValidation doCheckBlameHangTimeout(@CheckForNull @QueryParameter Integer value) {
+      if (value == null)
+        return FormValidation.ok();
+      if (value < 0)
+        return FormValidation.error(Messages.MSBuild_Test_InvalidTimeout());
+      final StringBuilder sb = new StringBuilder();
+      int ms = value;
+      if (ms > 3600000) {
+        sb.append(String.format("%dh", ms / 3600000));
+        ms %= 3600000;
+      }
+      if (ms > 60000) {
+        if (sb.length() > 0)
+          sb.append(' ');
+        sb.append(String.format("%dm", ms / 60000));
+        ms %= 60000;
+      }
+      if (sb.length() > 0)
+        sb.append(' ');
+      sb.append(String.format("%.3fs", ms / 1000.0));
+      return FormValidation.ok(sb.toString());
+    }
+
     /**
      * Performs (basic) validation on a set of run settings.
      *
@@ -452,6 +641,37 @@ public final class Test extends MSBuildCommand {
     }
 
     /**
+     * Fills a listbox with the possible values for the dump types supported by {@code --blame-crash-dump-type}.
+     *
+     * @return A suitably filled listbox model.
+     */
+    @SuppressWarnings("unused")
+    @NonNull
+    public final ListBoxModel doFillBlameCrashDumpTypeItems() {
+      final ListBoxModel model = new ListBoxModel();
+      model.add("");
+      model.add("mini");
+      model.add("full");
+      return model;
+    }
+
+    /**
+     * Fills a listbox with the possible values for the dump types supported by {@code --blame-hang-dump-type}.
+     *
+     * @return A suitably filled listbox model.
+     */
+    @SuppressWarnings("unused")
+    @NonNull
+    public final ListBoxModel doFillBlameHangDumpTypeItems() {
+      final ListBoxModel model = new ListBoxModel();
+      model.add("");
+      model.add("none");
+      model.add("mini");
+      model.add("full");
+      return model;
+    }
+
+    /**
      * Gets the display name for this build step (as used in the project configuration UI).
      *
      * @return This build step's display name.
@@ -459,20 +679,6 @@ public final class Test extends MSBuildCommand {
     @NonNull
     public String getDisplayName() {
       return Messages.MSBuild_Test_DisplayName();
-    }
-
-    @NonNull
-    @Override
-    public UninstantiatedDescribable customUninstantiate(@NonNull UninstantiatedDescribable ud) {
-      ud = super.customUninstantiate(ud);
-      final Map<String, Object> args = new HashMap<>();
-      for (final Map.Entry<String, ?> arg : ud.getArguments().entrySet()) {
-        final String name = arg.getKey();
-        if ("runSettingsString".equals(name))
-          continue;
-        args.put(name, arg.getValue());
-      }
-      return new UninstantiatedDescribable(ud.getSymbol(), ud.getKlass(), args);
     }
 
   }

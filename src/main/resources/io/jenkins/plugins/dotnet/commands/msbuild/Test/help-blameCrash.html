@@ -1,0 +1,18 @@
+<div>
+  <!-- Copied From: https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-test#options -->
+  Runs the tests in blame mode and collects a crash dump when the test host exits unexpectedly. This option depends on the version
+  of .NET used, the type of error, and the operating system.<br/>
+  For exceptions in managed code, a dump will be automatically collected on .NET 5.0 and later versions. It will generate a dump for
+  the test host or any child process that also ran on .NET 5.0 and crashed. Crashes in native code will not generate a dump. This
+  option works on Windows, macOS, and Linux.<br/>
+  Crash dumps in native code, or when using .NET Core 3.1 or earlier versions, can only be collected on Windows, by using Procdump.
+  A directory that contains <em>procdump.exe</em> and <em>procdump64.exe</em> must be in the PATH or PROCDUMP_PATH environment
+  variable.
+  <a href="https://docs.microsoft.com/en-us/sysinternals/downloads/procdump">Download the tools.</a>
+  Implies <code>--blame</code>.<br/>
+  To collect a crash dump from a native application running on .NET 5.0 or later, the usage of Procdump can be forced by setting the
+  <code>VSTEST_DUMP_FORCEPROCDUMP</code> environment variable to <code>1</code>.
+</div>
+<div>
+  <em><strong>Available since:</strong> .NET 5.0 preview SDK</em>
+</div>
