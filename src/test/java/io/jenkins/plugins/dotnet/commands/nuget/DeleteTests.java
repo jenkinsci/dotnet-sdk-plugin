@@ -7,7 +7,10 @@ public final class DeleteTests extends CommandTests {
 
   @Test
   public void simpleExecutionWorks() throws Exception {
-    super.runCommandAndValidateProcessExecution(Delete::new, check -> check.expectCommand().withArguments("nuget", "delete"));
+    this.runCommandsAndValidateProcessExecution((steps, clc) -> {
+      steps.add(new Delete());
+      clc.expectCommand().withArguments("nuget", "delete");
+    });
   }
 
   private static final String PACKAGE_ID = "My.Package";
@@ -15,13 +18,14 @@ public final class DeleteTests extends CommandTests {
 
   @Test
   public void normalExecutionWorks() throws Exception {
-    super.runCommandAndValidateProcessExecution(() -> {
+    this.runCommandsAndValidateProcessExecution((steps, clc) -> {
       final Delete command = new Delete();
       // package id and version both have to be specified
       command.setPackageName(DeleteTests.PACKAGE_ID);
       command.setPackageVersion(DeleteTests.PACKAGE_VERSION);
-      return command;
-    }, check -> check.expectCommand().withArguments("nuget", "delete", DeleteTests.PACKAGE_ID, DeleteTests.PACKAGE_VERSION));
+      steps.add(command);
+      clc.expectCommand().withArguments("nuget", "delete", DeleteTests.PACKAGE_ID, DeleteTests.PACKAGE_VERSION);
+    });
   }
 
 }

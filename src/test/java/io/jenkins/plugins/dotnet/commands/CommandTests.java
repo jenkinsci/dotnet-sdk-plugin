@@ -9,9 +9,12 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.ExtensionList;
 import hudson.Launcher;
 import hudson.Proc;
+import hudson.model.Descriptor;
 import hudson.model.FreeStyleProject;
 import hudson.model.Slave;
 import hudson.model.TaskListener;
+import hudson.tasks.Builder;
+import hudson.util.DescribableList;
 import io.jenkins.plugins.dotnet.DotNetSDK;
 import org.junit.Assert;
 import org.junit.Rule;
@@ -23,9 +26,9 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
+import java.util.function.BiConsumer;
 import java.util.logging.Logger;
+import java.util.stream.Stream;
 
 public abstract class CommandTests {
 
@@ -62,6 +65,11 @@ public abstract class CommandTests {
       public ExpectedCommand withArgument(@NonNull String argument, boolean masked) {
         this.commandLine.add(argument);
         this.masks.add(masked);
+        return this;
+      }
+
+      public ExpectedCommand withArguments(@NonNull Stream<String> arguments) {
+        arguments.forEach(this::withArgument);
         return this;
       }
 
@@ -129,20 +137,17 @@ public abstract class CommandTests {
 
   //endregion
 
-  protected <T extends Command> void runCommandAndValidateProcessExecution(Supplier<T> createCommand, Consumer<CommandLineChecker> manageExpectations) throws Exception {
+  protected void runCommandsAndValidateProcessExecution(BiConsumer<DescribableList<Builder, Descriptor<Builder>>, CommandLineChecker> setUp) throws Exception {
+    // Create a project that executes the commands, and a command line checker that validates the resulting command lines
     final FreeStyleProject project = this.rule.createFreeStyleProject();
-    { // Create the command and add it as a project build step
-      final T step = createCommand.get();
-      project.getBuildersList().add(step);
-    }
-    // Set u
     final CommandLineChecker launcher = new CommandLineChecker(this.rule.createTaskListener());
-    manageExpectations.accept(launcher);
-    { // Set up a fake node with a command-line checker as fake launcher
+    setUp.accept(project.getBuildersList(), launcher);
+    { // Set up a fake node with that command-line checker as launcher
       final Slave slave = this.rule.createPretendSlave(launcher);
       this.rule.jenkins.addNode(slave);
       project.setAssignedNode(slave);
     }
+    // Run the project
     this.rule.buildAndAssertSuccess(project);
     launcher.finish();
   }
@@ -157,7 +162,11 @@ public abstract class CommandTests {
   protected void withCredentials(@NonNull StandardCredentials credentials, @NonNull Code code) throws IOException {
     // FIXME: Is this really the right way to do this?
     final CredentialsProvider provider = ExtensionList.lookup(CredentialsProvider.class).get(SystemCredentialsProvider.ProviderImpl.class);
+    if (provider == null)
+      throw new UnsupportedOperationException("No credentials provider available.");
     final CredentialsStore store = provider.getStore(this.rule.jenkins);
+    if (store == null)
+      throw new UnsupportedOperationException("No credentials store available.");
     final Domain domain = Domain.global();
     store.addCredentials(domain, credentials);
     try {
