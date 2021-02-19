@@ -9,211 +9,267 @@ public final class PublishTests extends CommandTests {
 
   @Test
   public void simpleExecutionWorks() throws Exception {
-    super.runCommandAndValidateProcessExecution(Publish::new, check -> check.expectCommand().withArgument("publish"));
+    this.runCommandsAndValidateProcessExecution((steps, clc) -> {
+      steps.add(new Publish());
+      clc.expectCommand().withArguments("publish");
+    });
   }
 
   private static final String PROJECT = "Foo.Bar.sln";
 
   @Test
   public void normalExecutionWorks() throws Exception {
-    super.runCommandAndValidateProcessExecution(() -> {
+    this.runCommandsAndValidateProcessExecution((steps, clc) -> {
       final Publish command = new Publish();
       command.setProject(PublishTests.PROJECT);
-      return command;
-    }, check -> check.expectCommand().withArguments("publish", PublishTests.PROJECT));
+      steps.add(command);
+      clc.expectCommand().withArguments("publish", PublishTests.PROJECT);
+    });
   }
 
   @Test
   public void forceFlagWorks() throws Exception {
-    super.runCommandAndValidateProcessExecution(() -> {
-      final Publish command = new Publish();
-      command.setForce(true);
-      return command;
-    }, check -> check.expectCommand().withArguments("publish", "--force"));
-    super.runCommandAndValidateProcessExecution(() -> {
-      final Publish command = new Publish();
-      command.setForce(false);
-      return command;
-    }, check -> check.expectCommand().withArgument("publish"));
+    this.runCommandsAndValidateProcessExecution((steps, clc) -> {
+      {
+        final Publish command = new Publish();
+        command.setForce(true);
+        steps.add(command);
+        clc.expectCommand().withArguments("publish", "--force");
+      }
+      {
+        final Publish command = new Publish();
+        command.setForce(false);
+        steps.add(command);
+        clc.expectCommand().withArgument("publish");
+      }
+    });
   }
 
   private static final String FRAMEWORK = "net5.0";
 
   @Test
   public void frameworkOptionWorks() throws Exception {
-    super.runCommandAndValidateProcessExecution(() -> {
-      final Publish command = new Publish();
-      command.setFramework(PublishTests.FRAMEWORK);
-      return command;
-    }, check -> check.expectCommand().withArguments("publish", "-f:" + PublishTests.FRAMEWORK));
-    super.runCommandAndValidateProcessExecution(() -> {
-      final Publish command = new Publish();
-      command.setFramework("  ");
-      return command;
-    }, check -> check.expectCommand().withArguments("publish"));
+    this.runCommandsAndValidateProcessExecution((steps, clc) -> {
+      {
+        final Publish command = new Publish();
+        command.setFramework(PublishTests.FRAMEWORK);
+        steps.add(command);
+        clc.expectCommand().withArguments("publish", "-f:" + PublishTests.FRAMEWORK);
+      }
+      {
+        final Publish command = new Publish();
+        command.setFramework("  ");
+        steps.add(command);
+        clc.expectCommand().withArguments("publish");
+      }
+    });
   }
 
-  private static final String[] MANIFESTS = { "/path/to/first/manifest", "E:\\Second\\Manifest" };
+  private static final String[] MANIFESTS = {
+    "/path/to/first/manifest",
+    "E:\\Second\\Manifest"
+  };
 
   @Test
   public void manifestOptionWorks() throws Exception {
-    super.runCommandAndValidateProcessExecution(() -> {
-      final Publish command = new Publish();
-      command.setManifest(PublishTests.MANIFESTS[0]);
-      return command;
-    }, check -> check.expectCommand().withArguments("publish", "--manifest", PublishTests.MANIFESTS[0]));
-    super.runCommandAndValidateProcessExecution(() -> {
-      final Publish command = new Publish();
-      command.setManifest(" ");
-      return command;
-    }, check -> check.expectCommand().withArgument("publish"));
-    super.runCommandAndValidateProcessExecution(() -> {
-      final Publish command = new Publish();
-      command.setManifest(null);
-      return command;
-    }, check -> check.expectCommand().withArgument("publish"));
+    this.runCommandsAndValidateProcessExecution((steps, clc) -> {
+      {
+        final Publish command = new Publish();
+        command.setManifest(PublishTests.MANIFESTS[0]);
+        steps.add(command);
+        clc.expectCommand().withArguments("publish", "--manifest", PublishTests.MANIFESTS[0]);
+      }
+      {
+        final Publish command = new Publish();
+        command.setManifest(" ");
+        steps.add(command);
+        clc.expectCommand().withArgument("publish");
+      }
+      {
+        final Publish command = new Publish();
+        command.setManifest(null);
+        steps.add(command);
+        clc.expectCommand().withArgument("publish");
+      }
+    });
   }
 
   @Test
   public void manifestsOptionWorks() throws Exception {
-    super.runCommandAndValidateProcessExecution(() -> {
-      final Publish command = new Publish();
-      command.setManifests(PublishTests.MANIFESTS);
-      return command;
-    }, check -> {
-      final String[] manifests = Stream.of(PublishTests.MANIFESTS).flatMap(s -> Stream.of("--manifest", s)).toArray(String[]::new);
-      check.expectCommand().withArgument("publish").withArguments(manifests);
+    this.runCommandsAndValidateProcessExecution((steps, clc) -> {
+      {
+        final Publish command = new Publish();
+        command.setManifests(PublishTests.MANIFESTS);
+        steps.add(command);
+        {
+          final Stream<String> manifests = Stream.of(PublishTests.MANIFESTS).flatMap(s -> Stream.of("--manifest", s));
+          clc.expectCommand().withArgument("publish").withArguments(manifests);
+        }
+      }
+      {
+        final Publish command = new Publish();
+        command.setManifests(PublishTests.MANIFESTS[0]);
+        steps.add(command);
+        clc.expectCommand().withArguments("publish", "--manifest", PublishTests.MANIFESTS[0]);
+      }
+      {
+        final Publish command = new Publish();
+        command.setManifests("", "  ", null);
+        steps.add(command);
+        clc.expectCommand().withArgument("publish");
+      }
+      {
+        final Publish command = new Publish();
+        command.setManifests((String[]) null);
+        steps.add(command);
+        clc.expectCommand().withArgument("publish");
+      }
     });
-    super.runCommandAndValidateProcessExecution(() -> {
-      final Publish command = new Publish();
-      command.setManifests(PublishTests.MANIFESTS[0]);
-      return command;
-    }, check -> check.expectCommand().withArguments("publish", "--manifest", PublishTests.MANIFESTS[0]));
-    super.runCommandAndValidateProcessExecution(() -> {
-      final Publish command = new Publish();
-      command.setManifests("", "  ", null);
-      return command;
-    }, check -> check.expectCommand().withArgument("publish"));
-    super.runCommandAndValidateProcessExecution(() -> {
-      final Publish command = new Publish();
-      command.setManifests((String[]) null);
-      return command;
-    }, check -> check.expectCommand().withArgument("publish"));
   }
 
   @Test
   public void manifestsStringOptionWorks() throws Exception {
-    super.runCommandAndValidateProcessExecution(() -> {
-      final Publish command = new Publish();
-      command.setManifestsString(String.join(" ", PublishTests.MANIFESTS));
-      return command;
-    }, check -> {
-      final String[] manifests = Stream.of(PublishTests.MANIFESTS).flatMap(s -> Stream.of("--manifest", s)).toArray(String[]::new);
-      check.expectCommand().withArgument("publish").withArguments(manifests);
+    this.runCommandsAndValidateProcessExecution((steps, clc) -> {
+      {
+        final Publish command = new Publish();
+        command.setManifestsString(String.join(" ", PublishTests.MANIFESTS));
+        steps.add(command);
+        {
+          final Stream<String> manifests = Stream.of(PublishTests.MANIFESTS).flatMap(s -> Stream.of("--manifest", s));
+          clc.expectCommand().withArgument("publish").withArguments(manifests);
+        }
+      }
+      {
+        final Publish command = new Publish();
+        command.setManifestsString(PublishTests.MANIFESTS[0]);
+        steps.add(command);
+        clc.expectCommand().withArguments("publish", "--manifest", PublishTests.MANIFESTS[0]);
+      }
+      {
+        final Publish command = new Publish();
+        command.setManifestsString(null);
+        steps.add(command);
+        clc.expectCommand().withArgument("publish");
+      }
     });
-    super.runCommandAndValidateProcessExecution(() -> {
-      final Publish command = new Publish();
-      command.setManifestsString(PublishTests.MANIFESTS[0]);
-      return command;
-    }, check -> check.expectCommand().withArguments("publish", "--manifest", PublishTests.MANIFESTS[0]));
-    super.runCommandAndValidateProcessExecution(() -> {
-      final Publish command = new Publish();
-      command.setManifestsString(null);
-      return command;
-    }, check -> check.expectCommand().withArgument("publish"));
   }
 
   @Test
   public void noBuildFlagWorks() throws Exception {
-    super.runCommandAndValidateProcessExecution(() -> {
-      final Publish command = new Publish();
-      command.setNoBuild(true);
-      return command;
-    }, check -> check.expectCommand().withArguments("publish", "--no-build"));
-    super.runCommandAndValidateProcessExecution(() -> {
-      final Publish command = new Publish();
-      command.setNoBuild(false);
-      return command;
-    }, check -> check.expectCommand().withArgument("publish"));
+    this.runCommandsAndValidateProcessExecution((steps, clc) -> {
+      {
+        final Publish command = new Publish();
+        command.setNoBuild(true);
+        steps.add(command);
+        clc.expectCommand().withArguments("publish", "--no-build");
+      }
+      {
+        final Publish command = new Publish();
+        command.setNoBuild(false);
+        steps.add(command);
+        clc.expectCommand().withArgument("publish");
+      }
+    });
   }
 
   @Test
   public void noDependenciesFlagWorks() throws Exception {
-    super.runCommandAndValidateProcessExecution(() -> {
-      final Publish command = new Publish();
-      command.setNoDependencies(true);
-      return command;
-    }, check -> check.expectCommand().withArguments("publish", "--no-dependencies"));
-    super.runCommandAndValidateProcessExecution(() -> {
-      final Publish command = new Publish();
-      command.setNoDependencies(false);
-      return command;
-    }, check -> check.expectCommand().withArgument("publish"));
+    this.runCommandsAndValidateProcessExecution((steps, clc) -> {
+      {
+        final Publish command = new Publish();
+        command.setNoDependencies(true);
+        steps.add(command);
+        clc.expectCommand().withArguments("publish", "--no-dependencies");
+      }
+      {
+        final Publish command = new Publish();
+        command.setNoDependencies(false);
+        steps.add(command);
+        clc.expectCommand().withArgument("publish");
+      }
+    });
   }
 
   @Test
   public void noRestoreFlagWorks() throws Exception {
-    super.runCommandAndValidateProcessExecution(() -> {
-      final Publish command = new Publish();
-      command.setNoRestore(true);
-      return command;
-    }, check -> check.expectCommand().withArguments("publish", "--no-restore"));
-    super.runCommandAndValidateProcessExecution(() -> {
-      final Publish command = new Publish();
-      command.setNoRestore(false);
-      return command;
-    }, check -> check.expectCommand().withArgument("publish"));
+    this.runCommandsAndValidateProcessExecution((steps, clc) -> {
+      {
+        final Publish command = new Publish();
+        command.setNoRestore(true);
+        steps.add(command);
+        clc.expectCommand().withArguments("publish", "--no-restore");
+      }
+      {
+        final Publish command = new Publish();
+        command.setNoRestore(false);
+        steps.add(command);
+        clc.expectCommand().withArgument("publish");
+      }
+    });
   }
 
   private static final String RUNTIME = "debian-x64";
 
   @Test
   public void runtimeOptionWorks() throws Exception {
-    super.runCommandAndValidateProcessExecution(() -> {
-      final Publish command = new Publish();
-      command.setRuntime(PublishTests.RUNTIME);
-      return command;
-    }, check -> check.expectCommand().withArguments("publish", "-r:" + PublishTests.RUNTIME));
-    super.runCommandAndValidateProcessExecution(() -> {
-      final Publish command = new Publish();
-      command.setRuntime(null);
-      return command;
-    }, check -> check.expectCommand().withArguments("publish"));
+    this.runCommandsAndValidateProcessExecution((steps, clc) -> {
+      {
+        final Publish command = new Publish();
+        command.setRuntime(PublishTests.RUNTIME);
+        steps.add(command);
+        clc.expectCommand().withArguments("publish", "-r:" + PublishTests.RUNTIME);
+      }
+      {
+        final Publish command = new Publish();
+        command.setRuntime(null);
+        steps.add(command);
+        clc.expectCommand().withArguments("publish");
+      }
+    });
   }
 
   @Test
   public void selfContainedFlagWorks() throws Exception {
-    super.runCommandAndValidateProcessExecution(() -> {
-      final Publish command = new Publish();
-      command.setSelfContained(true);
-      return command;
-    }, check -> check.expectCommand().withArguments("publish", "--self-contained", "true"));
-    super.runCommandAndValidateProcessExecution(() -> {
-      final Publish command = new Publish();
-      command.setSelfContained(false);
-      return command;
-    }, check -> check.expectCommand().withArguments("publish", "--self-contained", "false"));
-    super.runCommandAndValidateProcessExecution(() -> {
-      final Publish command = new Publish();
-      command.setSelfContained(null);
-      return command;
-    }, check -> check.expectCommand().withArgument("publish"));
+    this.runCommandsAndValidateProcessExecution((steps, clc) -> {
+      {
+        final Publish command = new Publish();
+        command.setSelfContained(true);
+        steps.add(command);
+        clc.expectCommand().withArguments("publish", "--self-contained", "true");
+      }
+      {
+        final Publish command = new Publish();
+        command.setSelfContained(false);
+        steps.add(command);
+        clc.expectCommand().withArguments("publish", "--self-contained", "false");
+      }
+      {
+        final Publish command = new Publish();
+        command.setSelfContained(null);
+        steps.add(command);
+        clc.expectCommand().withArgument("publish");
+      }
+    });
   }
 
   private static final String VERSION_SUFFIX = "unit.test";
 
   @Test
   public void versionSuffixOptionWorks() throws Exception {
-    super.runCommandAndValidateProcessExecution(() -> {
-      final Publish command = new Publish();
-      command.setVersionSuffix(PublishTests.VERSION_SUFFIX);
-      return command;
-    }, check -> check.expectCommand().withArguments("publish", "--version-suffix", PublishTests.VERSION_SUFFIX));
-    super.runCommandAndValidateProcessExecution(() -> {
-      final Publish command = new Publish();
-      command.setVersionSuffix(null);
-      return command;
-    }, check -> check.expectCommand().withArguments("publish"));
+    this.runCommandsAndValidateProcessExecution((steps, clc) -> {
+      {
+        final Publish command = new Publish();
+        command.setVersionSuffix(PublishTests.VERSION_SUFFIX);
+        steps.add(command);
+        clc.expectCommand().withArguments("publish", "--version-suffix", PublishTests.VERSION_SUFFIX);
+      }
+      {
+        final Publish command = new Publish();
+        command.setVersionSuffix(null);
+        steps.add(command);
+        clc.expectCommand().withArguments("publish");
+      }
+    });
   }
 
 }
