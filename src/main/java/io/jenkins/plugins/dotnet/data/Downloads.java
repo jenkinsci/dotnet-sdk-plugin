@@ -608,8 +608,7 @@ public final class Downloads extends DownloadService.Downloadable {
    */
   @NonNull
   public static synchronized Downloads getInstance() {
-    // JENKINS-62572: would be simpler to pass just the class
-    final DownloadService.Downloadable instance = DownloadService.Downloadable.get(Downloads.class.getName().replace('$', '.'));
+    final DownloadService.Downloadable instance = DownloadService.Downloadable.get(Downloads.class);
     if (instance instanceof Downloads)
       return ((Downloads) instance).loadData();
     else { // No such downloadable (should be impossible).
