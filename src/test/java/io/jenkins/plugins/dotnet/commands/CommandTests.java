@@ -21,7 +21,6 @@ import org.junit.Rule;
 import org.jvnet.hudson.test.FakeLauncher;
 import org.jvnet.hudson.test.JenkinsRule;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -126,7 +125,7 @@ public abstract class CommandTests {
     }
 
     @Override
-    public Proc onLaunch(ProcStarter p) throws IOException {
+    public Proc onLaunch(ProcStarter p) {
       final ExpectedCommand expectedCommand = this.expectedCommands.poll();
       Assert.assertNotNull("Unexpected command execution.", expectedCommand);
       expectedCommand.verify(p);
@@ -159,20 +158,22 @@ public abstract class CommandTests {
 
   }
 
-  protected void withCredentials(@NonNull StandardCredentials credentials, @NonNull Code code) throws IOException {
+  protected void withCredentials(@NonNull StandardCredentials credentials, @NonNull Code code) throws Exception {
     // FIXME: Is this really the right way to do this?
     final CredentialsProvider provider = ExtensionList.lookup(CredentialsProvider.class).get(SystemCredentialsProvider.ProviderImpl.class);
-    if (provider == null)
+    if (provider == null) {
       throw new UnsupportedOperationException("No credentials provider available.");
+    }
     final CredentialsStore store = provider.getStore(this.rule.jenkins);
-    if (store == null)
+    if (store == null) {
       throw new UnsupportedOperationException("No credentials store available.");
+    }
     final Domain domain = Domain.global();
     store.addCredentials(domain, credentials);
     try {
       code.execute();
     }
-    catch (Throwable t) {
+    finally {
       store.removeCredentials(domain, credentials);
     }
   }
