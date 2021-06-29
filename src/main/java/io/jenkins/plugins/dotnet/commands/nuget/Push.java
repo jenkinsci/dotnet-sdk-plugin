@@ -46,7 +46,7 @@ public final class Push extends DeleteOrPush {
     args.addFlag("disable-buffering", this.disableBuffering);
     args.addFlag("no-symbols", this.noSymbols);
     args.addFlag("skip-duplicate", this.skipDuplicate);
-    args.addStringCredential("sybmol-api-key", this.symbolApiKeyId);
+    args.addStringCredential("symbol-api-key", this.symbolApiKeyId);
     args.addOption("symbol-source", this.symbolSource);
     args.addOption("timeout", this.timeout);
   }
