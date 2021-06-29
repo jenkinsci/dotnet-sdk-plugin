@@ -94,8 +94,7 @@ public final class Framework extends DownloadService.Downloadable {
    */
   @NonNull
   public static synchronized Framework getInstance() {
-    // JENKINS-62572: would be simpler to pass just the class
-    final DownloadService.Downloadable instance = DownloadService.Downloadable.get(Framework.class.getName());
+    final DownloadService.Downloadable instance = DownloadService.Downloadable.get(Framework.class);
     if (instance instanceof Framework)
       return ((Framework) instance).loadMonikers();
     else { // No such downloadable (should be impossible).

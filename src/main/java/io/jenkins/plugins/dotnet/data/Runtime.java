@@ -94,8 +94,7 @@ public final class Runtime extends DownloadService.Downloadable {
    */
   @NonNull
   public static synchronized Runtime getInstance() {
-    // JENKINS-62572: would be simpler to pass just the class
-    final DownloadService.Downloadable instance = DownloadService.Downloadable.get(Runtime.class.getName());
+    final DownloadService.Downloadable instance = DownloadService.Downloadable.get(Runtime.class);
     if (instance instanceof Runtime)
       return ((Runtime) instance).loadIdentifiers();
     else { // No such downloadable (should be impossible).
