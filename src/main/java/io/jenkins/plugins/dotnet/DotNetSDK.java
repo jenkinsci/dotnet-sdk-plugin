@@ -35,8 +35,17 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
 
   private static final long serialVersionUID = 1834789641052956539L;
 
-  /** The environment variable that will be set to the full path to the SDK. */
+  /**
+   * An environment variable that will be set to the full path to the SDK (backward compatibility).
+   *
+   * @deprecated Use {@link #ROOT_ENVIRONMENT_VARIABLE} instead; that environment variable is also used by the SDK itself.
+   */
+  @Deprecated
+  @SuppressWarnings("DeprecatedIsStillUsed")
   public static final String HOME_ENVIRONMENT_VARIABLE = "DOTNET_SDK_JENKINS_TOOL_HOME";
+
+  /** The environment variable that will be set to the full path to the SDK (used by the SDK in some cases). */
+  public static final String ROOT_ENVIRONMENT_VARIABLE = "DOTNET_ROOT";
 
   /**
    * Creates a new .NET SDK installation.
@@ -47,7 +56,6 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
   public DotNetSDK(@NonNull String name, @NonNull String home) {
     super(name, home, Collections.emptyList());
   }
-
 
   /**
    * Creates a new .NET SDK installation.
@@ -104,10 +112,15 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
    */
   @Override
   public void buildEnvVars(@NonNull EnvVars env) {
-    env.put(DotNetSDK.HOME_ENVIRONMENT_VARIABLE, this.getHome());
-    env.put("PATH+DOTNET", this.getHome());
-    if (this.telemetryOptOut)
+    { // Store the home location in the environment, and add it to PATH
+      final String home = this.getHome();
+      env.put(DotNetSDK.HOME_ENVIRONMENT_VARIABLE, home);
+      env.put(DotNetSDK.ROOT_ENVIRONMENT_VARIABLE, home);
+      env.put("PATH+DOTNET", home);
+    }
+    if (this.telemetryOptOut) {
       env.put("DOTNET_CLI_TELEMETRY_OPTOUT", "1");
+    }
   }
 
   /**

@@ -87,7 +87,7 @@ public class Command extends Builder implements SimpleBuildStep {
     else {
       final String basename = DotNetSDK.getExecutableFileName(launcher);
       {
-        final String home = Util.fixEmptyAndTrim(env.get(DotNetSDK.HOME_ENVIRONMENT_VARIABLE, ""));
+        final String home = Util.fixEmptyAndTrim(env.get(DotNetSDK.ROOT_ENVIRONMENT_VARIABLE, ""));
         if (home != null) // construct the full remote path
           executable = new FilePath(launcher.getChannel(), home).child(basename).absolutize().getRemote();
         else // will have to rely on the system's PATH
