@@ -59,13 +59,16 @@ public final class ListPackage extends Command {
     args.add("package");
     args.addFlag("deprecated", this.deprecated);
     args.addFlag("outdated", this.outdated);
+    args.addFlag("vulnerable", this.vulnerable);
     args.addOptions("framework", this.frameworks);
     args.addFlag("include-transitive", this.includeTransitive);
     args.addOption('v', this.verbosity);
-    if (this.outdated || this.deprecated) {
+    if (this.outdated) {
       args.addFlag("include-prerelease", this.includePrerelease);
       args.addFlag("highest-minor", this.highestMinor);
       args.addFlag("highest-patch", this.highestPatch);
+    }
+    if (this.deprecated || this.outdated || this.vulnerable) {
       args.addOption("config", this.config);
       args.addOptions("source", this.sources);
     }
@@ -98,7 +101,7 @@ public final class ListPackage extends Command {
   private boolean deprecated;
 
   /**
-   * Determines whether or not deprecated packages should be shown.
+   * Determines whether deprecated packages should be shown.
    *
    * @return {@code true} if deprecated packages should be shown; {@code false} otherwise.
    */
@@ -107,7 +110,7 @@ public final class ListPackage extends Command {
   }
 
   /**
-   * Determines whether or not deprecated packages should be shown.
+   * Determines whether deprecated packages should be shown.
    *
    * @param deprecated {@code true} to show deprecated packages; {@code false} otherwise.
    */
@@ -183,7 +186,7 @@ public final class ListPackage extends Command {
   private boolean highestMinor;
 
   /**
-   * Determines whether or not to consider only packages where at most the minor version has changed.
+   * Determines whether to consider only packages where at most the minor version has changed.
    *
    * @return {@code true} if only packages where at most the minor version has changed are considered; {@code false} otherwise.
    */
@@ -192,7 +195,7 @@ public final class ListPackage extends Command {
   }
 
   /**
-   * Determines whether or not to consider only packages where at most the minor version has changed.
+   * Determines whether to consider only packages where at most the minor version has changed.
    *
    * @param highestMinor {@code true} to only consider packages where at most the minor version has changed; {@code false}
    *                     otherwise.
@@ -205,7 +208,7 @@ public final class ListPackage extends Command {
   private boolean highestPatch;
 
   /**
-   * Determines whether or not to consider only packages where at most the patch version has changed.
+   * Determines whether to consider only packages where at most the patch version has changed.
    *
    * @return {@code true} if only packages where at most the patch version has changed are considered; {@code false} otherwise.
    */
@@ -214,7 +217,7 @@ public final class ListPackage extends Command {
   }
 
   /**
-   * Determines whether or not to consider only packages where at most the patch version has changed.
+   * Determines whether to consider only packages where at most the patch version has changed.
    *
    * @param highestPatch {@code true} to only consider packages where at most the patch version has changed; {@code false}
    *                     otherwise.
@@ -227,7 +230,7 @@ public final class ListPackage extends Command {
   private boolean includePrerelease;
 
   /**
-   * Determines whether or not to consider prerelease packages.
+   * Determines whether to consider prerelease packages.
    *
    * @return {@code true} if prerelease packages are considered; {@code false} otherwise.
    */
@@ -236,7 +239,7 @@ public final class ListPackage extends Command {
   }
 
   /**
-   * Determines whether or not to consider prerelease packages.
+   * Determines whether to consider prerelease packages.
    *
    * @param includePrerelease {@code true} to consider prerelease packages; {@code false} otherwise.
    */
@@ -248,7 +251,7 @@ public final class ListPackage extends Command {
   private boolean includeTransitive;
 
   /**
-   * Determines whether or not to show transitive dependencies.
+   * Determines whether to show transitive dependencies.
    *
    * @return {@code true} if transitive dependencies are shown; {@code false} otherwise.
    */
@@ -257,7 +260,7 @@ public final class ListPackage extends Command {
   }
 
   /**
-   * Determines whether or not to show transitive dependencies.
+   * Determines whether to show transitive dependencies.
    *
    * @param includeTransitive {@code true} to show transitive dependencies; {@code false} otherwise.
    */
@@ -269,7 +272,7 @@ public final class ListPackage extends Command {
   private boolean outdated;
 
   /**
-   * Determines whether or not outdated packages should be shown.
+   * Determines whether outdated packages should be shown.
    *
    * @return {@code true} if outdated packages should be shown; {@code false} otherwise.
    */
@@ -278,7 +281,7 @@ public final class ListPackage extends Command {
   }
 
   /**
-   * Determines whether or not outdated packages should be shown.
+   * Determines whether outdated packages should be shown.
    *
    * @param outdated {@code true} to show outdated packages; {@code false} otherwise.
    */
@@ -393,6 +396,27 @@ public final class ListPackage extends Command {
   @DataBoundSetter
   public void setVerbosity(@CheckForNull String verbosity) {
     this.verbosity = Util.fixEmptyAndTrim(verbosity);
+  }
+
+  private boolean vulnerable;
+
+  /**
+   * Determines whether packages with known vulnerabilities should be shown.
+   *
+   * @return {@code true} if packages with known vulnerabilities should be shown; {@code false} otherwise.
+   */
+  public boolean isVulnerable() {
+    return this.vulnerable;
+  }
+
+  /**
+   * Determines whether packages with known vulnerabilities should be shown.
+   *
+   * @param vulnerable {@code true} to show packages with known vulnerabilities; {@code false} otherwise.
+   */
+  @DataBoundSetter
+  public void setVulnerable(boolean vulnerable) {
+    this.vulnerable = vulnerable;
   }
 
   //endregion
