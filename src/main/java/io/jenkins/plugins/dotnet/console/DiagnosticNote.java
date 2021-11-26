@@ -44,6 +44,7 @@ public final class DiagnosticNote extends ConsoleNote<Object> {
     DiagnosticNote.MESSAGE_PREFIX_URLS.put("CS", "https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/compiler-messages/"); // C#
     DiagnosticNote.MESSAGE_PREFIX_URLS.put("FS", "https://docs.microsoft.com/en-us/dotnet/fsharp/language-reference/compiler-messages/"); // F#
     DiagnosticNote.MESSAGE_PREFIX_URLS.put("NU", "https://docs.microsoft.com/en-us/nuget/reference/errors-and-warnings/"); // NuGet
+    DiagnosticNote.MESSAGE_PREFIX_URLS.put("SYSLIB", "https://aka.ms/dotnet-warnings/"); // .NET 6
   }
 
   /** Regular expression for the 'error' label. */
