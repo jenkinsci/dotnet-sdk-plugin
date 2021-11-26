@@ -47,6 +47,13 @@ public final class ListPackageTests extends CommandTests {
       }
       {
         final ListPackage command = new ListPackage();
+        command.setVulnerable(true);
+        command.setConfig(ListPackageTests.CONFIG_FILE_NAME);
+        steps.add(command);
+        clc.expectCommand().withArguments("list", "package", "--vulnerable", "--config", ListPackageTests.CONFIG_FILE_NAME);
+      }
+      {
+        final ListPackage command = new ListPackage();
         command.setConfig(null);
         steps.add(command);
         clc.expectCommand().withArguments("list", "package");
@@ -185,13 +192,6 @@ public final class ListPackageTests extends CommandTests {
     super.runCommandsAndValidateProcessExecution((steps, clc) -> {
       {
         final ListPackage command = new ListPackage();
-        command.setDeprecated(true);
-        command.setHighestMinor(true);
-        steps.add(command);
-        clc.expectCommand().withArguments("list", "package", "--deprecated", "--highest-minor");
-      }
-      {
-        final ListPackage command = new ListPackage();
         command.setOutdated(true);
         command.setHighestMinor(true);
         steps.add(command);
@@ -217,13 +217,6 @@ public final class ListPackageTests extends CommandTests {
     this.runCommandsAndValidateProcessExecution((steps, clc) -> {
       {
         final ListPackage command = new ListPackage();
-        command.setDeprecated(true);
-        command.setHighestPatch(true);
-        steps.add(command);
-        clc.expectCommand().withArguments("list", "package", "--deprecated", "--highest-patch");
-      }
-      {
-        final ListPackage command = new ListPackage();
         command.setOutdated(true);
         command.setHighestPatch(true);
         steps.add(command);
@@ -247,13 +240,6 @@ public final class ListPackageTests extends CommandTests {
   @Test
   public void includePrereleaseFlagWorks() throws Exception {
     this.runCommandsAndValidateProcessExecution((steps, clc) -> {
-      {
-        final ListPackage command = new ListPackage();
-        command.setDeprecated(true);
-        command.setIncludePrerelease(true);
-        steps.add(command);
-        clc.expectCommand().withArguments("list", "package", "--deprecated", "--include-prerelease");
-      }
       {
         final ListPackage command = new ListPackage();
         command.setOutdated(true);
@@ -331,17 +317,17 @@ public final class ListPackageTests extends CommandTests {
       }
       {
         final ListPackage command = new ListPackage();
-        command.setDeprecated(true);
+        command.setOutdated(true);
         command.setSource(ListPackageTests.SOURCES[1]);
         steps.add(command);
-        clc.expectCommand().withArguments("list", "package", "--deprecated", "--source", ListPackageTests.SOURCES[1]);
+        clc.expectCommand().withArguments("list", "package", "--outdated", "--source", ListPackageTests.SOURCES[1]);
       }
       {
         final ListPackage command = new ListPackage();
-        command.setOutdated(true);
+        command.setVulnerable(true);
         command.setSource(ListPackageTests.SOURCES_STRING);
         steps.add(command);
-        clc.expectCommand().withArguments("list", "package", "--outdated", "--source", ListPackageTests.SOURCES_STRING);
+        clc.expectCommand().withArguments("list", "package", "--vulnerable", "--source", ListPackageTests.SOURCES_STRING);
       }
       {
         final ListPackage command = new ListPackage();
@@ -462,6 +448,24 @@ public final class ListPackageTests extends CommandTests {
       {
         final ListPackage command = new ListPackage();
         command.setSourcesString(String.join(" ", ListPackageTests.SOURCES[0]));
+        steps.add(command);
+        clc.expectCommand().withArguments("list", "package");
+      }
+    });
+  }
+
+  @Test
+  public void vulnerableFlagWorks() throws Exception {
+    this.runCommandsAndValidateProcessExecution((steps, clc) -> {
+      {
+        final ListPackage command = new ListPackage();
+        command.setVulnerable(true);
+        steps.add(command);
+        clc.expectCommand().withArguments("list", "package", "--vulnerable");
+      }
+      {
+        final ListPackage command = new ListPackage();
+        command.setVulnerable(false);
         steps.add(command);
         clc.expectCommand().withArguments("list", "package");
       }
