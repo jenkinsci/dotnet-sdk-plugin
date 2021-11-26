@@ -134,13 +134,17 @@ public interface DotNetUtils {
    * @return A suitably filled listbox model.
    */
   @NonNull
+  @SuppressWarnings("deprecation")
   static ListBoxModel getStringCredentialsList(@CheckForNull Jenkins context, boolean allowEmpty) {
     AbstractIdCredentialsListBoxModel<StandardListBoxModel, StandardCredentials> model = new StandardListBoxModel();
-    if (allowEmpty)
+    if (allowEmpty) {
       model = model.includeEmptyValue();
-    if (context == null || !context.hasPermission(CredentialsProvider.VIEW))
+    }
+    if (context == null || !context.hasPermission(CredentialsProvider.VIEW)) {
       return model;
-    model = model.includeMatchingAs(ACL.SYSTEM, context, StringCredentials.class, Collections.emptyList(), CredentialsMatchers.always());
+    }
+    // This should be ACL.SYSTEM2, but the Credential API has not yet been updated to use Spring Security.
+    model = model.includeAs(ACL.SYSTEM, context, StringCredentials.class);
     return model;
   }
 
