@@ -6,12 +6,14 @@
       <option name="CLASS_COUNT_TO_USE_IMPORT_ON_DEMAND" value="20" />
       <option name="NAMES_COUNT_TO_USE_IMPORT_ON_DEMAND" value="10" />
       <option name="JD_ADD_BLANK_AFTER_PARM_COMMENTS" value="true" />
+      <option name="JD_ADD_BLANK_AFTER_RETURN" value="true" />
       <option name="JD_DO_NOT_WRAP_ONE_LINE_COMMENTS" value="true" />
     </JavaCodeStyleSettings>
     <codeStyleSettings language="JAVA">
       <option name="ELSE_ON_NEW_LINE" value="true" />
       <option name="CATCH_ON_NEW_LINE" value="true" />
       <option name="FINALLY_ON_NEW_LINE" value="true" />
+      <option name="WRAP_COMMENTS" value="true" />
     </codeStyleSettings>
   </code_scheme>
 </component>
