@@ -73,7 +73,7 @@ public class Command extends Builder implements SimpleBuildStep {
    */
   @Override
   public void perform(@NonNull Run<?, ?> run, @NonNull FilePath workspace, @NonNull EnvVars env, @NonNull Launcher launcher, @NonNull TaskListener listener) throws InterruptedException, IOException {
-    final Charset cs = run.getCharset();
+    final Charset cs = this.charset == null ? run.getCharset() : Charset.forName(this.charset);
     final DotNetSDK sdkInstance;
     if (this.sdk == null)
       sdkInstance = null;
@@ -140,6 +140,32 @@ public class Command extends Builder implements SimpleBuildStep {
 
   //region Properties
 
+  /** A specific charset to use for the command's output. If {@code null}, the build's default charset will be used. */
+  @CheckForNull
+  private String charset = null;
+
+  /**
+   * Gets the specific charset to use for the command's output.
+   *
+   * @return The specific charset to use for the command's output, or {@code null} to indicate that the build's default charset
+   * should be used.
+   */
+  @CheckForNull
+  public String getCharset() {
+    return this.charset;
+  }
+
+  /**
+   * Sets the specific charset to use for the command's output.
+   *
+   * @param charset The specific charset to use for the command's output, or {@code null} to indicate that the build's default
+   *                charset should be used.
+   */
+  @DataBoundSetter
+  public void setCharset(@CheckForNull String charset) {
+    this.charset = Util.fixEmptyAndTrim(charset);
+  }
+
   /** The name of the SDK to use. */
   @CheckForNull
   protected String sdk;
@@ -196,8 +222,8 @@ public class Command extends Builder implements SimpleBuildStep {
   /**
    * Determines whether or not a specific SDK version should be used.
    *
-   * @return {@code true} if a {@code global.json} should be created to force the use of the configured .NET SDK (as opposed to
-   * a more recent one that happens to be installed on the build agent); {@code false} otherwise.
+   * @return {@code true} if a {@code global.json} should be created to force the use of the configured .NET SDK (as opposed to a
+   * more recent one that happens to be installed on the build agent); {@code false} otherwise.
    */
   @SuppressWarnings("unused")
   public boolean isSpecificSdkVersion() {
