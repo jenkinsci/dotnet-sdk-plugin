@@ -172,6 +172,7 @@ public class Command extends Builder implements SimpleBuildStep {
    *
    * @return {@code true} if "{@code dotnet --info}" should be run before the main command; {@code false} otherwise.
    */
+  @SuppressWarnings("unused")
   public boolean isShowSdkInfo() {
     return this.showSdkInfo;
   }
@@ -198,6 +199,7 @@ public class Command extends Builder implements SimpleBuildStep {
    * @return {@code true} if a {@code global.json} should be created to force the use of the configured .NET SDK (as opposed to
    * a more recent one that happens to be installed on the build agent); {@code false} otherwise.
    */
+  @SuppressWarnings("unused")
   public boolean isSpecificSdkVersion() {
     return this.specificSdkVersion;
   }
@@ -210,6 +212,7 @@ public class Command extends Builder implements SimpleBuildStep {
    *                           otherwise.
    */
   @DataBoundSetter
+  @SuppressWarnings("unused")
   public void setSpecificSdkVersion(boolean specificSdkVersion) {
     this.specificSdkVersion = specificSdkVersion;
   }
@@ -227,6 +230,7 @@ public class Command extends Builder implements SimpleBuildStep {
    * @return The working directory to use for the command.
    */
   @CheckForNull
+  @SuppressWarnings("unused")
   public String getWorkDirectory() {
     return this.workDirectory;
   }
@@ -237,6 +241,7 @@ public class Command extends Builder implements SimpleBuildStep {
    * @param workDirectory The working directory to use for the command.
    */
   @DataBoundSetter
+  @SuppressWarnings("unused")
   public void setWorkDirectory(@CheckForNull String workDirectory) {
     this.workDirectory = Util.fixEmpty(workDirectory);
   }
