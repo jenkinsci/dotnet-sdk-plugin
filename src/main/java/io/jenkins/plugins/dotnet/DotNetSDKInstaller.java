@@ -44,6 +44,7 @@ public final class DotNetSDKInstaller extends ToolInstaller {
    * @param log  The task listener to use for output.
    *
    * @return The SDK's installation location.
+   *
    * @throws IOException          When an I/O error occurs during processing.
    * @throws InterruptedException When processing is interrupted.
    */
@@ -72,7 +73,7 @@ public final class DotNetSDKInstaller extends ToolInstaller {
   private boolean includePreview;
 
   /**
-   * Determines whether or not .NET preview releases should be made available for installation.
+   * Determines whether .NET preview releases should be made available for installation.
    *
    * @return {@code true} if installation of .NET preview releases is allowed, {@code false} otherwise.
    */
@@ -81,7 +82,7 @@ public final class DotNetSDKInstaller extends ToolInstaller {
   }
 
   /**
-   * Determines whether or not .NET preview releases should be made available for installation.
+   * Determines whether .NET preview releases should be made available for installation.
    *
    * @param includePreview {@code true} to allow installation of .NET preview releases, {@code false} otherwise.
    */
@@ -327,7 +328,7 @@ public final class DotNetSDKInstaller extends ToolInstaller {
      * Fills a listbox with the names of .NET releases.
      *
      * @param version        The name of the .NET version containing the releases.
-     * @param includePreview Indicates whether or not preview releases should be included.
+     * @param includePreview Indicates whether preview releases should be included.
      *
      * @return A suitably filled listbox model.
      */
@@ -374,7 +375,7 @@ public final class DotNetSDKInstaller extends ToolInstaller {
     }
 
     /**
-     * Determines whether or not this installer is applicable for the specified type of tool.
+     * Determines whether this installer is applicable for the specified type of tool.
      *
      * @param toolType The type of tool to install.
      *

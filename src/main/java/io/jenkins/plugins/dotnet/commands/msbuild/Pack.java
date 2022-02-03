@@ -53,7 +53,7 @@ public final class Pack extends MSBuildCommand {
   private boolean force;
 
   /**
-   * Determines whether or not dependency resolution should be forced.
+   * Determines whether dependency resolution should be forced.
    *
    * @return {@code true} when all dependencies should be resolved even if the last restore was successful; {@code false} otherwise.
    */
@@ -62,7 +62,7 @@ public final class Pack extends MSBuildCommand {
   }
 
   /**
-   * Determines whether or not dependency resolution should be forced.
+   * Determines whether dependency resolution should be forced.
    *
    * @param force {@code true} to resolve all dependencies even if the last restore was successful; {@code false} otherwise.
    */
@@ -74,7 +74,7 @@ public final class Pack extends MSBuildCommand {
   private boolean includeSource;
 
   /**
-   * Determines whether or not symbol packages containing source code should be created.
+   * Determines whether symbol packages containing source code should be created.
    *
    * @return {@code true} when symbol packages are created containing source code; {@code false} otherwise.
    */
@@ -83,7 +83,7 @@ public final class Pack extends MSBuildCommand {
   }
 
   /**
-   * Determines whether or not symbol packages containing source code should be created.
+   * Determines whether symbol packages containing source code should be created.
    *
    * @param includeSource {@code true} to create symbol packages containing source code; {@code false} otherwise.
    */
@@ -95,7 +95,7 @@ public final class Pack extends MSBuildCommand {
   private boolean includeSymbols;
 
   /**
-   * Determines whether or not symbol packages should be created.
+   * Determines whether symbol packages should be created.
    *
    * @return {@code true} when symbol packages are created; {@code false} otherwise.
    */
@@ -104,7 +104,7 @@ public final class Pack extends MSBuildCommand {
   }
 
   /**
-   * Determines whether or not symbol packages should be created.
+   * Determines whether symbol packages should be created.
    *
    * @param includeSymbols {@code true} to create symbol packages; {@code false} otherwise.
    */
@@ -116,7 +116,7 @@ public final class Pack extends MSBuildCommand {
   private boolean noBuild;
 
   /**
-   * Determines whether or not a build should be performed before creating the packages.
+   * Determines whether a build should be performed before creating the packages.
    *
    * @return {@code true} when neither a restore nor a build will be performed before creating the packages; {@code false}
    * otherwise.
@@ -126,7 +126,7 @@ public final class Pack extends MSBuildCommand {
   }
 
   /**
-   * Determines whether or not a build should be performed before creating the packages.
+   * Determines whether a build should be performed before creating the packages.
    *
    * @param noBuild {@code true} to perform neither a restore nor a build before creating the packages; {@code false} otherwise.
    */
@@ -138,7 +138,7 @@ public final class Pack extends MSBuildCommand {
   private boolean noDependencies;
 
   /**
-   * Determines whether or not to ignore project-to-project dependencies.
+   * Determines whether to ignore project-to-project dependencies.
    *
    * @return {@code true} when project-to-project dependencies are ignored; {@code false} otherwise.
    */
@@ -147,7 +147,7 @@ public final class Pack extends MSBuildCommand {
   }
 
   /**
-   * Determines whether or not to ignore project-to-project dependencies.
+   * Determines whether to ignore project-to-project dependencies.
    *
    * @param noDependencies {@code true} when project-to-project dependencies should be ignored; {@code false} otherwise.
    */
@@ -159,7 +159,7 @@ public final class Pack extends MSBuildCommand {
   private boolean noRestore;
 
   /**
-   * Determines whether or not an implicit restore should be executed as part of this command.
+   * Determines whether an implicit restore should be executed as part of this command.
    *
    * @return {@code true} when the implicit restore is disabled; {@code false} otherwise.
    */
@@ -168,7 +168,7 @@ public final class Pack extends MSBuildCommand {
   }
 
   /**
-   * Determines whether or not an implicit restore should be executed as part of this command.
+   * Determines whether an implicit restore should be executed as part of this command.
    *
    * @param noRestore {@code true} to disable the implicit restore; {@code false} otherwise.
    */

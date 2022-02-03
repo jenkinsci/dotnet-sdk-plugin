@@ -94,11 +94,11 @@ public class MSBuildCommand extends Command {
     this.configuration = Util.fixEmptyAndTrim(configuration);
   }
 
-  /** Flag indicating whether or not the MSBuild version/copyright lines should be suppressed. */
+  /** Flag indicating whether the MSBuild version/copyright lines should be suppressed. */
   protected boolean nologo;
 
   /**
-   * Determines whether or not the MSBuild version/copyright lines should be suppressed.
+   * Determines whether the MSBuild version/copyright lines should be suppressed.
    *
    * @return {@code true} if the MSBuild startup banner should be suppressed; {@code false} otherwise.
    */
@@ -107,7 +107,7 @@ public class MSBuildCommand extends Command {
   }
 
   /**
-   * Determines whether or not the MSBuild version/copyright lines should be suppressed.
+   * Determines whether the MSBuild version/copyright lines should be suppressed.
    *
    * @param noLogo {@code true} if the MSBuild startup banner should be suppressed; {@code false} otherwise.
    */
@@ -117,8 +117,8 @@ public class MSBuildCommand extends Command {
   }
 
   /**
-   * Additional options to pass to the command.
-   * Options specified via more specific settings will take precedence over options specified here.
+   * Additional options to pass to the command. Options specified via more specific settings will take precedence over options
+   * specified here.
    */
   @CheckForNull
   protected String options;
@@ -156,8 +156,8 @@ public class MSBuildCommand extends Command {
   }
 
   /**
-   * Sets additional options to pass to the command.
-   * Options specified via more specific settings will take precedence over options specified here.
+   * Sets additional options to pass to the command. Options specified via more specific settings will take precedence over options
+   * specified here.
    *
    * @param options Additional options to pass to the command.
    */
@@ -167,8 +167,8 @@ public class MSBuildCommand extends Command {
   }
 
   /**
-   * Gets additional options to pass to the command.
-   * Options specified via more specific settings will take precedence over options specified here.
+   * Gets additional options to pass to the command. Options specified via more specific settings will take precedence over options
+   * specified here.
    *
    * @return Additional options to pass to the command.
    */
@@ -178,8 +178,8 @@ public class MSBuildCommand extends Command {
   }
 
   /**
-   * Sets additional options to pass to the command.
-   * Options specified via more specific settings will take precedence over options specified here.
+   * Sets additional options to pass to the command. Options specified via more specific settings will take precedence over options
+   * specified here.
    *
    * @param options Additional options to pass to the command.
    */
@@ -217,9 +217,8 @@ public class MSBuildCommand extends Command {
   protected String project;
 
   /**
-   * Gets the name of the project file to process.
-   * For some commands, this can also be a directory or a solution file.
-   * When {@code null}, a project or solution from the current directory will usually be processed.
+   * Gets the name of the project file to process. For some commands, this can also be a directory or a solution file. When {@code
+   * null}, a project or solution from the current directory will usually be processed.
    *
    * @return The project to process.
    */
@@ -229,9 +228,8 @@ public class MSBuildCommand extends Command {
   }
 
   /**
-   * Sets the name of the project file to process.
-   * For some commands, this can also be a directory or a solution file.
-   * When {@code null}, a project or solution from the current directory will usually be processed.
+   * Sets the name of the project file to process. For some commands, this can also be a directory or a solution file. When {@code
+   * null}, a project or solution from the current directory will usually be processed.
    *
    * @param project The project to process.
    */
@@ -289,7 +287,7 @@ public class MSBuildCommand extends Command {
   }
 
   /**
-   * Determines whether or not any build servers started by the main command should be shut down.
+   * Determines whether any build servers started by the main command should be shut down.
    *
    * @return {@code true} if "{@code dotnet build-server shutdown}" should be run after the main command; {@code false} otherwise.
    */
@@ -298,10 +296,10 @@ public class MSBuildCommand extends Command {
   }
 
   /**
-   * Determines whether or not any build servers started by the main command should be shut down.
+   * Determines whether any build servers started by the main command should be shut down.
    *
-   * @param shutDownBuildServers {@code true} if "{@code dotnet build-server shutdown}" should be run after the main command;
-   *                             {@code false} otherwise.
+   * @param shutDownBuildServers {@code true} if "{@code dotnet build-server shutdown}" should be run after the main command; {@code
+   *                             false} otherwise.
    */
   @DataBoundSetter
   public void setShutDownBuildServers(boolean shutDownBuildServers) {
@@ -309,7 +307,7 @@ public class MSBuildCommand extends Command {
   }
 
   /**
-   * Determines whether or not the presence of warnings makes the build unstable.
+   * Determines whether the presence of warnings makes the build unstable.
    *
    * @return {@code true} if warnings cause the build to be marked as unstable; {@code false} otherwise.
    */
@@ -318,7 +316,7 @@ public class MSBuildCommand extends Command {
   }
 
   /**
-   * Determines whether or not the presence of warnings makes the build unstable.
+   * Determines whether the presence of warnings makes the build unstable.
    *
    * @param unstableIfWarnings {@code true} if warnings cause the build to be marked as unstable; {@code false} otherwise.
    */

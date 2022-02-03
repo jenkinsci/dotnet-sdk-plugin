@@ -190,11 +190,11 @@ public class Command extends Builder implements SimpleBuildStep {
     this.sdk = Util.fixEmpty(sdk);
   }
 
-  /** Flag indicating whether or not SDK information should be shown. */
+  /** Flag indicating whether SDK information should be shown. */
   protected boolean showSdkInfo = false;
 
   /**
-   * Determines whether or not SDK information should be shown.
+   * Determines whether SDK information should be shown.
    *
    * @return {@code true} if "{@code dotnet --info}" should be run before the main command; {@code false} otherwise.
    */
@@ -204,7 +204,7 @@ public class Command extends Builder implements SimpleBuildStep {
   }
 
   /**
-   * Determines whether or not SDK information should be shown.
+   * Determines whether SDK information should be shown.
    *
    * @param showSdkInfo {@code true} if "{@code dotnet --info}" should be run before the main command; {@code false} otherwise.
    */
@@ -213,14 +213,14 @@ public class Command extends Builder implements SimpleBuildStep {
     this.showSdkInfo = showSdkInfo;
   }
 
-  /** Flag indicating whether or not any build servers started by the main command should be shut down. */
+  /** Flag indicating whether any build servers started by the main command should be shut down. */
   protected boolean shutDownBuildServers = false;
 
-  /** Flag indicating whether or not a specific SDK version should be used. */
+  /** Flag indicating whether a specific SDK version should be used. */
   private boolean specificSdkVersion = false;
 
   /**
-   * Determines whether or not a specific SDK version should be used.
+   * Determines whether a specific SDK version should be used.
    *
    * @return {@code true} if a {@code global.json} should be created to force the use of the configured .NET SDK (as opposed to a
    * more recent one that happens to be installed on the build agent); {@code false} otherwise.
@@ -231,7 +231,7 @@ public class Command extends Builder implements SimpleBuildStep {
   }
 
   /**
-   * Determines whether or not a specific SDK version should be used.
+   * Determines whether a specific SDK version should be used.
    *
    * @param specificSdkVersion {@code true} if a {@code global.json} should be created to force the use of the configured .NET SDK
    *                           (as opposed to a more recent one that happens to be installed on the build agent); {@code false}
@@ -243,7 +243,7 @@ public class Command extends Builder implements SimpleBuildStep {
     this.specificSdkVersion = specificSdkVersion;
   }
 
-  /** Flag indicating whether or not the presence of warnings makes the build unstable. */
+  /** Flag indicating whether the presence of warnings makes the build unstable. */
   protected boolean unstableIfWarnings = false;
 
   /** The working directory to use for the command. This directory is <em>not</em> created by the command execution. */

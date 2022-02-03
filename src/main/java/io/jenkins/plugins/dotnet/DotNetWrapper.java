@@ -79,8 +79,8 @@ public class DotNetWrapper extends SimpleBuildWrapper {
    * most recent SDK version available on the system; with this set, a {@code global.json} file will be created to ensure a specific
    * SDK version gets used.
    *
-   * @param specificSdkVersion {@code true} if {@code global.json} should be used to ensure a specific SDK version gets used;
-   *                           {@code false} otherwise.
+   * @param specificSdkVersion {@code true} if {@code global.json} should be used to ensure a specific SDK version gets used; {@code
+   *                           false} otherwise.
    */
   @DataBoundSetter
   public void setSpecificSdkVersion(boolean specificSdkVersion) {
@@ -199,7 +199,7 @@ public class DotNetWrapper extends SimpleBuildWrapper {
     }
 
     /**
-     * Determines whether or not the .NET wrapper is applicable.
+     * Determines whether the .NET wrapper is applicable.
      *
      * @param item The project context.
      *

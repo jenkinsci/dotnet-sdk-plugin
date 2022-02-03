@@ -63,7 +63,7 @@ public final class Build extends MSBuildCommand {
   private boolean force;
 
   /**
-   * Determines whether or not dependency resolution should be forced.
+   * Determines whether dependency resolution should be forced.
    *
    * @return {@code true} when all dependencies should be resolved even if the last restore was successful; {@code false} otherwise.
    */
@@ -72,7 +72,7 @@ public final class Build extends MSBuildCommand {
   }
 
   /**
-   * Determines whether or not dependency resolution should be forced.
+   * Determines whether dependency resolution should be forced.
    *
    * @param force {@code true} to resolve all dependencies even if the last restore was successful; {@code false} otherwise.
    */
@@ -106,7 +106,7 @@ public final class Build extends MSBuildCommand {
   private boolean noDependencies;
 
   /**
-   * Determines whether or not to ignore project-to-project dependencies.
+   * Determines whether to ignore project-to-project dependencies.
    *
    * @return {@code true} when project-to-project dependencies are ignored; {@code false} otherwise.
    */
@@ -115,7 +115,7 @@ public final class Build extends MSBuildCommand {
   }
 
   /**
-   * Determines whether or not to ignore project-to-project dependencies.
+   * Determines whether to ignore project-to-project dependencies.
    *
    * @param noDependencies {@code true} when project-to-project dependencies should be ignored; {@code false} otherwise.
    */
@@ -127,7 +127,7 @@ public final class Build extends MSBuildCommand {
   private boolean noIncremental;
 
   /**
-   * Determines whether or not incremental builds are allowed.
+   * Determines whether incremental builds are allowed.
    *
    * @return {@code true} when incremental builds are disabled; {@code false} otherwise.
    */
@@ -136,7 +136,7 @@ public final class Build extends MSBuildCommand {
   }
 
   /**
-   * Determines whether or not incremental builds are allowed.
+   * Determines whether incremental builds are allowed.
    *
    * @param noIncremental {@code true} to disallow incremental builds; {@code false} otherwise.
    */
@@ -148,7 +148,7 @@ public final class Build extends MSBuildCommand {
   private boolean noRestore;
 
   /**
-   * Determines whether or not an implicit restore should be executed as part of this command.
+   * Determines whether an implicit restore should be executed as part of this command.
    *
    * @return {@code true} when the implicit restore is disabled; {@code false} otherwise.
    */
@@ -157,7 +157,7 @@ public final class Build extends MSBuildCommand {
   }
 
   /**
-   * Determines whether or not an implicit restore should be executed as part of this command.
+   * Determines whether an implicit restore should be executed as part of this command.
    *
    * @param noRestore {@code true} to disable the implicit restore; {@code false} otherwise.
    */

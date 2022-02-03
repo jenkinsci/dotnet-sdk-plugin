@@ -437,8 +437,8 @@ public final class ListPackage extends Command {
      * Performs validation on the "config file" setting.
      *
      * @param value      The specified configuration file name.
-     * @param deprecated Flag indicating whether or not deprecated packages should be listed.
-     * @param outdated   Flag indicating whether or not outdated packages should be listed.
+     * @param deprecated Flag indicating whether deprecated packages should be listed.
+     * @param outdated   Flag indicating whether outdated packages should be listed.
      *
      * @return The validation result.
      */
@@ -453,8 +453,8 @@ public final class ListPackage extends Command {
     /**
      * Performs validation on the "show deprecated packages" setting.
      *
-     * @param deprecated Flag indicating whether or not deprecated packages should be listed.
-     * @param outdated   Flag indicating whether or not outdated packages should be listed.
+     * @param deprecated Flag indicating whether deprecated packages should be listed.
+     * @param outdated   Flag indicating whether outdated packages should be listed.
      *
      * @return The validation result.
      */
@@ -469,9 +469,9 @@ public final class ListPackage extends Command {
     /**
      * Performs validation on the "highest minor" setting.
      *
-     * @param value      Flag indicating whether or not the minor version is the highest version that is allowed to change.
-     * @param deprecated Flag indicating whether or not deprecated packages should be listed.
-     * @param outdated   Flag indicating whether or not outdated packages should be listed.
+     * @param value      Flag indicating whether the minor version is the highest version that is allowed to change.
+     * @param deprecated Flag indicating whether deprecated packages should be listed.
+     * @param outdated   Flag indicating whether outdated packages should be listed.
      *
      * @return The validation result.
      */
@@ -486,9 +486,9 @@ public final class ListPackage extends Command {
     /**
      * Performs validation on the "highest patch" setting.
      *
-     * @param value      Flag indicating whether or not the patch version is the highest version that is allowed to change.
-     * @param deprecated Flag indicating whether or not deprecated packages should be listed.
-     * @param outdated   Flag indicating whether or not outdated packages should be listed.
+     * @param value      Flag indicating whether the patch version is the highest version that is allowed to change.
+     * @param deprecated Flag indicating whether deprecated packages should be listed.
+     * @param outdated   Flag indicating whether outdated packages should be listed.
      *
      * @return The validation result.
      */
@@ -503,9 +503,9 @@ public final class ListPackage extends Command {
     /**
      * Performs validation on the "include prerelease" setting.
      *
-     * @param value      Flag indicating whether or not prerelease package versions should be listed.
-     * @param deprecated Flag indicating whether or not deprecated packages should be listed.
-     * @param outdated   Flag indicating whether or not outdated packages should be listed.
+     * @param value      Flag indicating whether prerelease package versions should be listed.
+     * @param deprecated Flag indicating whether deprecated packages should be listed.
+     * @param outdated   Flag indicating whether outdated packages should be listed.
      *
      * @return The validation result.
      */
@@ -520,8 +520,8 @@ public final class ListPackage extends Command {
     /**
      * Performs validation on the "show outdated packages" setting.
      *
-     * @param deprecated Flag indicating whether or not deprecated packages should be listed.
-     * @param outdated   Flag indicating whether or not outdated packages should be listed.
+     * @param deprecated Flag indicating whether deprecated packages should be listed.
+     * @param outdated   Flag indicating whether outdated packages should be listed.
      *
      * @return The validation result.
      */
@@ -537,8 +537,8 @@ public final class ListPackage extends Command {
      * Performs validation on the "sources" setting.
      *
      * @param value      The specified package sources.
-     * @param deprecated Flag indicating whether or not deprecated packages should be listed.
-     * @param outdated   Flag indicating whether or not outdated packages should be listed.
+     * @param deprecated Flag indicating whether deprecated packages should be listed.
+     * @param outdated   Flag indicating whether outdated packages should be listed.
      *
      * @return The validation result.
      */

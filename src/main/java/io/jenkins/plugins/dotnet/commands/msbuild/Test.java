@@ -103,7 +103,7 @@ public final class Test extends MSBuildCommand {
   private boolean blame;
 
   /**
-   * Determines whether or not tests should be run in blame mode, to diagnose test host crashes.
+   * Determines whether tests should be run in blame mode, to diagnose test host crashes.
    *
    * @return {@code true} when tests are run in blame mode; {@code false} otherwise.
    */
@@ -112,7 +112,7 @@ public final class Test extends MSBuildCommand {
   }
 
   /**
-   * Determines whether or not tests should be run in blame mode, to diagnose test host crashes.
+   * Determines whether tests should be run in blame mode, to diagnose test host crashes.
    *
    * @param blame {@code true} to run tests in blame mode; {@code false} otherwise.
    */
@@ -124,7 +124,7 @@ public final class Test extends MSBuildCommand {
   private boolean blameCrash;
 
   /**
-   * Determines whether or not crash dumps should be collected in blame mode.
+   * Determines whether crash dumps should be collected in blame mode.
    *
    * @return {@code true} when crash dumps are collected; {@code false} otherwise.
    */
@@ -133,7 +133,7 @@ public final class Test extends MSBuildCommand {
   }
 
   /**
-   * Determines whether or not crash dumps should be collected in blame mode.
+   * Determines whether crash dumps should be collected in blame mode.
    *
    * @param blameCrash {@code true} to collect crash dumps; {@code false} otherwise.
    */
@@ -145,7 +145,7 @@ public final class Test extends MSBuildCommand {
   private boolean blameCrashCollectAlways;
 
   /**
-   * Determines whether or not crash dumps should be collected in blame mode even for expected test host termination.
+   * Determines whether crash dumps should be collected in blame mode even for expected test host termination.
    *
    * @return {@code true} when crash dumps are collected even for expected test host termination; {@code false} otherwise.
    */
@@ -154,7 +154,7 @@ public final class Test extends MSBuildCommand {
   }
 
   /**
-   * Determines whether or not crash dumps should be collected in blame mode even for expected test host termination.
+   * Determines whether crash dumps should be collected in blame mode even for expected test host termination.
    *
    * @param blameCrashCollectAlways {@code true} to collect crash dumps even for expected test host termination; {@code false}
    *                                otherwise.
@@ -189,7 +189,7 @@ public final class Test extends MSBuildCommand {
   private boolean blameHang;
 
   /**
-   * Determines whether or not test timeouts should result in termination.
+   * Determines whether test timeouts should result in termination.
    *
    * @return {@code true} when test timeouts result in termination; {@code false} otherwise.
    */
@@ -198,7 +198,7 @@ public final class Test extends MSBuildCommand {
   }
 
   /**
-   * Determines whether or not test timeouts should result in termination.
+   * Determines whether test timeouts should result in termination.
    *
    * @param blameHang {@code true} to terminate execution when a test times out; {@code false} otherwise.
    */
@@ -342,7 +342,7 @@ public final class Test extends MSBuildCommand {
   private boolean listTests;
 
   /**
-   * Determines whether or not discovered tests should be listed.
+   * Determines whether discovered tests should be listed.
    *
    * @return {@code true} when discovered tests are listed; {@code false} otherwise.
    */
@@ -351,7 +351,7 @@ public final class Test extends MSBuildCommand {
   }
 
   /**
-   * Determines whether or not discovered tests should be listed.
+   * Determines whether discovered tests should be listed.
    *
    * @param listTests {@code true} to list discovered tests; {@code false} otherwise.
    */
@@ -385,7 +385,7 @@ public final class Test extends MSBuildCommand {
   private boolean noBuild;
 
   /**
-   * Determines whether or not a build should be performed before running tests.
+   * Determines whether a build should be performed before running tests.
    *
    * @return {@code true} when neither a restore nor a build will be performed before running tests; {@code false} otherwise.
    */
@@ -394,7 +394,7 @@ public final class Test extends MSBuildCommand {
   }
 
   /**
-   * Determines whether or not a build should be performed before running tests.
+   * Determines whether a build should be performed before running tests.
    *
    * @param noBuild {@code true} to perform neither a restore nor a build before running tests; {@code false} otherwise.
    */
@@ -406,7 +406,7 @@ public final class Test extends MSBuildCommand {
   private boolean noRestore;
 
   /**
-   * Determines whether or not an implicit restore should be executed as part of this command.
+   * Determines whether an implicit restore should be executed as part of this command.
    *
    * @return {@code true} when the implicit restore is disabled; {@code false} otherwise.
    */
@@ -415,7 +415,7 @@ public final class Test extends MSBuildCommand {
   }
 
   /**
-   * Determines whether or not an implicit restore should be executed as part of this command.
+   * Determines whether an implicit restore should be executed as part of this command.
    *
    * @param noRestore {@code true} to disable the implicit restore; {@code false} otherwise.
    */

@@ -232,7 +232,7 @@ public abstract class CommandDescriptor extends BuildStepDescriptor<Builder> imp
   }
 
   /**
-   * Determines whether or not this descriptor is applicable for the specified job type.
+   * Determines whether this descriptor is applicable for the specified job type.
    *
    * @param jobType The job type.
    *

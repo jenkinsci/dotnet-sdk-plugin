@@ -76,7 +76,7 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
   private boolean telemetryOptOut = true;
 
   /**
-   * Determines whether or not the telemetry opt-out is set.
+   * Determines whether the telemetry opt-out is set.
    *
    * @return {@code true} when the telemetry opt-out is set; {@code false} otherwise.
    */
@@ -85,7 +85,7 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
   }
 
   /**
-   * Determines whether or not the telemetry opt-out should be set.
+   * Determines whether the telemetry opt-out should be set.
    *
    * @param telemetryOptOut {@code true} to opt out of telemetry; {@code false} otherwise.
    */
@@ -180,6 +180,7 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
    * @param launcher The launcher to use for the verification.
    *
    * @return The full path to the {@code dotnet} executable in this .NET SDK installation.
+   *
    * @throws AbortException       When the executable could not be found.
    * @throws IOException          When an I/O error occurs.
    * @throws InterruptedException When processing is interrupted.
@@ -257,7 +258,7 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
   }
 
   /**
-   * Determines whether or not any .NET SDKs have been configured.
+   * Determines whether any .NET SDKs have been configured.
    *
    * @return {@code true} when at least one .NET SDK has been configured; otherwise, {@code false}.
    */
@@ -355,6 +356,7 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
      * @param listener  The task listener to use.
      *
      * @return The requested .NET SDK installation.
+     *
      * @throws AbortException       When the SDK installation could not be set up.
      * @throws IOException          Then an I/O error occurs.
      * @throws InterruptedException When processing is interrupted.

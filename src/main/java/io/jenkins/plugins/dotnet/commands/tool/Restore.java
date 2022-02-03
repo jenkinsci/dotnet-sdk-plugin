@@ -142,7 +142,7 @@ public final class Restore extends ToolCommand {
   private boolean disableParallel;
 
   /**
-   * Determines whether or not multiple projects can be restored in parallel.
+   * Determines whether multiple projects can be restored in parallel.
    *
    * @return {@code true} when multiple projects are restored one by one; {@code false} otherwise.
    */
@@ -151,7 +151,7 @@ public final class Restore extends ToolCommand {
   }
 
   /**
-   * Determines whether or not multiple projects can be restored in parallel.
+   * Determines whether multiple projects can be restored in parallel.
    *
    * @param disableParallel {@code true} to restore multiple projects one by one; {@code false} otherwise.
    */
@@ -163,7 +163,7 @@ public final class Restore extends ToolCommand {
   private boolean ignoreFailedSources;
 
   /**
-   * Determines whether or not failed sources should be ignored.
+   * Determines whether failed sources should be ignored.
    *
    * @return {@code true} when failed sources are ignored; {@code false} otherwise.
    */
@@ -172,7 +172,7 @@ public final class Restore extends ToolCommand {
   }
 
   /**
-   * Determines whether or not failed sources should be ignored.
+   * Determines whether failed sources should be ignored.
    *
    * @param ignoreFailedSources {@code true} to ignore failed sources; {@code false} otherwise.
    */
@@ -184,7 +184,7 @@ public final class Restore extends ToolCommand {
   private boolean noCache;
 
   /**
-   * Determines whether or not HTTP requests should be cached.
+   * Determines whether HTTP requests should be cached.
    *
    * @return {@code true} when HTTP requests are not cached; {@code false} otherwise.
    */
@@ -193,7 +193,7 @@ public final class Restore extends ToolCommand {
   }
 
   /**
-   * Determines whether or not HTTP requests should be cached.
+   * Determines whether HTTP requests should be cached.
    *
    * @param noCache {@code true} not to cache HTTP requests; {@code false} otherwise.
    */

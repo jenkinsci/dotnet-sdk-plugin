@@ -134,7 +134,7 @@ public final class Downloads extends DownloadService.Downloadable {
    *
    * @param model          The list box to add the releases to.
    * @param version        The name of the version containing the releases to add.
-   * @param includePreview Indicates whether or not preview releases should be included.
+   * @param includePreview Indicates whether preview releases should be included.
    *
    * @return The updated list box.
    */
@@ -399,10 +399,10 @@ public final class Downloads extends DownloadService.Downloadable {
     @NonNull
     public String released;
 
-    /** Indicates whether or not this release is a preview. */
+    /** Indicates whether this release is a preview. */
     public boolean preview;
 
-    /** Indicates whether or not this release contains security fixes. */
+    /** Indicates whether this release contains security fixes. */
     public boolean securityFixes;
 
     /** A link to the release notes for this release. */
