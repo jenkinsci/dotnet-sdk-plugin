@@ -307,18 +307,39 @@ public class MSBuildCommand extends Command {
   }
 
   /**
-   * Determines whether the presence of warnings makes the build unstable.
+   * Determines whether the presence of errors makes the build unstable (instead of failed).
    *
-   * @return {@code true} if warnings cause the build to be marked as unstable; {@code false} otherwise.
+   * @return {@code true} if errors cause the build to be marked as unstable (instead of failed); {@code false} otherwise.
+   */
+  public boolean isUnstableIfErrors() {
+    return this.unstableIfErrors;
+  }
+
+  /**
+   * Determines whether the presence of errors makes the build unstable (instead of failed).
+   *
+   * @param unstableIfErrors {@code true} if errors cause the build to be marked as unstable (instead of failed); {@code false}
+   *                         otherwise.
+   */
+  @DataBoundSetter
+  public void setUnstableIfErrors(boolean unstableIfErrors) {
+    this.unstableIfErrors = unstableIfErrors;
+  }
+
+  /**
+   * Determines whether the presence of warnings makes the build unstable (instead of successful).
+   *
+   * @return {@code true} if warnings cause the build to be marked as unstable (instead of successful); {@code false} otherwise.
    */
   public boolean isUnstableIfWarnings() {
     return this.unstableIfWarnings;
   }
 
   /**
-   * Determines whether the presence of warnings makes the build unstable.
+   * Determines whether the presence of warnings makes the build unstable (instead of successful).
    *
-   * @param unstableIfWarnings {@code true} if warnings cause the build to be marked as unstable; {@code false} otherwise.
+   * @param unstableIfWarnings {@code true} if warnings cause the build to be marked as unstable (instead of successful); {@code
+   *                           false} otherwise.
    */
   @DataBoundSetter
   public void setUnstableIfWarnings(boolean unstableIfWarnings) {

@@ -121,12 +121,17 @@ public class Command extends Builder implements SimpleBuildStep {
         launcher.launch().cmds(cmdLine).envs(env).stdout(scanner).pwd(workspace).join();
       }
       // TODO: Maybe also add configuration to set the build as either failed or unstable based on return code
-      if (rc != 0)
-        run.setResult(Result.FAILURE);
-      else if (scanner.getErrors() > 0)
-        run.setResult(Result.FAILURE);
-      else if (this.unstableIfWarnings && scanner.getWarnings() > 0)
-        run.setResult(Result.UNSTABLE);
+      if (scanner.getErrors() > 0) {
+        run.setResult(this.unstableIfErrors ? Result.UNSTABLE : Result.FAILURE);
+      }
+      else {
+        if (this.unstableIfWarnings && scanner.getWarnings() > 0) {
+          run.setResult(Result.UNSTABLE);
+        }
+        if (rc != 0) {
+          run.setResult(Result.FAILURE);
+        }
+      }
     }
     catch (Throwable t) {
       Functions.printStackTrace(t, listener.fatalError(Messages.Command_ExecutionFailed()));
@@ -243,7 +248,10 @@ public class Command extends Builder implements SimpleBuildStep {
     this.specificSdkVersion = specificSdkVersion;
   }
 
-  /** Flag indicating whether the presence of warnings makes the build unstable. */
+  /** Flag indicating whether the presence of errors makes the build unstable (instead of failed). */
+  protected boolean unstableIfErrors = false;
+
+  /** Flag indicating whether the presence of warnings makes the build unstable (instead of successful). */
   protected boolean unstableIfWarnings = false;
 
   /** The working directory to use for the command. This directory is <em>not</em> created by the command execution. */
