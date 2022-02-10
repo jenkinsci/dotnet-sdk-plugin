@@ -96,7 +96,7 @@ public final class Restore extends Command {
   private boolean disableParallel;
 
   /**
-   * Determines whether or not multiple projects can be restored in parallel.
+   * Determines whether multiple projects can be restored in parallel.
    *
    * @return {@code true} when multiple projects are restored one by one; {@code false} otherwise.
    */
@@ -105,7 +105,7 @@ public final class Restore extends Command {
   }
 
   /**
-   * Determines whether or not multiple projects can be restored in parallel.
+   * Determines whether multiple projects can be restored in parallel.
    *
    * @param disableParallel {@code true} to restore multiple projects one by one; {@code false} otherwise.
    */
@@ -117,7 +117,7 @@ public final class Restore extends Command {
   private boolean force;
 
   /**
-   * Determines whether or not dependency resolution should be forced.
+   * Determines whether dependency resolution should be forced.
    *
    * @return {@code true} when all dependencies should be resolved even if the last restore was successful; {@code false} otherwise.
    */
@@ -126,7 +126,7 @@ public final class Restore extends Command {
   }
 
   /**
-   * Determines whether or not dependency resolution should be forced.
+   * Determines whether dependency resolution should be forced.
    *
    * @param force {@code true} to resolve all dependencies even if the last restore was successful; {@code false} otherwise.
    */
@@ -138,7 +138,7 @@ public final class Restore extends Command {
   private boolean forceEvaluate;
 
   /**
-   * Determines whether or not all dependencies should be re-evaluated even when a lock file exists.
+   * Determines whether all dependencies should be re-evaluated even when a lock file exists.
    *
    * @return {@code true} when all dependencies are re-evaluated even when a lock file exists; {@code false} otherwise.
    */
@@ -147,7 +147,7 @@ public final class Restore extends Command {
   }
 
   /**
-   * Determines whether or not all dependencies should be re-evaluated even when a lock file exists.
+   * Determines whether all dependencies should be re-evaluated even when a lock file exists.
    *
    * @param forceEvaluate {@code true} to re-evaluate all dependencies even when a lock file exists; {@code false} otherwise.
    */
@@ -159,7 +159,7 @@ public final class Restore extends Command {
   private boolean ignoreFailedSources;
 
   /**
-   * Determines whether or not failed sources should be ignored.
+   * Determines whether failed sources should be ignored.
    *
    * @return {@code true} when failed sources are ignored; {@code false} otherwise.
    */
@@ -168,7 +168,7 @@ public final class Restore extends Command {
   }
 
   /**
-   * Determines whether or not failed sources should be ignored.
+   * Determines whether failed sources should be ignored.
    *
    * @param ignoreFailedSources {@code true} to ignore failed sources; {@code false} otherwise.
    */
@@ -202,7 +202,7 @@ public final class Restore extends Command {
   private boolean lockedMode;
 
   /**
-   * Determines whether or not updating the project lock file is allowed.
+   * Determines whether updating the project lock file is allowed.
    *
    * @return {@code true} when updating the project lock file is not allowed; {@code false} otherwise.
    */
@@ -211,7 +211,7 @@ public final class Restore extends Command {
   }
 
   /**
-   * Determines whether or not updating the project lock file is allowed.
+   * Determines whether updating the project lock file is allowed.
    *
    * @param lockedMode {@code true} to disallow updating the project lock file; {@code false} otherwise.
    */
@@ -223,7 +223,7 @@ public final class Restore extends Command {
   private boolean noCache;
 
   /**
-   * Determines whether or not HTTP requests should be cached.
+   * Determines whether HTTP requests should be cached.
    *
    * @return {@code true} when HTTP requests are not cached; {@code false} otherwise.
    */
@@ -232,7 +232,7 @@ public final class Restore extends Command {
   }
 
   /**
-   * Determines whether or not HTTP requests should be cached.
+   * Determines whether HTTP requests should be cached.
    *
    * @param noCache {@code true} not to cache HTTP requests; {@code false} otherwise.
    */
@@ -244,7 +244,7 @@ public final class Restore extends Command {
   private boolean noDependencies;
 
   /**
-   * Determines whether or not to ignore project-to-project dependencies.
+   * Determines whether to ignore project-to-project dependencies.
    *
    * @return {@code true} when project-to-project dependencies are ignored; {@code false} otherwise.
    */
@@ -253,7 +253,7 @@ public final class Restore extends Command {
   }
 
   /**
-   * Determines whether or not to ignore project-to-project dependencies.
+   * Determines whether to ignore project-to-project dependencies.
    *
    * @param noDependencies {@code true} when project-to-project dependencies should be ignored; {@code false} otherwise.
    */
@@ -437,7 +437,7 @@ public final class Restore extends Command {
   private boolean useLockFile;
 
   /**
-   * Determines whether or not a project lock file should be generated and used.
+   * Determines whether a project lock file should be generated and used.
    *
    * @return {@code true} when a project lock file is generated and used; {@code false} otherwise.
    */
@@ -446,7 +446,7 @@ public final class Restore extends Command {
   }
 
   /**
-   * Determines whether or not a project lock file should be generated and used.
+   * Determines whether a project lock file should be generated and used.
    *
    * @param useLockFile {@code true} to generate and use a project lock file; {@code false} otherwise.
    */

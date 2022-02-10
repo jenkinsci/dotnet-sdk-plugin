@@ -84,7 +84,7 @@ public final class DotNetArguments {
    * Adds a literal string argument, potentially masking it.
    *
    * @param value The literal string argument to add.
-   * @param mask  Indicates whether or not the argument should be masked.
+   * @param mask  Indicates whether the argument should be masked.
    *
    * @return This .NET CLI argument processor.
    */
@@ -124,8 +124,8 @@ public final class DotNetArguments {
   /**
    * Adds an option argument.
    *
-   * @param value The option argument to add; it will have variable substitution applied.
-   *              If it expands to {@code null}, no argument is added.
+   * @param value The option argument to add; it will have variable substitution applied. If it expands to {@code null}, no argument
+   *              is added.
    *
    * @return This .NET CLI argument processor.
    */
@@ -140,8 +140,8 @@ public final class DotNetArguments {
    * Adds an option argument.
    *
    * @param option The name of the option (without the {@code --} prefix).
-   * @param value  The option argument to add; it will be mapped to {@code "true"} or {@code "false"}.
-   *               If this is {@code null}, no argument is added.
+   * @param value  The option argument to add; it will be mapped to {@code "true"} or {@code "false"}. If this is {@code null}, no
+   *               argument is added.
    *
    * @return This .NET CLI argument processor.
    */
@@ -155,8 +155,8 @@ public final class DotNetArguments {
    * Adds an option argument.
    *
    * @param option The name of the option (without the {@code --} prefix).
-   * @param value  The option argument to add; it will be converted to its string representation is base 10.
-   *               If this is {@code null}, no argument is added.
+   * @param value  The option argument to add; it will be converted to its string representation is base 10. If this is {@code
+   *               null}, no argument is added.
    *
    * @return This .NET CLI argument processor.
    */
@@ -170,8 +170,8 @@ public final class DotNetArguments {
    * Adds an option argument.
    *
    * @param option The name of the option (without the {@code --} prefix).
-   * @param value  The option argument to add; it will have variable substitution applied.
-   *               If it expands to {@code null}, no argument is added.
+   * @param value  The option argument to add; it will have variable substitution applied. If it expands to {@code null}, no
+   *               argument is added.
    *
    * @return This .NET CLI argument processor.
    */
@@ -186,8 +186,8 @@ public final class DotNetArguments {
    * Adds an option argument.
    *
    * @param option The name of the option (without the {@code -} prefix or the {@code :} suffix).
-   * @param value  The option argument to add; it will have variable substitution applied.
-   *               If it expands to {@code null}, no argument is added.
+   * @param value  The option argument to add; it will have variable substitution applied. If it expands to {@code null}, no
+   *               argument is added.
    *
    * @return This .NET CLI argument processor.
    */
@@ -301,8 +301,8 @@ public final class DotNetArguments {
    * Adds an option argument containing a string credential.
    *
    * @param option The name of the option (without the {@code --} prefix).
-   * @param value  The string credential ID; it will have variable substitution applied.
-   *               If it expands to {@code null}, no argument is added.
+   * @param value  The string credential ID; it will have variable substitution applied. If it expands to {@code null}, no argument
+   *               is added.
    *
    * @return This .NET CLI argument processor.
    *
@@ -334,6 +334,7 @@ public final class DotNetArguments {
    * @param value The string credential ID; it will have variable substitution applied.
    *
    * @return The secret text for the given string credential.
+   *
    * @throws AbortException When the specified credential could not be found.
    */
   private Secret expandStringCredential(@CheckForNull String value) throws AbortException {

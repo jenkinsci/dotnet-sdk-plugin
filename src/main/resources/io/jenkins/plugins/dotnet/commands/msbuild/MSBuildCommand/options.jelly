@@ -7,6 +7,10 @@
     <f:combobox/>
   </f:entry>
 
+  <f:entry title="${%Errors Result in Unstable Build}" field="unstableIfErrors">
+    <f:checkbox/>
+  </f:entry>
+
   <f:entry title="${%Warnings Result in Unstable Build}" field="unstableIfWarnings">
     <f:checkbox/>
   </f:entry>

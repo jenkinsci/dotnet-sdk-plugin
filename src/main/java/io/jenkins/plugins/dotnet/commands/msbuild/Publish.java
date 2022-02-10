@@ -64,7 +64,7 @@ public final class Publish extends MSBuildCommand {
   private boolean force;
 
   /**
-   * Determines whether or not dependency resolution should be forced.
+   * Determines whether dependency resolution should be forced.
    *
    * @return {@code true} when all dependencies should be resolved even if the last restore was successful; {@code false} otherwise.
    */
@@ -73,7 +73,7 @@ public final class Publish extends MSBuildCommand {
   }
 
   /**
-   * Determines whether or not dependency resolution should be forced.
+   * Determines whether dependency resolution should be forced.
    *
    * @param force {@code true} to resolve all dependencies even if the last restore was successful; {@code false} otherwise.
    */
@@ -171,7 +171,7 @@ public final class Publish extends MSBuildCommand {
   private boolean noBuild;
 
   /**
-   * Determines whether or not a build should be performed before publishing.
+   * Determines whether a build should be performed before publishing.
    *
    * @return {@code true} when neither a restore nor a build will be performed before publishing; {@code false} otherwise.
    */
@@ -180,7 +180,7 @@ public final class Publish extends MSBuildCommand {
   }
 
   /**
-   * Determines whether or not a build should be performed before publishing.
+   * Determines whether a build should be performed before publishing.
    *
    * @param noBuild {@code true} to perform neither a restore nor a build before publishing; {@code false} otherwise.
    */
@@ -192,7 +192,7 @@ public final class Publish extends MSBuildCommand {
   private boolean noDependencies;
 
   /**
-   * Determines whether or not to ignore project-to-project dependencies.
+   * Determines whether to ignore project-to-project dependencies.
    *
    * @return {@code true} when project-to-project dependencies are ignored; {@code false} otherwise.
    */
@@ -201,7 +201,7 @@ public final class Publish extends MSBuildCommand {
   }
 
   /**
-   * Determines whether or not to ignore project-to-project dependencies.
+   * Determines whether to ignore project-to-project dependencies.
    *
    * @param noDependencies {@code true} when project-to-project dependencies should be ignored; {@code false} otherwise.
    */
@@ -213,7 +213,7 @@ public final class Publish extends MSBuildCommand {
   private boolean noRestore;
 
   /**
-   * Determines whether or not an implicit restore should be executed as part of this command.
+   * Determines whether an implicit restore should be executed as part of this command.
    *
    * @return {@code true} when the implicit restore is disabled; {@code false} otherwise.
    */
@@ -222,7 +222,7 @@ public final class Publish extends MSBuildCommand {
   }
 
   /**
-   * Determines whether or not an implicit restore should be executed as part of this command.
+   * Determines whether an implicit restore should be executed as part of this command.
    *
    * @param noRestore {@code true} to disable the implicit restore; {@code false} otherwise.
    */
@@ -256,7 +256,7 @@ public final class Publish extends MSBuildCommand {
   private Boolean selfContained;
 
   /**
-   * Determines whether or not the project should be published self-contained.
+   * Determines whether the project should be published self-contained.
    *
    * @return {@code null} when the project decides; {@code true} when publishing self-contained; {@code false} otherwise.
    */
@@ -266,7 +266,7 @@ public final class Publish extends MSBuildCommand {
   }
 
   /**
-   * Determines whether or not the project should be published self-contained.
+   * Determines whether the project should be published self-contained.
    *
    * @param selfContained {@code null} to let the project decide; {@code true} to publish self-contained; {@code false} otherwise.
    */

@@ -73,7 +73,7 @@ public class Command extends Builder implements SimpleBuildStep {
    */
   @Override
   public void perform(@NonNull Run<?, ?> run, @NonNull FilePath workspace, @NonNull EnvVars env, @NonNull Launcher launcher, @NonNull TaskListener listener) throws InterruptedException, IOException {
-    final Charset cs = run.getCharset();
+    final Charset cs = this.charset == null ? run.getCharset() : Charset.forName(this.charset);
     final DotNetSDK sdkInstance;
     if (this.sdk == null)
       sdkInstance = null;
@@ -121,12 +121,17 @@ public class Command extends Builder implements SimpleBuildStep {
         launcher.launch().cmds(cmdLine).envs(env).stdout(scanner).pwd(workspace).join();
       }
       // TODO: Maybe also add configuration to set the build as either failed or unstable based on return code
-      if (rc != 0)
-        run.setResult(Result.FAILURE);
-      else if (scanner.getErrors() > 0)
-        run.setResult(Result.FAILURE);
-      else if (this.unstableIfWarnings && scanner.getWarnings() > 0)
-        run.setResult(Result.UNSTABLE);
+      if (scanner.getErrors() > 0) {
+        run.setResult(this.unstableIfErrors ? Result.UNSTABLE : Result.FAILURE);
+      }
+      else {
+        if (this.unstableIfWarnings && scanner.getWarnings() > 0) {
+          run.setResult(Result.UNSTABLE);
+        }
+        if (rc != 0) {
+          run.setResult(Result.FAILURE);
+        }
+      }
     }
     catch (Throwable t) {
       Functions.printStackTrace(t, listener.fatalError(Messages.Command_ExecutionFailed()));
@@ -139,6 +144,32 @@ public class Command extends Builder implements SimpleBuildStep {
   }
 
   //region Properties
+
+  /** A specific charset to use for the command's output. If {@code null}, the build's default charset will be used. */
+  @CheckForNull
+  private String charset = null;
+
+  /**
+   * Gets the specific charset to use for the command's output.
+   *
+   * @return The specific charset to use for the command's output, or {@code null} to indicate that the build's default charset
+   * should be used.
+   */
+  @CheckForNull
+  public String getCharset() {
+    return this.charset;
+  }
+
+  /**
+   * Sets the specific charset to use for the command's output.
+   *
+   * @param charset The specific charset to use for the command's output, or {@code null} to indicate that the build's default
+   *                charset should be used.
+   */
+  @DataBoundSetter
+  public void setCharset(@CheckForNull String charset) {
+    this.charset = Util.fixEmptyAndTrim(charset);
+  }
 
   /** The name of the SDK to use. */
   @CheckForNull
@@ -164,20 +195,21 @@ public class Command extends Builder implements SimpleBuildStep {
     this.sdk = Util.fixEmpty(sdk);
   }
 
-  /** Flag indicating whether or not SDK information should be shown. */
+  /** Flag indicating whether SDK information should be shown. */
   protected boolean showSdkInfo = false;
 
   /**
-   * Determines whether or not SDK information should be shown.
+   * Determines whether SDK information should be shown.
    *
    * @return {@code true} if "{@code dotnet --info}" should be run before the main command; {@code false} otherwise.
    */
+  @SuppressWarnings("unused")
   public boolean isShowSdkInfo() {
     return this.showSdkInfo;
   }
 
   /**
-   * Determines whether or not SDK information should be shown.
+   * Determines whether SDK information should be shown.
    *
    * @param showSdkInfo {@code true} if "{@code dotnet --info}" should be run before the main command; {@code false} otherwise.
    */
@@ -186,35 +218,40 @@ public class Command extends Builder implements SimpleBuildStep {
     this.showSdkInfo = showSdkInfo;
   }
 
-  /** Flag indicating whether or not any build servers started by the main command should be shut down. */
+  /** Flag indicating whether any build servers started by the main command should be shut down. */
   protected boolean shutDownBuildServers = false;
 
-  /** Flag indicating whether or not a specific SDK version should be used. */
+  /** Flag indicating whether a specific SDK version should be used. */
   private boolean specificSdkVersion = false;
 
   /**
-   * Determines whether or not a specific SDK version should be used.
+   * Determines whether a specific SDK version should be used.
    *
-   * @return {@code true} if a {@code global.json} should be created to force the use of the configured .NET SDK (as opposed to
-   * a more recent one that happens to be installed on the build agent); {@code false} otherwise.
+   * @return {@code true} if a {@code global.json} should be created to force the use of the configured .NET SDK (as opposed to a
+   * more recent one that happens to be installed on the build agent); {@code false} otherwise.
    */
+  @SuppressWarnings("unused")
   public boolean isSpecificSdkVersion() {
     return this.specificSdkVersion;
   }
 
   /**
-   * Determines whether or not a specific SDK version should be used.
+   * Determines whether a specific SDK version should be used.
    *
    * @param specificSdkVersion {@code true} if a {@code global.json} should be created to force the use of the configured .NET SDK
    *                           (as opposed to a more recent one that happens to be installed on the build agent); {@code false}
    *                           otherwise.
    */
   @DataBoundSetter
+  @SuppressWarnings("unused")
   public void setSpecificSdkVersion(boolean specificSdkVersion) {
     this.specificSdkVersion = specificSdkVersion;
   }
 
-  /** Flag indicating whether or not the presence of warnings makes the build unstable. */
+  /** Flag indicating whether the presence of errors makes the build unstable (instead of failed). */
+  protected boolean unstableIfErrors = false;
+
+  /** Flag indicating whether the presence of warnings makes the build unstable (instead of successful). */
   protected boolean unstableIfWarnings = false;
 
   /** The working directory to use for the command. This directory is <em>not</em> created by the command execution. */
@@ -227,6 +264,7 @@ public class Command extends Builder implements SimpleBuildStep {
    * @return The working directory to use for the command.
    */
   @CheckForNull
+  @SuppressWarnings("unused")
   public String getWorkDirectory() {
     return this.workDirectory;
   }
@@ -237,6 +275,7 @@ public class Command extends Builder implements SimpleBuildStep {
    * @param workDirectory The working directory to use for the command.
    */
   @DataBoundSetter
+  @SuppressWarnings("unused")
   public void setWorkDirectory(@CheckForNull String workDirectory) {
     this.workDirectory = Util.fixEmpty(workDirectory);
   }

@@ -2,6 +2,7 @@ package io.jenkins.plugins.dotnet.commands;
 
 import edu.umd.cs.findbugs.annotations.CheckForNull;
 import edu.umd.cs.findbugs.annotations.NonNull;
+import hudson.Util;
 import hudson.model.AbstractProject;
 import hudson.model.AutoCompletionCandidates;
 import hudson.tasks.BuildStepDescriptor;
@@ -13,6 +14,9 @@ import io.jenkins.plugins.dotnet.data.Framework;
 import io.jenkins.plugins.dotnet.data.Runtime;
 import org.jenkinsci.plugins.structs.describable.CustomDescribableModel;
 import org.kohsuke.stapler.QueryParameter;
+
+import java.nio.charset.Charset;
+import java.util.Set;
 
 /** A descriptor for a .NET command. */
 public abstract class CommandDescriptor extends BuildStepDescriptor<Builder> implements CustomDescribableModel {
@@ -88,6 +92,28 @@ public abstract class CommandDescriptor extends BuildStepDescriptor<Builder> imp
   }
 
   /**
+   * Performs validation on a Java charset name.
+   *
+   * @param value The value to validate.
+   *
+   * @return The result of the validation.
+   */
+  @SuppressWarnings("unused")
+  @NonNull
+  public FormValidation doCheckCharset(@CheckForNull @QueryParameter String value) {
+    final String name = Util.fixEmptyAndTrim(value);
+    if (name != null) {
+      try {
+        Charset.forName(value);
+      }
+      catch (Throwable t) {
+        return FormValidation.error(Messages.Command_UnsupportedCharset());
+      }
+    }
+    return FormValidation.ok();
+  }
+
+  /**
    * Performs validation on a .NET target framework moniker.
    *
    * @param value The value to validate.
@@ -140,6 +166,29 @@ public abstract class CommandDescriptor extends BuildStepDescriptor<Builder> imp
   }
 
   /**
+   * Fills a listbox with the names of charsets supported by the running version of Java.
+   *
+   * @return A suitably filled listbox model.
+   */
+  @SuppressWarnings("unused")
+  @NonNull
+  public final ListBoxModel doFillCharsetItems() {
+    final ListBoxModel model = new ListBoxModel();
+    model.add(Messages.Command_SameCharsetAsBuild(), "");
+    for (final Charset cs : Charset.availableCharsets().values()) {
+      final Set<String> aliases = cs.aliases();
+      final String name = cs.displayName();
+      if (aliases == null || aliases.isEmpty()) {
+        model.add(name);
+      }
+      else {
+        model.add(String.format("%s (%s)", name, String.join(" / ", aliases)), name);
+      }
+    }
+    return model;
+  }
+
+  /**
    * Fills a listbox with the names of .NET SDKs that have been defined as global tools.
    *
    * @return A suitably filled listbox model.
@@ -183,7 +232,7 @@ public abstract class CommandDescriptor extends BuildStepDescriptor<Builder> imp
   }
 
   /**
-   * Determines whether or not this descriptor is applicable for the specified job type.
+   * Determines whether this descriptor is applicable for the specified job type.
    *
    * @param jobType The job type.
    *
