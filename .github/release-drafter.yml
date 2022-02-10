@@ -10,5 +10,6 @@ version-resolver:
       - 'major'
   minor:
     labels:
+      - 'feature'
       - 'minor'
   default: patch
