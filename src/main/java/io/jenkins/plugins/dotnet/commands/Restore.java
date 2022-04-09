@@ -491,6 +491,31 @@ public final class Restore extends Command {
       this.load();
     }
 
+    @NonNull
+    @Override
+    public UninstantiatedDescribable customUninstantiate(@NonNull UninstantiatedDescribable ud) {
+      ud = super.customUninstantiate(ud);
+      final Map<String, ?> oldArgs = ud.getArguments();
+      final Map<String, Object> newArgs = new HashMap<>();
+      for (final Map.Entry<String, ?> arg : oldArgs.entrySet()) {
+        final String name = arg.getKey();
+        if ("runtimes".equals(name) && oldArgs.containsKey("runtime")) {
+          continue;
+        }
+        if ("runtimesString".equals(name)) {
+          continue;
+        }
+        if ("sources".equals(name) && oldArgs.containsKey("source")) {
+          continue;
+        }
+        if ("sourcesString".equals(name)) {
+          continue;
+        }
+        newArgs.put(name, arg.getValue());
+      }
+      return new UninstantiatedDescribable(ud.getSymbol(), ud.getKlass(), newArgs);
+    }
+
     /**
      * Gets the display name for this build step (as used in the project configuration UI).
      *
@@ -501,25 +526,9 @@ public final class Restore extends Command {
       return Messages.Restore_DisplayName();
     }
 
-    @NonNull
     @Override
-    public UninstantiatedDescribable customUninstantiate(@NonNull UninstantiatedDescribable ud) {
-      ud = super.customUninstantiate(ud);
-      final Map<String, ?> oldArgs = ud.getArguments();
-      final Map<String, Object> newArgs = new HashMap<>();
-      for (final Map.Entry<String, ?> arg : oldArgs.entrySet()) {
-        final String name = arg.getKey();
-        if ("runtimes".equals(name) && oldArgs.containsKey("runtime"))
-          continue;
-        if ("runtimesString".equals(name))
-          continue;
-        if ("sources".equals(name) && oldArgs.containsKey("source"))
-          continue;
-        if ("sourcesString".equals(name))
-          continue;
-        newArgs.put(name, arg.getValue());
-      }
-      return new UninstantiatedDescribable(ud.getSymbol(), ud.getKlass(), newArgs);
+    protected boolean isApplicableToFreeStyleProjects(@NonNull FreeStyleCommandConfiguration configuration) {
+      return configuration.isRestoreAllowed();
     }
 
   }

@@ -11,6 +11,7 @@ import org.jenkinsci.plugins.structs.describable.UninstantiatedDescribable;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
+import org.kohsuke.stapler.verb.POST;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -433,6 +434,31 @@ public final class ListPackage extends Command {
       this.load();
     }
 
+    @NonNull
+    @Override
+    public UninstantiatedDescribable customUninstantiate(@NonNull UninstantiatedDescribable ud) {
+      ud = super.customUninstantiate(ud);
+      final Map<String, ?> oldArgs = ud.getArguments();
+      final Map<String, Object> newArgs = new HashMap<>();
+      for (final Map.Entry<String, ?> arg : oldArgs.entrySet()) {
+        final String name = arg.getKey();
+        if ("frameworks".equals(name) && oldArgs.containsKey("framework")) {
+          continue;
+        }
+        if ("frameworksString".equals(name)) {
+          continue;
+        }
+        if ("sources".equals(name) && oldArgs.containsKey("source")) {
+          continue;
+        }
+        if ("sourcesString".equals(name)) {
+          continue;
+        }
+        newArgs.put(name, arg.getValue());
+      }
+      return new UninstantiatedDescribable(ud.getSymbol(), ud.getKlass(), newArgs);
+    }
+
     /**
      * Performs validation on the "config file" setting.
      *
@@ -444,9 +470,11 @@ public final class ListPackage extends Command {
      */
     @SuppressWarnings("unused")
     @NonNull
-    public FormValidation doCheckConfig(@CheckForNull @QueryParameter String value, @QueryParameter boolean deprecated, @QueryParameter boolean outdated) {
-      if (Util.fixEmptyAndTrim(value) != null && !deprecated && !outdated)
+    public FormValidation doCheckConfig(@CheckForNull @QueryParameter String value, @QueryParameter boolean deprecated,
+                                        @QueryParameter boolean outdated) {
+      if (Util.fixEmptyAndTrim(value) != null && !deprecated && !outdated) {
         return FormValidation.warning(Messages.ListPackage_OnlyForPackageUpdateSearch());
+      }
       return FormValidation.ok();
     }
 
@@ -461,8 +489,9 @@ public final class ListPackage extends Command {
     @SuppressWarnings("unused")
     @NonNull
     public FormValidation doCheckDeprecated(@QueryParameter boolean deprecated, @QueryParameter boolean outdated) {
-      if (deprecated && outdated)
+      if (deprecated && outdated) {
         return FormValidation.error(Messages.ListPackage_EitherDeprecatedOrOutdated());
+      }
       return FormValidation.ok();
     }
 
@@ -477,9 +506,11 @@ public final class ListPackage extends Command {
      */
     @SuppressWarnings("unused")
     @NonNull
-    public FormValidation doCheckHighestMinor(@QueryParameter boolean value, @QueryParameter boolean deprecated, @QueryParameter boolean outdated) {
-      if (value && !deprecated && !outdated)
+    public FormValidation doCheckHighestMinor(@QueryParameter boolean value, @QueryParameter boolean deprecated,
+                                              @QueryParameter boolean outdated) {
+      if (value && !deprecated && !outdated) {
         return FormValidation.warning(Messages.ListPackage_OnlyForPackageUpdateSearch());
+      }
       return FormValidation.ok();
     }
 
@@ -494,9 +525,11 @@ public final class ListPackage extends Command {
      */
     @SuppressWarnings("unused")
     @NonNull
-    public FormValidation doCheckHighestPatch(@QueryParameter boolean value, @QueryParameter boolean deprecated, @QueryParameter boolean outdated) {
-      if (value && !deprecated && !outdated)
+    public FormValidation doCheckHighestPatch(@QueryParameter boolean value, @QueryParameter boolean deprecated,
+                                              @QueryParameter boolean outdated) {
+      if (value && !deprecated && !outdated) {
         return FormValidation.warning(Messages.ListPackage_OnlyForPackageUpdateSearch());
+      }
       return FormValidation.ok();
     }
 
@@ -511,9 +544,11 @@ public final class ListPackage extends Command {
      */
     @SuppressWarnings("unused")
     @NonNull
-    public FormValidation doCheckIncludePrerelease(@QueryParameter boolean value, @QueryParameter boolean deprecated, @QueryParameter boolean outdated) {
-      if (value && !deprecated && !outdated)
+    public FormValidation doCheckIncludePrerelease(@QueryParameter boolean value, @QueryParameter boolean deprecated,
+                                                   @QueryParameter boolean outdated) {
+      if (value && !deprecated && !outdated) {
         return FormValidation.warning(Messages.ListPackage_OnlyForPackageUpdateSearch());
+      }
       return FormValidation.ok();
     }
 
@@ -528,8 +563,9 @@ public final class ListPackage extends Command {
     @SuppressWarnings("unused")
     @NonNull
     public FormValidation doCheckOutdated(@QueryParameter boolean deprecated, @QueryParameter boolean outdated) {
-      if (deprecated && outdated)
+      if (deprecated && outdated) {
         return FormValidation.error(Messages.ListPackage_EitherDeprecatedOrOutdated());
+      }
       return FormValidation.ok();
     }
 
@@ -544,9 +580,11 @@ public final class ListPackage extends Command {
      */
     @SuppressWarnings("unused")
     @NonNull
-    public FormValidation doCheckSourcesString(@CheckForNull @QueryParameter String value, @QueryParameter boolean deprecated, @QueryParameter boolean outdated) {
-      if (Util.fixEmptyAndTrim(value) != null && !deprecated && !outdated)
+    public FormValidation doCheckSourcesString(@CheckForNull @QueryParameter String value, @QueryParameter boolean deprecated,
+                                               @QueryParameter boolean outdated) {
+      if (Util.fixEmptyAndTrim(value) != null && !deprecated && !outdated) {
         return FormValidation.warning(Messages.ListPackage_OnlyForPackageUpdateSearch());
+      }
       return FormValidation.ok();
     }
 
@@ -560,25 +598,9 @@ public final class ListPackage extends Command {
       return Messages.ListPackage_DisplayName();
     }
 
-    @NonNull
     @Override
-    public UninstantiatedDescribable customUninstantiate(@NonNull UninstantiatedDescribable ud) {
-      ud = super.customUninstantiate(ud);
-      final Map<String, ?> oldArgs = ud.getArguments();
-      final Map<String, Object> newArgs = new HashMap<>();
-      for (final Map.Entry<String, ?> arg : oldArgs.entrySet()) {
-        final String name = arg.getKey();
-        if ("frameworks".equals(name) && oldArgs.containsKey("framework"))
-          continue;
-        if ("frameworksString".equals(name))
-          continue;
-        if ("sources".equals(name) && oldArgs.containsKey("source"))
-          continue;
-        if ("sourcesString".equals(name))
-          continue;
-        newArgs.put(name, arg.getValue());
-      }
-      return new UninstantiatedDescribable(ud.getSymbol(), ud.getKlass(), newArgs);
+    protected boolean isApplicableToFreeStyleProjects(@NonNull FreeStyleCommandConfiguration configuration) {
+      return configuration.isListPackageAllowed();
     }
 
   }

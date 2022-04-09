@@ -4,6 +4,7 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.AbortException;
 import hudson.Extension;
 import hudson.util.ListBoxModel;
+import io.jenkins.plugins.dotnet.commands.FreeStyleCommandConfiguration;
 import io.jenkins.plugins.dotnet.commands.DotNetArguments;
 import io.jenkins.plugins.dotnet.commands.Messages;
 import org.jenkinsci.Symbol;
@@ -124,6 +125,11 @@ public final class Locals extends NuGetCommand {
     @NonNull
     public String getDisplayName() {
       return Messages.NuGet_Locals_DisplayName();
+    }
+
+    @Override
+    protected boolean isApplicableToFreeStyleProjects(@NonNull FreeStyleCommandConfiguration configuration) {
+      return configuration.isNuGetLocalsAllowed();
     }
 
   }

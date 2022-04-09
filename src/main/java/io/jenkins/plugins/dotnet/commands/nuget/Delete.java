@@ -8,6 +8,7 @@ import hudson.Util;
 import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
 import io.jenkins.plugins.dotnet.DotNetUtils;
+import io.jenkins.plugins.dotnet.commands.FreeStyleCommandConfiguration;
 import io.jenkins.plugins.dotnet.commands.DotNetArguments;
 import io.jenkins.plugins.dotnet.commands.Messages;
 import jenkins.model.Jenkins;
@@ -80,24 +81,30 @@ public final class Delete extends DeleteOrPush {
       this.load();
     }
 
+    @SuppressWarnings("unused")
     public FormValidation doCheckPackageName(@QueryParameter String value) {
       value = Util.fixEmptyAndTrim(value);
       // TODO: Maybe do some basic semantic version validation?
-      if (value != null && value.split(" \r\t\n", 2).length != 1)
+      if (value != null && value.split(" \r\t\n", 2).length != 1) {
         return FormValidation.error(Messages.NuGet_Delete_InvalidPackageName());
+      }
       return FormValidation.ok();
     }
 
+    @SuppressWarnings("unused")
     public FormValidation doCheckPackageVersion(@QueryParameter String value, @QueryParameter String packageName) {
       value = Util.fixEmptyAndTrim(value);
       // TODO: Maybe do some basic semantic version validation?
-      if (value != null && value.split(" \r\t\n", 2).length != 1)
+      if (value != null && value.split(" \r\t\n", 2).length != 1) {
         return FormValidation.error(Messages.NuGet_Delete_InvalidPackageVersion());
+      }
       packageName = Util.fixEmptyAndTrim(packageName);
-      if (packageName == null && value != null)
+      if (packageName == null && value != null) {
         return FormValidation.warning(Messages.NuGet_Delete_PackageVersionWithoutName());
-      if (packageName != null && value == null)
+      }
+      if (packageName != null && value == null) {
         return FormValidation.error(Messages.NuGet_Delete_PackageNameWithoutVersion());
+      }
       return FormValidation.ok();
     }
 
@@ -115,6 +122,11 @@ public final class Delete extends DeleteOrPush {
     @NonNull
     public String getDisplayName() {
       return Messages.NuGet_Delete_DisplayName();
+    }
+
+    @Override
+    protected boolean isApplicableToFreeStyleProjects(@NonNull FreeStyleCommandConfiguration configuration) {
+      return configuration.isNuGetDeleteAllowed();
     }
 
   }

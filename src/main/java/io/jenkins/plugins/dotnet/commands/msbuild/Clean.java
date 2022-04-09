@@ -5,6 +5,7 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.Util;
 import io.jenkins.plugins.dotnet.commands.DotNetArguments;
+import io.jenkins.plugins.dotnet.commands.FreeStyleCommandConfiguration;
 import io.jenkins.plugins.dotnet.commands.Messages;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -104,6 +105,11 @@ public final class Clean extends MSBuildCommand {
     @NonNull
     public String getDisplayName() {
       return Messages.MSBuild_Clean_DisplayName();
+    }
+
+    @Override
+    protected boolean isApplicableToFreeStyleProjects(@NonNull FreeStyleCommandConfiguration configuration) {
+      return configuration.isCleanAllowed();
     }
 
   }

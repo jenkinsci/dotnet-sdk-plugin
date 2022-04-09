@@ -7,6 +7,7 @@ import hudson.Extension;
 import hudson.Util;
 import hudson.util.ListBoxModel;
 import io.jenkins.plugins.dotnet.DotNetUtils;
+import io.jenkins.plugins.dotnet.commands.FreeStyleCommandConfiguration;
 import io.jenkins.plugins.dotnet.commands.DotNetArguments;
 import io.jenkins.plugins.dotnet.commands.Messages;
 import jenkins.model.Jenkins;
@@ -149,8 +150,9 @@ public final class Push extends DeleteOrPush {
 
   @DataBoundSetter
   public void setTimeout(Integer timeout) {
-    if (timeout != null && timeout <= 0)
+    if (timeout != null && timeout <= 0) {
       timeout = null;
+    }
     this.timeout = timeout;
   }
 
@@ -188,6 +190,11 @@ public final class Push extends DeleteOrPush {
     @NonNull
     public String getDisplayName() {
       return Messages.NuGet_Push_DisplayName();
+    }
+
+    @Override
+    protected boolean isApplicableToFreeStyleProjects(@NonNull FreeStyleCommandConfiguration configuration) {
+      return configuration.isNuGetPushAllowed();
     }
 
   }

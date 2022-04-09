@@ -8,6 +8,7 @@ import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
 import io.jenkins.plugins.dotnet.DotNetUtils;
 import io.jenkins.plugins.dotnet.commands.DotNetArguments;
+import io.jenkins.plugins.dotnet.commands.FreeStyleCommandConfiguration;
 import io.jenkins.plugins.dotnet.commands.Messages;
 import org.jenkinsci.Symbol;
 import org.jenkinsci.plugins.structs.describable.UninstantiatedDescribable;
@@ -579,8 +580,9 @@ public final class Test extends MSBuildCommand {
       final Map<String, Object> args = new HashMap<>();
       for (final Map.Entry<String, ?> arg : ud.getArguments().entrySet()) {
         final String name = arg.getKey();
-        if ("runSettingsString".equals(name))
+        if ("runSettingsString".equals(name)) {
           continue;
+        }
         args.put(name, arg.getValue());
       }
       return new UninstantiatedDescribable(ud.getSymbol(), ud.getKlass(), args);
@@ -596,10 +598,12 @@ public final class Test extends MSBuildCommand {
     @SuppressWarnings("unused")
     @NonNull
     public FormValidation doCheckBlameHangTimeout(@CheckForNull @QueryParameter Integer value) {
-      if (value == null)
+      if (value == null) {
         return FormValidation.ok();
-      if (value < 0)
+      }
+      if (value < 0) {
         return FormValidation.error(Messages.MSBuild_Test_InvalidTimeout());
+      }
       final StringBuilder sb = new StringBuilder();
       int ms = value;
       if (ms > 3600000) {
@@ -607,13 +611,15 @@ public final class Test extends MSBuildCommand {
         ms %= 3600000;
       }
       if (ms > 60000) {
-        if (sb.length() > 0)
+        if (sb.length() > 0) {
           sb.append(' ');
+        }
         sb.append(String.format("%dm", ms / 60000));
         ms %= 60000;
       }
-      if (sb.length() > 0)
+      if (sb.length() > 0) {
         sb.append(' ');
+      }
       sb.append(String.format("%.3fs", ms / 1000.0));
       return FormValidation.ok(sb.toString());
     }
@@ -679,6 +685,11 @@ public final class Test extends MSBuildCommand {
     @NonNull
     public String getDisplayName() {
       return Messages.MSBuild_Test_DisplayName();
+    }
+
+    @Override
+    protected boolean isApplicableToFreeStyleProjects(@NonNull FreeStyleCommandConfiguration configuration) {
+      return configuration.isTestAllowed();
     }
 
   }
