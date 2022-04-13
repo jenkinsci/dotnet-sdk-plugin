@@ -2,11 +2,24 @@ package io.jenkins.plugins.dotnet.commands;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
+import hudson.model.FreeStyleProject;
+import hudson.tasks.Builder;
+import hudson.util.FormValidation;
+import io.jenkins.plugins.dotnet.commands.msbuild.Build;
+import io.jenkins.plugins.dotnet.commands.msbuild.Clean;
+import io.jenkins.plugins.dotnet.commands.msbuild.Pack;
+import io.jenkins.plugins.dotnet.commands.msbuild.Publish;
+import io.jenkins.plugins.dotnet.commands.msbuild.Test;
+import io.jenkins.plugins.dotnet.commands.nuget.Delete;
+import io.jenkins.plugins.dotnet.commands.nuget.Locals;
+import io.jenkins.plugins.dotnet.commands.nuget.Push;
 import jenkins.model.GlobalConfiguration;
 import jenkins.model.GlobalConfigurationCategory;
+import jenkins.model.Jenkins;
 import jenkins.tools.ToolConfigurationCategory;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
+import org.kohsuke.stapler.QueryParameter;
 
 import java.io.Serializable;
 
@@ -34,6 +47,11 @@ public class FreeStyleCommandConfiguration extends GlobalConfiguration implement
 
   private boolean buildAllowed = true;
 
+  @NonNull
+  public FormValidation doCheckBuildAllowed(@QueryParameter boolean buildAllowed) {
+    return FreeStyleCommandConfiguration.ensureNotInUseWhenDisallowed(buildAllowed, Build.class);
+  }
+
   /**
    * Determines whether the "build" command should be available for use in freestyle projects.
    *
@@ -55,6 +73,11 @@ public class FreeStyleCommandConfiguration extends GlobalConfiguration implement
   }
 
   private boolean cleanAllowed = true;
+
+  @NonNull
+  public FormValidation doCheckCleanAllowed(@QueryParameter boolean cleanAllowed) {
+    return FreeStyleCommandConfiguration.ensureNotInUseWhenDisallowed(cleanAllowed, Clean.class);
+  }
 
   /**
    * Determines whether the "clean" command should be available for use in freestyle projects.
@@ -78,6 +101,11 @@ public class FreeStyleCommandConfiguration extends GlobalConfiguration implement
 
   private boolean listPackageAllowed = true;
 
+  @NonNull
+  public FormValidation doCheckListPackageAllowed(@QueryParameter boolean listPackageAllowed) {
+    return FreeStyleCommandConfiguration.ensureNotInUseWhenDisallowed(listPackageAllowed, ListPackage.class);
+  }
+
   /**
    * Determines whether the "list package" command should be available for use in freestyle projects.
    *
@@ -99,6 +127,11 @@ public class FreeStyleCommandConfiguration extends GlobalConfiguration implement
   }
 
   private boolean nuGetDeleteAllowed = true;
+
+  @NonNull
+  public FormValidation doCheckNuGetDeleteAllowed(@QueryParameter boolean nuGetDeleteAllowed) {
+    return FreeStyleCommandConfiguration.ensureNotInUseWhenDisallowed(nuGetDeleteAllowed, Delete.class);
+  }
 
   /**
    * Determines whether the "nuget delete" command should be available for use in freestyle projects.
@@ -122,6 +155,11 @@ public class FreeStyleCommandConfiguration extends GlobalConfiguration implement
 
   private boolean nuGetLocalsAllowed = true;
 
+  @NonNull
+  public FormValidation doCheckNuGetLocalsAllowed(@QueryParameter boolean nuGetLocalsAllowed) {
+    return FreeStyleCommandConfiguration.ensureNotInUseWhenDisallowed(nuGetLocalsAllowed, Locals.class);
+  }
+
   /**
    * Determines whether the "nuget locals" command should be available for use in freestyle projects.
    *
@@ -143,6 +181,11 @@ public class FreeStyleCommandConfiguration extends GlobalConfiguration implement
   }
 
   private boolean nuGetPushAllowed = true;
+
+  @NonNull
+  public FormValidation doCheckNuGetPushAllowed(@QueryParameter boolean nuGetPushAllowed) {
+    return FreeStyleCommandConfiguration.ensureNotInUseWhenDisallowed(nuGetPushAllowed, Push.class);
+  }
 
   /**
    * Determines whether the "nuget push" command should be available for use in freestyle projects.
@@ -166,6 +209,11 @@ public class FreeStyleCommandConfiguration extends GlobalConfiguration implement
 
   private boolean packAllowed = true;
 
+  @NonNull
+  public FormValidation doCheckPackAllowed(@QueryParameter boolean packAllowed) {
+    return FreeStyleCommandConfiguration.ensureNotInUseWhenDisallowed(packAllowed, Pack.class);
+  }
+
   /**
    * Determines whether the "pack" command should be available for use in freestyle projects.
    *
@@ -187,6 +235,11 @@ public class FreeStyleCommandConfiguration extends GlobalConfiguration implement
   }
 
   private boolean publishAllowed = true;
+
+  @NonNull
+  public FormValidation doCheckPublishAllowed(@QueryParameter boolean publishAllowed) {
+    return FreeStyleCommandConfiguration.ensureNotInUseWhenDisallowed(publishAllowed, Publish.class);
+  }
 
   /**
    * Determines whether the "publish" command should be available for use in freestyle projects.
@@ -210,6 +263,11 @@ public class FreeStyleCommandConfiguration extends GlobalConfiguration implement
 
   private boolean restoreAllowed = true;
 
+  @NonNull
+  public FormValidation doCheckRestoreAllowed(@QueryParameter boolean restoreAllowed) {
+    return FreeStyleCommandConfiguration.ensureNotInUseWhenDisallowed(restoreAllowed, Restore.class);
+  }
+
   /**
    * Determines whether the "restore" command should be available for use in freestyle projects.
    *
@@ -231,6 +289,11 @@ public class FreeStyleCommandConfiguration extends GlobalConfiguration implement
   }
 
   private boolean testAllowed = true;
+
+  @NonNull
+  public FormValidation doCheckTestAllowed(@QueryParameter boolean testAllowed) {
+    return FreeStyleCommandConfiguration.ensureNotInUseWhenDisallowed(testAllowed, Test.class);
+  }
 
   /**
    * Determines whether the "test" command should be available for use in freestyle projects.
@@ -254,6 +317,12 @@ public class FreeStyleCommandConfiguration extends GlobalConfiguration implement
 
   private boolean toolRestoreAllowed = true;
 
+  @NonNull
+  public FormValidation doCheckToolRestoreAllowed(@QueryParameter boolean toolRestoreAllowed) {
+    final Class<? extends Command> toolRestore = io.jenkins.plugins.dotnet.commands.tool.Restore.class;
+    return FreeStyleCommandConfiguration.ensureNotInUseWhenDisallowed(toolRestoreAllowed, toolRestore);
+  }
+
   /**
    * Determines whether the "tool restore" command should be available for use in freestyle projects.
    *
@@ -272,6 +341,28 @@ public class FreeStyleCommandConfiguration extends GlobalConfiguration implement
   public void setToolRestoreAllowed(boolean allowed) {
     this.toolRestoreAllowed = allowed;
     this.save();
+  }
+
+  @NonNull
+  private static FormValidation ensureNotInUseWhenDisallowed(boolean allowed, @NonNull Class<? extends Command> command) {
+    if (allowed) {
+      return FormValidation.ok();
+    }
+    final int uses = Jenkins.get().getAllItems(FreeStyleProject.class,
+      project -> FreeStyleCommandConfiguration.includesCommand(project, command)).size();
+    if (uses == 0) {
+      return FormValidation.ok();
+    }
+    return FormValidation.warning("This build step is currently in use by %d project(s). (These will continue to function.)", uses);
+  }
+
+  private static boolean includesCommand(@NonNull FreeStyleProject project, @NonNull Class<? extends Command> command) {
+    for (final Builder step: project.getBuilders()) {
+      if (step.getClass() == command) {
+        return true;
+      }
+    }
+    return false;
   }
 
 }
