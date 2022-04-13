@@ -353,7 +353,7 @@ public class FreeStyleCommandConfiguration extends GlobalConfiguration implement
     if (uses == 0) {
       return FormValidation.ok();
     }
-    return FormValidation.warning("This build step is currently in use by %d project(s). (These will continue to function.)", uses);
+    return FormValidation.warning(Messages.FreeStyleCommandConfiguration_StillInUse(uses));
   }
 
   private static boolean includesCommand(@NonNull FreeStyleProject project, @NonNull Class<? extends Command> command) {
