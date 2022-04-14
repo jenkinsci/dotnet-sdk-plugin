@@ -7,6 +7,7 @@ import hudson.Extension;
 import hudson.Util;
 import io.jenkins.plugins.dotnet.DotNetUtils;
 import io.jenkins.plugins.dotnet.commands.DotNetArguments;
+import io.jenkins.plugins.dotnet.commands.FreeStyleCommandConfiguration;
 import io.jenkins.plugins.dotnet.commands.Messages;
 import org.jenkinsci.Symbol;
 import org.jenkinsci.plugins.structs.describable.UninstantiatedDescribable;
@@ -259,6 +260,25 @@ public final class Restore extends ToolCommand {
       this.load();
     }
 
+    @NonNull
+    @Override
+    public UninstantiatedDescribable customUninstantiate(@NonNull UninstantiatedDescribable ud) {
+      ud = super.customUninstantiate(ud);
+      final Map<String, ?> oldArgs = ud.getArguments();
+      final Map<String, Object> newArgs = new HashMap<>();
+      for (final Map.Entry<String, ?> arg : oldArgs.entrySet()) {
+        final String name = arg.getKey();
+        if ("additionalSources".equals(name) && oldArgs.containsKey("additionalSource")) {
+          continue;
+        }
+        if ("additionalSourcesString".equals(name)) {
+          continue;
+        }
+        newArgs.put(name, arg.getValue());
+      }
+      return new UninstantiatedDescribable(ud.getSymbol(), ud.getKlass(), newArgs);
+    }
+
     /**
      * Gets the display name for this build step (as used in the project configuration UI).
      *
@@ -269,23 +289,10 @@ public final class Restore extends ToolCommand {
       return Messages.Tool_Restore_DisplayName();
     }
 
-    @NonNull
     @Override
-    public UninstantiatedDescribable customUninstantiate(@NonNull UninstantiatedDescribable ud) {
-      ud = super.customUninstantiate(ud);
-      final Map<String, ?> oldArgs = ud.getArguments();
-      final Map<String, Object> newArgs = new HashMap<>();
-      for (final Map.Entry<String, ?> arg : oldArgs.entrySet()) {
-        final String name = arg.getKey();
-        if ("additionalSources".equals(name) && oldArgs.containsKey("additionalSource"))
-          continue;
-        if ("additionalSourcesString".equals(name))
-          continue;
-        newArgs.put(name, arg.getValue());
-      }
-      return new UninstantiatedDescribable(ud.getSymbol(), ud.getKlass(), newArgs);
+    protected boolean isApplicableToFreeStyleProjects(@NonNull FreeStyleCommandConfiguration configuration) {
+      return configuration.isToolRestoreAllowed();
     }
-
   }
 
   //endregion

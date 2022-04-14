@@ -7,6 +7,7 @@ import hudson.Util;
 import hudson.util.ListBoxModel;
 import io.jenkins.plugins.dotnet.DotNetUtils;
 import io.jenkins.plugins.dotnet.commands.DotNetArguments;
+import io.jenkins.plugins.dotnet.commands.FreeStyleCommandConfiguration;
 import io.jenkins.plugins.dotnet.commands.Messages;
 import org.jenkinsci.Symbol;
 import org.jenkinsci.plugins.structs.describable.UninstantiatedDescribable;
@@ -311,6 +312,25 @@ public final class Publish extends MSBuildCommand {
       this.load();
     }
 
+    @NonNull
+    @Override
+    public UninstantiatedDescribable customUninstantiate(@NonNull UninstantiatedDescribable ud) {
+      ud = super.customUninstantiate(ud);
+      final Map<String, ?> oldArgs = ud.getArguments();
+      final Map<String, Object> newArgs = new HashMap<>();
+      for (final Map.Entry<String, ?> arg : oldArgs.entrySet()) {
+        final String name = arg.getKey();
+        if ("manifests".equals(name) && oldArgs.containsKey("manifest")) {
+          continue;
+        }
+        if ("manifestsString".equals(name)) {
+          continue;
+        }
+        newArgs.put(name, arg.getValue());
+      }
+      return new UninstantiatedDescribable(ud.getSymbol(), ud.getKlass(), newArgs);
+    }
+
     /**
      * Fills a listbox with the possible values for the "self-containing" setting.
      *
@@ -336,21 +356,9 @@ public final class Publish extends MSBuildCommand {
       return Messages.MSBuild_Publish_DisplayName();
     }
 
-    @NonNull
     @Override
-    public UninstantiatedDescribable customUninstantiate(@NonNull UninstantiatedDescribable ud) {
-      ud = super.customUninstantiate(ud);
-      final Map<String, ?> oldArgs = ud.getArguments();
-      final Map<String, Object> newArgs = new HashMap<>();
-      for (final Map.Entry<String, ?> arg : oldArgs.entrySet()) {
-        final String name = arg.getKey();
-        if ("manifests".equals(name) && oldArgs.containsKey("manifest"))
-          continue;
-        if ("manifestsString".equals(name))
-          continue;
-        newArgs.put(name, arg.getValue());
-      }
-      return new UninstantiatedDescribable(ud.getSymbol(), ud.getKlass(), newArgs);
+    protected boolean isApplicableToFreeStyleProjects(@NonNull FreeStyleCommandConfiguration configuration) {
+      return configuration.isPublishAllowed();
     }
 
   }

@@ -2,9 +2,11 @@ package io.jenkins.plugins.dotnet.commands;
 
 import edu.umd.cs.findbugs.annotations.CheckForNull;
 import edu.umd.cs.findbugs.annotations.NonNull;
+import hudson.ExtensionList;
 import hudson.Util;
 import hudson.model.AbstractProject;
 import hudson.model.AutoCompletionCandidates;
+import hudson.model.FreeStyleProject;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.util.FormValidation;
@@ -239,6 +241,21 @@ public abstract class CommandDescriptor extends BuildStepDescriptor<Builder> imp
    * @return {@code true}.
    */
   public final boolean isApplicable(@CheckForNull Class<? extends AbstractProject> jobType) {
+    if (jobType != null && FreeStyleProject.class.isAssignableFrom(jobType)) {
+      final FreeStyleCommandConfiguration configuration = ExtensionList.lookupSingleton(FreeStyleCommandConfiguration.class);
+      return this.isApplicableToFreeStyleProjects(configuration);
+    }
+    return true;
+  }
+
+  /**
+   * Determines whether this command should be made available to freestyle projects.
+   *
+   * @param configuration The applicable configuration.
+   *
+   * @return {@code true} when the command should be available for use in freestyle projects; {@code false} otherwise.
+   */
+  protected boolean isApplicableToFreeStyleProjects(@NonNull FreeStyleCommandConfiguration configuration) {
     return true;
   }
 
