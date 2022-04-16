@@ -5,16 +5,18 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.AbortException;
 import hudson.Extension;
 import hudson.Util;
+import hudson.model.Item;
+import hudson.security.Permission;
 import hudson.util.ListBoxModel;
 import io.jenkins.plugins.dotnet.DotNetUtils;
-import io.jenkins.plugins.dotnet.commands.FreeStyleCommandConfiguration;
 import io.jenkins.plugins.dotnet.commands.DotNetArguments;
+import io.jenkins.plugins.dotnet.commands.FreeStyleCommandConfiguration;
 import io.jenkins.plugins.dotnet.commands.Messages;
-import jenkins.model.Jenkins;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.AncestorInPath;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
+import org.kohsuke.stapler.verb.POST;
 
 /** A build step to run "{@code dotnet nuget push}", pushing a package to a server and publishing it. */
 public final class Push extends DeleteOrPush {
@@ -170,16 +172,36 @@ public final class Push extends DeleteOrPush {
       this.load();
     }
 
-    @SuppressWarnings("unused")
+    /**
+     * Fills a listbox with all possible API keys (string credentials) defined in the system.
+     *
+     * @param item The item being configured.
+     *
+     * @return A suitably filled listbox model.
+     */
     @NonNull
-    public ListBoxModel doFillApiKeyIdItems(@CheckForNull @AncestorInPath Jenkins context) {
-      return DotNetUtils.getStringCredentialsList(context, true);
+    @POST
+    public ListBoxModel doFillApiKeyIdItems(@CheckForNull @AncestorInPath Item item) {
+      if (item != null) {
+        item.checkPermission(Permission.CONFIGURE);
+      }
+      return DotNetUtils.getStringCredentialsList(true);
     }
 
-    @SuppressWarnings("unused")
+    /**
+     * Fills a listbox with all possible API keys (string credentials) defined in the system.
+     *
+     * @param item The item being configured.
+     *
+     * @return A suitably filled listbox model.
+     */
     @NonNull
-    public ListBoxModel doFillSymbolApiKeyIdItems(@CheckForNull @AncestorInPath Jenkins context) {
-      return DotNetUtils.getStringCredentialsList(context, true);
+    @POST
+    public ListBoxModel doFillSymbolApiKeyIdItems(@CheckForNull @AncestorInPath Item item) {
+      if (item != null) {
+        item.checkPermission(Permission.CONFIGURE);
+      }
+      return DotNetUtils.getStringCredentialsList(true);
     }
 
     /**

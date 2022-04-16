@@ -243,7 +243,6 @@ public class Command extends Builder implements SimpleBuildStep {
    *                           otherwise.
    */
   @DataBoundSetter
-  @SuppressWarnings("unused")
   public void setSpecificSdkVersion(boolean specificSdkVersion) {
     this.specificSdkVersion = specificSdkVersion;
   }
@@ -275,7 +274,6 @@ public class Command extends Builder implements SimpleBuildStep {
    * @param workDirectory The working directory to use for the command.
    */
   @DataBoundSetter
-  @SuppressWarnings("unused")
   public void setWorkDirectory(@CheckForNull String workDirectory) {
     this.workDirectory = Util.fixEmpty(workDirectory);
   }

@@ -1,6 +1,5 @@
 package io.jenkins.plugins.dotnet;
 
-import com.cloudbees.plugins.credentials.CredentialsMatchers;
 import com.cloudbees.plugins.credentials.CredentialsProvider;
 import com.cloudbees.plugins.credentials.common.AbstractIdCredentialsListBoxModel;
 import com.cloudbees.plugins.credentials.common.StandardCredentials;
@@ -19,7 +18,6 @@ import org.jenkinsci.plugins.plaincredentials.StringCredentials;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.Collections;
 import java.util.Map;
 import java.util.Properties;
 import java.util.function.Supplier;
@@ -128,18 +126,18 @@ public interface DotNetUtils {
   /**
    * Fills a listbox model with all available string credentials.
    *
-   * @param context    The context to use to obtain the credentials.
    * @param allowEmpty Indicates whether to include an empty ("no credential selected") option in the listbox.
    *
    * @return A suitably filled listbox model.
    */
   @NonNull
   @SuppressWarnings("deprecation")
-  static ListBoxModel getStringCredentialsList(@CheckForNull Jenkins context, boolean allowEmpty) {
+  static ListBoxModel getStringCredentialsList(boolean allowEmpty) {
     AbstractIdCredentialsListBoxModel<StandardListBoxModel, StandardCredentials> model = new StandardListBoxModel();
     if (allowEmpty) {
       model = model.includeEmptyValue();
     }
+    final Jenkins context = Jenkins.getInstanceOrNull();
     if (context == null || !context.hasPermission(CredentialsProvider.VIEW)) {
       return model;
     }
@@ -154,6 +152,7 @@ public interface DotNetUtils {
    * @param s A string containing tokens.
    *
    * @return The sole token contained in {@code s}, or {@code null} when it did not contain exactly one token.
+   *
    * @see Util#tokenize(String)
    */
   @CheckForNull
@@ -171,6 +170,7 @@ public interface DotNetUtils {
    * @param delimiters A string containing the delimiters to use.
    *
    * @return The sole token contained in {@code s}, or {@code null} when it did not contain exactly one token.
+   *
    * @see Util#tokenize(String, String)
    */
   @CheckForNull
@@ -187,6 +187,7 @@ public interface DotNetUtils {
    * @param s A string containing tokens.
    *
    * @return The tokens contained in {@code s}, or {@code null} when it did not contain any.
+   *
    * @see Util#tokenize(String)
    */
   @CheckForNull
@@ -206,6 +207,7 @@ public interface DotNetUtils {
    * @param delimiters A string containing the delimiters to use.
    *
    * @return The tokens contained in {@code s}, or {@code null} when it did not contain any.
+   *
    * @see Util#tokenize(String, String)
    */
   @CheckForNull

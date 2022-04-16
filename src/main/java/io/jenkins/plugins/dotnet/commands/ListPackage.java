@@ -4,10 +4,13 @@ import edu.umd.cs.findbugs.annotations.CheckForNull;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.Util;
+import hudson.model.Item;
+import hudson.security.Permission;
 import hudson.util.FormValidation;
 import io.jenkins.plugins.dotnet.DotNetUtils;
 import org.jenkinsci.Symbol;
 import org.jenkinsci.plugins.structs.describable.UninstantiatedDescribable;
+import org.kohsuke.stapler.AncestorInPath;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
@@ -465,13 +468,17 @@ public final class ListPackage extends Command {
      * @param value      The specified configuration file name.
      * @param deprecated Flag indicating whether deprecated packages should be listed.
      * @param outdated   Flag indicating whether outdated packages should be listed.
+     * @param item       The item being configured.
      *
      * @return The validation result.
      */
-    @SuppressWarnings("unused")
     @NonNull
+    @POST
     public FormValidation doCheckConfig(@CheckForNull @QueryParameter String value, @QueryParameter boolean deprecated,
-                                        @QueryParameter boolean outdated) {
+                                        @QueryParameter boolean outdated, @CheckForNull @AncestorInPath Item item) {
+      if (item != null) {
+        item.checkPermission(Permission.CONFIGURE);
+      }
       if (Util.fixEmptyAndTrim(value) != null && !deprecated && !outdated) {
         return FormValidation.warning(Messages.ListPackage_OnlyForPackageUpdateSearch());
       }
@@ -483,12 +490,17 @@ public final class ListPackage extends Command {
      *
      * @param deprecated Flag indicating whether deprecated packages should be listed.
      * @param outdated   Flag indicating whether outdated packages should be listed.
+     * @param item       The item being configured.
      *
      * @return The validation result.
      */
-    @SuppressWarnings("unused")
     @NonNull
-    public FormValidation doCheckDeprecated(@QueryParameter boolean deprecated, @QueryParameter boolean outdated) {
+    @POST
+    public FormValidation doCheckDeprecated(@QueryParameter boolean deprecated, @QueryParameter boolean outdated,
+                                            @CheckForNull @AncestorInPath Item item) {
+      if (item != null) {
+        item.checkPermission(Permission.CONFIGURE);
+      }
       if (deprecated && outdated) {
         return FormValidation.error(Messages.ListPackage_EitherDeprecatedOrOutdated());
       }
@@ -501,13 +513,17 @@ public final class ListPackage extends Command {
      * @param value      Flag indicating whether the minor version is the highest version that is allowed to change.
      * @param deprecated Flag indicating whether deprecated packages should be listed.
      * @param outdated   Flag indicating whether outdated packages should be listed.
+     * @param item       The item being configured.
      *
      * @return The validation result.
      */
-    @SuppressWarnings("unused")
     @NonNull
+    @POST
     public FormValidation doCheckHighestMinor(@QueryParameter boolean value, @QueryParameter boolean deprecated,
-                                              @QueryParameter boolean outdated) {
+                                              @QueryParameter boolean outdated, @CheckForNull @AncestorInPath Item item) {
+      if (item != null) {
+        item.checkPermission(Permission.CONFIGURE);
+      }
       if (value && !deprecated && !outdated) {
         return FormValidation.warning(Messages.ListPackage_OnlyForPackageUpdateSearch());
       }
@@ -520,13 +536,17 @@ public final class ListPackage extends Command {
      * @param value      Flag indicating whether the patch version is the highest version that is allowed to change.
      * @param deprecated Flag indicating whether deprecated packages should be listed.
      * @param outdated   Flag indicating whether outdated packages should be listed.
+     * @param item       The item being configured.
      *
      * @return The validation result.
      */
-    @SuppressWarnings("unused")
     @NonNull
+    @POST
     public FormValidation doCheckHighestPatch(@QueryParameter boolean value, @QueryParameter boolean deprecated,
-                                              @QueryParameter boolean outdated) {
+                                              @QueryParameter boolean outdated, @CheckForNull @AncestorInPath Item item) {
+      if (item != null) {
+        item.checkPermission(Permission.CONFIGURE);
+      }
       if (value && !deprecated && !outdated) {
         return FormValidation.warning(Messages.ListPackage_OnlyForPackageUpdateSearch());
       }
@@ -539,13 +559,17 @@ public final class ListPackage extends Command {
      * @param value      Flag indicating whether prerelease package versions should be listed.
      * @param deprecated Flag indicating whether deprecated packages should be listed.
      * @param outdated   Flag indicating whether outdated packages should be listed.
+     * @param item       The item being configured.
      *
      * @return The validation result.
      */
-    @SuppressWarnings("unused")
     @NonNull
+    @POST
     public FormValidation doCheckIncludePrerelease(@QueryParameter boolean value, @QueryParameter boolean deprecated,
-                                                   @QueryParameter boolean outdated) {
+                                                   @QueryParameter boolean outdated, @CheckForNull @AncestorInPath Item item) {
+      if (item != null) {
+        item.checkPermission(Permission.CONFIGURE);
+      }
       if (value && !deprecated && !outdated) {
         return FormValidation.warning(Messages.ListPackage_OnlyForPackageUpdateSearch());
       }
@@ -557,12 +581,17 @@ public final class ListPackage extends Command {
      *
      * @param deprecated Flag indicating whether deprecated packages should be listed.
      * @param outdated   Flag indicating whether outdated packages should be listed.
+     * @param item       The item being configured.
      *
      * @return The validation result.
      */
-    @SuppressWarnings("unused")
     @NonNull
-    public FormValidation doCheckOutdated(@QueryParameter boolean deprecated, @QueryParameter boolean outdated) {
+    @POST
+    public FormValidation doCheckOutdated(@QueryParameter boolean deprecated, @QueryParameter boolean outdated,
+                                          @CheckForNull @AncestorInPath Item item) {
+      if (item != null) {
+        item.checkPermission(Permission.CONFIGURE);
+      }
       if (deprecated && outdated) {
         return FormValidation.error(Messages.ListPackage_EitherDeprecatedOrOutdated());
       }
@@ -575,13 +604,17 @@ public final class ListPackage extends Command {
      * @param value      The specified package sources.
      * @param deprecated Flag indicating whether deprecated packages should be listed.
      * @param outdated   Flag indicating whether outdated packages should be listed.
+     * @param item       The item being configured.
      *
      * @return The validation result.
      */
-    @SuppressWarnings("unused")
     @NonNull
+    @POST
     public FormValidation doCheckSourcesString(@CheckForNull @QueryParameter String value, @QueryParameter boolean deprecated,
-                                               @QueryParameter boolean outdated) {
+                                               @QueryParameter boolean outdated, @CheckForNull @AncestorInPath Item item) {
+      if (item != null) {
+        item.checkPermission(Permission.CONFIGURE);
+      }
       if (Util.fixEmptyAndTrim(value) != null && !deprecated && !outdated) {
         return FormValidation.warning(Messages.ListPackage_OnlyForPackageUpdateSearch());
       }
