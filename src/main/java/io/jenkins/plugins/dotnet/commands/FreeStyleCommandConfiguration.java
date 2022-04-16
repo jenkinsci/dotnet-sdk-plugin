@@ -357,11 +357,12 @@ public class FreeStyleCommandConfiguration extends GlobalConfiguration implement
 
   @NonNull
   private static FormValidation ensureNotInUseWhenDisallowed(boolean allowed, @NonNull Class<? extends Command> command) {
-    Jenkins.get().checkPermission(Jenkins.ADMINISTER);
     if (allowed) {
       return FormValidation.ok();
     }
-    final int uses = Jenkins.get().getAllItems(FreeStyleProject.class,
+    final Jenkins jenkins = Jenkins.get();
+    jenkins.checkPermission(Jenkins.MANAGE);
+    final int uses = jenkins.getAllItems(FreeStyleProject.class,
       project -> FreeStyleCommandConfiguration.includesCommand(project, command)).size();
     if (uses == 0) {
       return FormValidation.ok();
