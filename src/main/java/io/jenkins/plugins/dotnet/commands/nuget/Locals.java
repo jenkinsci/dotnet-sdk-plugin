@@ -10,6 +10,7 @@ import io.jenkins.plugins.dotnet.commands.Messages;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
+import org.kohsuke.stapler.verb.POST;
 
 /** A build step to run "{@code dotnet nuget locals}", listing or clearing one or more local package stores. */
 public final class Locals extends NuGetCommand {
@@ -97,8 +98,8 @@ public final class Locals extends NuGetCommand {
       this.load();
     }
 
-    @SuppressWarnings("unused")
     @NonNull
+    @POST
     public ListBoxModel doFillCacheLocationItems() {
       final ListBoxModel model = new ListBoxModel();
       model.add(Messages.NuGet_Locals_Location_All(), Locals.LOCATION_ALL);
@@ -108,8 +109,8 @@ public final class Locals extends NuGetCommand {
       return model;
     }
 
-    @SuppressWarnings("unused")
     @NonNull
+    @POST
     public ListBoxModel doFillOperationItems() {
       final ListBoxModel model = new ListBoxModel();
       model.add(Messages.NuGet_Locals_Operation_Clear(), Locals.OPERATION_CLEAR);

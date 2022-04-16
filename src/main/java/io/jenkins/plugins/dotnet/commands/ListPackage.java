@@ -468,8 +468,8 @@ public final class ListPackage extends Command {
      *
      * @return The validation result.
      */
-    @SuppressWarnings("unused")
     @NonNull
+    @POST
     public FormValidation doCheckConfig(@CheckForNull @QueryParameter String value, @QueryParameter boolean deprecated,
                                         @QueryParameter boolean outdated) {
       if (Util.fixEmptyAndTrim(value) != null && !deprecated && !outdated) {
@@ -486,8 +486,8 @@ public final class ListPackage extends Command {
      *
      * @return The validation result.
      */
-    @SuppressWarnings("unused")
     @NonNull
+    @POST
     public FormValidation doCheckDeprecated(@QueryParameter boolean deprecated, @QueryParameter boolean outdated) {
       if (deprecated && outdated) {
         return FormValidation.error(Messages.ListPackage_EitherDeprecatedOrOutdated());
@@ -504,8 +504,8 @@ public final class ListPackage extends Command {
      *
      * @return The validation result.
      */
-    @SuppressWarnings("unused")
     @NonNull
+    @POST
     public FormValidation doCheckHighestMinor(@QueryParameter boolean value, @QueryParameter boolean deprecated,
                                               @QueryParameter boolean outdated) {
       if (value && !deprecated && !outdated) {
@@ -523,8 +523,8 @@ public final class ListPackage extends Command {
      *
      * @return The validation result.
      */
-    @SuppressWarnings("unused")
     @NonNull
+    @POST
     public FormValidation doCheckHighestPatch(@QueryParameter boolean value, @QueryParameter boolean deprecated,
                                               @QueryParameter boolean outdated) {
       if (value && !deprecated && !outdated) {
@@ -542,8 +542,8 @@ public final class ListPackage extends Command {
      *
      * @return The validation result.
      */
-    @SuppressWarnings("unused")
     @NonNull
+    @POST
     public FormValidation doCheckIncludePrerelease(@QueryParameter boolean value, @QueryParameter boolean deprecated,
                                                    @QueryParameter boolean outdated) {
       if (value && !deprecated && !outdated) {
@@ -560,8 +560,8 @@ public final class ListPackage extends Command {
      *
      * @return The validation result.
      */
-    @SuppressWarnings("unused")
     @NonNull
+    @POST
     public FormValidation doCheckOutdated(@QueryParameter boolean deprecated, @QueryParameter boolean outdated) {
       if (deprecated && outdated) {
         return FormValidation.error(Messages.ListPackage_EitherDeprecatedOrOutdated());
@@ -578,8 +578,8 @@ public final class ListPackage extends Command {
      *
      * @return The validation result.
      */
-    @SuppressWarnings("unused")
     @NonNull
+    @POST
     public FormValidation doCheckSourcesString(@CheckForNull @QueryParameter String value, @QueryParameter boolean deprecated,
                                                @QueryParameter boolean outdated) {
       if (Util.fixEmptyAndTrim(value) != null && !deprecated && !outdated) {

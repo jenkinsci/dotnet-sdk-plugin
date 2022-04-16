@@ -15,6 +15,7 @@ import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.AncestorInPath;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
+import org.kohsuke.stapler.verb.POST;
 
 /** A build step to run "{@code dotnet nuget push}", pushing a package to a server and publishing it. */
 public final class Push extends DeleteOrPush {
@@ -170,14 +171,14 @@ public final class Push extends DeleteOrPush {
       this.load();
     }
 
-    @SuppressWarnings("unused")
     @NonNull
+    @POST
     public ListBoxModel doFillApiKeyIdItems(@CheckForNull @AncestorInPath Jenkins context) {
       return DotNetUtils.getStringCredentialsList(context, true);
     }
 
-    @SuppressWarnings("unused")
     @NonNull
+    @POST
     public ListBoxModel doFillSymbolApiKeyIdItems(@CheckForNull @AncestorInPath Jenkins context) {
       return DotNetUtils.getStringCredentialsList(context, true);
     }

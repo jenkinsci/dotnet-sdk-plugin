@@ -15,6 +15,7 @@ import org.jenkinsci.plugins.structs.describable.UninstantiatedDescribable;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
+import org.kohsuke.stapler.verb.POST;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -595,8 +596,8 @@ public final class Test extends MSBuildCommand {
      *
      * @return The validation result.
      */
-    @SuppressWarnings("unused")
     @NonNull
+    @POST
     public FormValidation doCheckBlameHangTimeout(@CheckForNull @QueryParameter Integer value) {
       if (value == null) {
         return FormValidation.ok();
@@ -631,8 +632,8 @@ public final class Test extends MSBuildCommand {
      *
      * @return The validation result.
      */
-    @SuppressWarnings("unused")
     @NonNull
+    @POST
     public FormValidation doCheckRunSettingsString(@CheckForNull @QueryParameter String value) {
       value = Util.fixEmptyAndTrim(value);
       if (value != null) {
@@ -651,8 +652,8 @@ public final class Test extends MSBuildCommand {
      *
      * @return A suitably filled listbox model.
      */
-    @SuppressWarnings("unused")
     @NonNull
+    @POST
     public final ListBoxModel doFillBlameCrashDumpTypeItems() {
       final ListBoxModel model = new ListBoxModel();
       model.add("");
@@ -666,8 +667,8 @@ public final class Test extends MSBuildCommand {
      *
      * @return A suitably filled listbox model.
      */
-    @SuppressWarnings("unused")
     @NonNull
+    @POST
     public final ListBoxModel doFillBlameHangDumpTypeItems() {
       final ListBoxModel model = new ListBoxModel();
       model.add("");

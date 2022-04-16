@@ -17,6 +17,7 @@ import org.kohsuke.stapler.AncestorInPath;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
+import org.kohsuke.stapler.verb.POST;
 
 /** A build step to run "{@code dotnet nuget delete}", deleting or unlisting a specific version of a package from a server. */
 public final class Delete extends DeleteOrPush {
@@ -81,7 +82,8 @@ public final class Delete extends DeleteOrPush {
       this.load();
     }
 
-    @SuppressWarnings("unused")
+    @NonNull
+    @POST
     public FormValidation doCheckPackageName(@QueryParameter String value) {
       value = Util.fixEmptyAndTrim(value);
       // TODO: Maybe do some basic semantic version validation?
@@ -91,7 +93,8 @@ public final class Delete extends DeleteOrPush {
       return FormValidation.ok();
     }
 
-    @SuppressWarnings("unused")
+    @NonNull
+    @POST
     public FormValidation doCheckPackageVersion(@QueryParameter String value, @QueryParameter String packageName) {
       value = Util.fixEmptyAndTrim(value);
       // TODO: Maybe do some basic semantic version validation?
@@ -108,8 +111,8 @@ public final class Delete extends DeleteOrPush {
       return FormValidation.ok();
     }
 
-    @SuppressWarnings("unused")
     @NonNull
+    @POST
     public ListBoxModel doFillApiKeyIdItems(@CheckForNull @AncestorInPath Jenkins context) {
       return DotNetUtils.getStringCredentialsList(context, true);
     }

@@ -22,6 +22,7 @@ import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
+import org.kohsuke.stapler.verb.POST;
 
 import java.io.IOException;
 import java.util.Map;
@@ -105,7 +106,8 @@ public class DotNetWrapper extends SimpleBuildWrapper {
                     @NonNull TaskListener listener, @NonNull EnvVars initialEnvironment) throws IOException, InterruptedException {
     if (this.sdk == null)
       throw new AbortException(String.format(Messages.DotNetWrapper_NoSDK(), this.sdk));
-    final DotNetSDK sdkInstance = Jenkins.get().getDescriptorByType(DotNetSDK.DescriptorImpl.class).prepareAndValidateInstance(this.sdk, workspace, initialEnvironment, listener);
+    final DotNetSDK sdkInstance = Jenkins.get().getDescriptorByType(DotNetSDK.DescriptorImpl.class)
+      .prepareAndValidateInstance(this.sdk, workspace, initialEnvironment, listener);
     sdkInstance.ensureExecutableExists(launcher);
     { // Update Environment
       final EnvVars modified = new EnvVars();
@@ -133,7 +135,8 @@ public class DotNetWrapper extends SimpleBuildWrapper {
      * @param listener  The listener for the build.
      */
     @Override
-    public void tearDown(@NonNull Run<?, ?> build, @NonNull FilePath workspace, @NonNull Launcher launcher, @NonNull TaskListener listener) {
+    public void tearDown(@NonNull Run<?, ?> build, @NonNull FilePath workspace, @NonNull Launcher launcher,
+                         @NonNull TaskListener listener) {
       DotNetSDK.removeGlobalJson(workspace, listener);
     }
 
@@ -168,8 +171,8 @@ public class DotNetWrapper extends SimpleBuildWrapper {
      *
      * @return The validation result.
      */
-    @SuppressWarnings("unused")
     @NonNull
+    @POST
     public FormValidation doCheckSdk(@CheckForNull @QueryParameter String value) {
       return FormValidation.validateRequired(value);
     }
@@ -179,8 +182,8 @@ public class DotNetWrapper extends SimpleBuildWrapper {
      *
      * @return A suitably filled listbox model.
      */
-    @SuppressWarnings("unused")
     @NonNull
+    @POST
     public ListBoxModel doFillSdkItems() {
       final ListBoxModel model = new ListBoxModel();
       DotNetSDK.addSdks(model);

@@ -8,6 +8,7 @@ import io.jenkins.plugins.dotnet.commands.CommandDescriptor;
 import io.jenkins.plugins.dotnet.commands.Messages;
 import org.jenkinsci.plugins.structs.describable.UninstantiatedDescribable;
 import org.kohsuke.stapler.QueryParameter;
+import org.kohsuke.stapler.verb.POST;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,8 +41,8 @@ public abstract class MSBuildCommandDescriptor extends CommandDescriptor {
    *
    * @return The result of the validation.
    */
-  @SuppressWarnings("unused")
   @NonNull
+  @POST
   public FormValidation doCheckPropertiesString(@QueryParameter String value) {
     value = Util.fixEmptyAndTrim(value);
     if (value != null) {
@@ -60,7 +61,8 @@ public abstract class MSBuildCommandDescriptor extends CommandDescriptor {
    *
    * @return A suitable filled combobox model.
    */
-  @SuppressWarnings("unused")
+  @NonNull
+  @POST
   public final ComboBoxModel doFillConfigurationItems() {
     final ComboBoxModel model = new ComboBoxModel();
     // Note: not localized

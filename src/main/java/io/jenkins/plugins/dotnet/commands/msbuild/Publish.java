@@ -13,6 +13,7 @@ import org.jenkinsci.Symbol;
 import org.jenkinsci.plugins.structs.describable.UninstantiatedDescribable;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
+import org.kohsuke.stapler.verb.POST;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -336,8 +337,8 @@ public final class Publish extends MSBuildCommand {
      *
      * @return A suitably filled listbox model.
      */
-    @SuppressWarnings("unused")
     @NonNull
+    @POST
     public ListBoxModel doFillSelfContainedItems() {
       final ListBoxModel model = new ListBoxModel();
       model.add(Messages.MSBuild_Publish_ProjectDefault(), null);

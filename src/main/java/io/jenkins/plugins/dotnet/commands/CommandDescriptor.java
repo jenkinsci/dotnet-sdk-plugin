@@ -16,6 +16,7 @@ import io.jenkins.plugins.dotnet.data.Framework;
 import io.jenkins.plugins.dotnet.data.Runtime;
 import org.jenkinsci.plugins.structs.describable.CustomDescribableModel;
 import org.kohsuke.stapler.QueryParameter;
+import org.kohsuke.stapler.verb.POST;
 
 import java.nio.charset.Charset;
 import java.util.Set;
@@ -48,8 +49,8 @@ public abstract class CommandDescriptor extends BuildStepDescriptor<Builder> imp
    *
    * @return The computed auto-completion candidates.
    */
-  @SuppressWarnings("unused")
   @NonNull
+  @POST
   public final AutoCompletionCandidates doAutoCompleteFramework(@CheckForNull @QueryParameter String value) {
     return Framework.getInstance().autoCompleteMoniker(value);
   }
@@ -61,8 +62,8 @@ public abstract class CommandDescriptor extends BuildStepDescriptor<Builder> imp
    *
    * @return The computed auto-completion candidates.
    */
-  @SuppressWarnings("unused")
   @NonNull
+  @POST
   public final AutoCompletionCandidates doAutoCompleteFrameworksString(@CheckForNull @QueryParameter String value) {
     return Framework.getInstance().autoCompleteMoniker(value);
   }
@@ -74,8 +75,8 @@ public abstract class CommandDescriptor extends BuildStepDescriptor<Builder> imp
    *
    * @return The computed auto-completion candidates.
    */
-  @SuppressWarnings("unused")
   @NonNull
+  @POST
   public final AutoCompletionCandidates doAutoCompleteRuntime(@CheckForNull @QueryParameter String value) {
     return Runtime.getInstance().autoCompleteIdentifier(value);
   }
@@ -87,8 +88,8 @@ public abstract class CommandDescriptor extends BuildStepDescriptor<Builder> imp
    *
    * @return The computed auto-completion candidates.
    */
-  @SuppressWarnings("unused")
   @NonNull
+  @POST
   public final AutoCompletionCandidates doAutoCompleteRuntimesString(@CheckForNull @QueryParameter String value) {
     return Runtime.getInstance().autoCompleteIdentifier(value);
   }
@@ -100,8 +101,8 @@ public abstract class CommandDescriptor extends BuildStepDescriptor<Builder> imp
    *
    * @return The result of the validation.
    */
-  @SuppressWarnings("unused")
   @NonNull
+  @POST
   public FormValidation doCheckCharset(@CheckForNull @QueryParameter String value) {
     final String name = Util.fixEmptyAndTrim(value);
     if (name != null) {
@@ -122,8 +123,8 @@ public abstract class CommandDescriptor extends BuildStepDescriptor<Builder> imp
    *
    * @return The result of the validation.
    */
-  @SuppressWarnings("unused")
   @NonNull
+  @POST
   public FormValidation doCheckFramework(@CheckForNull @QueryParameter String value) {
     return Framework.getInstance().checkMoniker(value);
   }
@@ -135,8 +136,8 @@ public abstract class CommandDescriptor extends BuildStepDescriptor<Builder> imp
    *
    * @return The result of the validation.
    */
-  @SuppressWarnings("unused")
   @NonNull
+  @POST
   public FormValidation doCheckFrameworksString(@CheckForNull @QueryParameter String value) {
     return Framework.getInstance().checkMonikers(value);
   }
@@ -148,8 +149,8 @@ public abstract class CommandDescriptor extends BuildStepDescriptor<Builder> imp
    *
    * @return The result of the validation.
    */
-  @SuppressWarnings("unused")
   @NonNull
+  @POST
   public FormValidation doCheckRuntime(@CheckForNull @QueryParameter String value) {
     return Runtime.getInstance().checkIdentifier(value);
   }
@@ -161,8 +162,8 @@ public abstract class CommandDescriptor extends BuildStepDescriptor<Builder> imp
    *
    * @return The result of the validation.
    */
-  @SuppressWarnings("unused")
   @NonNull
+  @POST
   public FormValidation doCheckRuntimesString(@CheckForNull @QueryParameter String value) {
     return Runtime.getInstance().checkIdentifiers(value);
   }
@@ -172,8 +173,8 @@ public abstract class CommandDescriptor extends BuildStepDescriptor<Builder> imp
    *
    * @return A suitably filled listbox model.
    */
-  @SuppressWarnings("unused")
   @NonNull
+  @POST
   public final ListBoxModel doFillCharsetItems() {
     final ListBoxModel model = new ListBoxModel();
     model.add(Messages.Command_SameCharsetAsBuild(), "");
@@ -195,8 +196,8 @@ public abstract class CommandDescriptor extends BuildStepDescriptor<Builder> imp
    *
    * @return A suitably filled listbox model.
    */
-  @SuppressWarnings("unused")
   @NonNull
+  @POST
   public final ListBoxModel doFillSdkItems() {
     final ListBoxModel model = new ListBoxModel();
     model.add(Messages.Command_DefaultSDK(), "");
@@ -209,8 +210,8 @@ public abstract class CommandDescriptor extends BuildStepDescriptor<Builder> imp
    *
    * @return A suitably filled listbox model.
    */
-  @SuppressWarnings("unused")
   @NonNull
+  @POST
   public final ListBoxModel doFillVerbosityItems() {
     final ListBoxModel model = new ListBoxModel();
     model.add(Messages.Command_Verbosity_Default(), "");
