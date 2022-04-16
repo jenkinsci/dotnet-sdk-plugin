@@ -10,8 +10,10 @@ import hudson.Launcher;
 import hudson.Util;
 import hudson.console.ConsoleLogFilter;
 import hudson.model.AbstractProject;
+import hudson.model.Item;
 import hudson.model.Run;
 import hudson.model.TaskListener;
+import hudson.security.Permission;
 import hudson.tasks.BuildWrapperDescriptor;
 import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
@@ -19,6 +21,7 @@ import io.jenkins.plugins.dotnet.console.DiagnosticFilter;
 import jenkins.model.Jenkins;
 import jenkins.tasks.SimpleBuildWrapper;
 import org.jenkinsci.Symbol;
+import org.kohsuke.stapler.AncestorInPath;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
@@ -80,8 +83,8 @@ public class DotNetWrapper extends SimpleBuildWrapper {
    * most recent SDK version available on the system; with this set, a {@code global.json} file will be created to ensure a specific
    * SDK version gets used.
    *
-   * @param specificSdkVersion {@code true} if {@code global.json} should be used to ensure a specific SDK version gets used; {@code
-   *                           false} otherwise.
+   * @param specificSdkVersion {@code true} if {@code global.json} should be used to ensure a specific SDK version gets used;
+   *                           {@code false} otherwise.
    */
   @DataBoundSetter
   public void setSpecificSdkVersion(boolean specificSdkVersion) {
@@ -168,23 +171,28 @@ public class DotNetWrapper extends SimpleBuildWrapper {
      * Because the value is set from a list box (so selecting invalid values is not possible), this only ensures that it's filled.
      *
      * @param value The value to check.
+     * @param item  The item being configured.
      *
      * @return The validation result.
      */
     @NonNull
     @POST
-    public FormValidation doCheckSdk(@CheckForNull @QueryParameter String value) {
+    public FormValidation doCheckSdk(@CheckForNull @QueryParameter String value, @NonNull @AncestorInPath Item item) {
+      item.checkPermission(Permission.CONFIGURE);
       return FormValidation.validateRequired(value);
     }
 
     /**
      * Fills a listbox with the available .NET SDKs.
      *
+     * @param item The item being configured.
+     *
      * @return A suitably filled listbox model.
      */
     @NonNull
     @POST
-    public ListBoxModel doFillSdkItems() {
+    public ListBoxModel doFillSdkItems(@NonNull @AncestorInPath Item item) {
+      item.checkPermission(Permission.CONFIGURE);
       final ListBoxModel model = new ListBoxModel();
       DotNetSDK.addSdks(model);
       return model;

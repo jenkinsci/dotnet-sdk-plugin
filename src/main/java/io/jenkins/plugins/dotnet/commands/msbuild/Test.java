@@ -4,6 +4,8 @@ import edu.umd.cs.findbugs.annotations.CheckForNull;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.Util;
+import hudson.model.Item;
+import hudson.security.Permission;
 import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
 import io.jenkins.plugins.dotnet.DotNetUtils;
@@ -12,6 +14,7 @@ import io.jenkins.plugins.dotnet.commands.FreeStyleCommandConfiguration;
 import io.jenkins.plugins.dotnet.commands.Messages;
 import org.jenkinsci.Symbol;
 import org.jenkinsci.plugins.structs.describable.UninstantiatedDescribable;
+import org.kohsuke.stapler.AncestorInPath;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
@@ -593,12 +596,17 @@ public final class Test extends MSBuildCommand {
      * Performs (basic) validation on a test timeout.
      *
      * @param value The timeout to validate.
+     * @param item  The item being configured.
      *
      * @return The validation result.
      */
     @NonNull
     @POST
-    public FormValidation doCheckBlameHangTimeout(@CheckForNull @QueryParameter Integer value) {
+    public FormValidation doCheckBlameHangTimeout(@CheckForNull @QueryParameter Integer value,
+                                                  @CheckForNull @AncestorInPath Item item) {
+      if (item != null) {
+        item.checkPermission(Permission.CONFIGURE);
+      }
       if (value == null) {
         return FormValidation.ok();
       }
@@ -629,12 +637,17 @@ public final class Test extends MSBuildCommand {
      * Performs (basic) validation on a set of run settings.
      *
      * @param value The run settings to validate.
+     * @param item  The item being configured.
      *
      * @return The validation result.
      */
     @NonNull
     @POST
-    public FormValidation doCheckRunSettingsString(@CheckForNull @QueryParameter String value) {
+    public FormValidation doCheckRunSettingsString(@CheckForNull @QueryParameter String value,
+                                                   @CheckForNull @AncestorInPath Item item) {
+      if (item != null) {
+        item.checkPermission(Permission.CONFIGURE);
+      }
       value = Util.fixEmptyAndTrim(value);
       if (value != null) {
         try {
@@ -650,11 +663,16 @@ public final class Test extends MSBuildCommand {
     /**
      * Fills a listbox with the possible values for the dump types supported by {@code --blame-crash-dump-type}.
      *
+     * @param item The item being configured.
+     *
      * @return A suitably filled listbox model.
      */
     @NonNull
     @POST
-    public final ListBoxModel doFillBlameCrashDumpTypeItems() {
+    public ListBoxModel doFillBlameCrashDumpTypeItems(@CheckForNull @AncestorInPath Item item) {
+      if (item != null) {
+        item.checkPermission(Permission.CONFIGURE);
+      }
       final ListBoxModel model = new ListBoxModel();
       model.add("");
       model.add("mini");
@@ -665,11 +683,16 @@ public final class Test extends MSBuildCommand {
     /**
      * Fills a listbox with the possible values for the dump types supported by {@code --blame-hang-dump-type}.
      *
+     * @param item The item being configured.
+     *
      * @return A suitably filled listbox model.
      */
     @NonNull
     @POST
-    public final ListBoxModel doFillBlameHangDumpTypeItems() {
+    public ListBoxModel doFillBlameHangDumpTypeItems(@CheckForNull @AncestorInPath Item item) {
+      if (item != null) {
+        item.checkPermission(Permission.CONFIGURE);
+      }
       final ListBoxModel model = new ListBoxModel();
       model.add("");
       model.add("none");

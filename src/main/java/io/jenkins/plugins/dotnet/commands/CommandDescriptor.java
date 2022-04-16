@@ -7,6 +7,8 @@ import hudson.Util;
 import hudson.model.AbstractProject;
 import hudson.model.AutoCompletionCandidates;
 import hudson.model.FreeStyleProject;
+import hudson.model.Item;
+import hudson.security.Permission;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.util.FormValidation;
@@ -15,6 +17,7 @@ import io.jenkins.plugins.dotnet.DotNetSDK;
 import io.jenkins.plugins.dotnet.data.Framework;
 import io.jenkins.plugins.dotnet.data.Runtime;
 import org.jenkinsci.plugins.structs.describable.CustomDescribableModel;
+import org.kohsuke.stapler.AncestorInPath;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.verb.POST;
 
@@ -46,12 +49,17 @@ public abstract class CommandDescriptor extends BuildStepDescriptor<Builder> imp
    * Performs auto-completion for a .NET target framework moniker.
    *
    * @param value The (partial) value to perform auto-completion for.
+   * @param item  The item being configured.
    *
    * @return The computed auto-completion candidates.
    */
   @NonNull
   @POST
-  public final AutoCompletionCandidates doAutoCompleteFramework(@CheckForNull @QueryParameter String value) {
+  public final AutoCompletionCandidates doAutoCompleteFramework(@CheckForNull @QueryParameter String value,
+                                                                @CheckForNull @AncestorInPath Item item) {
+    if (item != null) {
+      item.checkPermission(Permission.CONFIGURE);
+    }
     return Framework.getInstance().autoCompleteMoniker(value);
   }
 
@@ -59,12 +67,17 @@ public abstract class CommandDescriptor extends BuildStepDescriptor<Builder> imp
    * Performs auto-completion for a list of .NET target framework monikers.
    *
    * @param value The (partial) value to perform auto-completion for.
+   * @param item  The item being configured.
    *
    * @return The computed auto-completion candidates.
    */
   @NonNull
   @POST
-  public final AutoCompletionCandidates doAutoCompleteFrameworksString(@CheckForNull @QueryParameter String value) {
+  public final AutoCompletionCandidates doAutoCompleteFrameworksString(@CheckForNull @QueryParameter String value,
+                                                                       @CheckForNull @AncestorInPath Item item) {
+    if (item != null) {
+      item.checkPermission(Permission.CONFIGURE);
+    }
     return Framework.getInstance().autoCompleteMoniker(value);
   }
 
@@ -72,12 +85,17 @@ public abstract class CommandDescriptor extends BuildStepDescriptor<Builder> imp
    * Performs auto-completion for a .NET target runtime identifier.
    *
    * @param value The (partial) value to perform auto-completion for.
+   * @param item  The item being configured.
    *
    * @return The computed auto-completion candidates.
    */
   @NonNull
   @POST
-  public final AutoCompletionCandidates doAutoCompleteRuntime(@CheckForNull @QueryParameter String value) {
+  public final AutoCompletionCandidates doAutoCompleteRuntime(@CheckForNull @QueryParameter String value,
+                                                              @CheckForNull @AncestorInPath Item item) {
+    if (item != null) {
+      item.checkPermission(Permission.CONFIGURE);
+    }
     return Runtime.getInstance().autoCompleteIdentifier(value);
   }
 
@@ -85,12 +103,17 @@ public abstract class CommandDescriptor extends BuildStepDescriptor<Builder> imp
    * Performs auto-completion for a list of .NET runtime identifiers.
    *
    * @param value The (partial) value to perform auto-completion for.
+   * @param item  The item being configured.
    *
    * @return The computed auto-completion candidates.
    */
   @NonNull
   @POST
-  public final AutoCompletionCandidates doAutoCompleteRuntimesString(@CheckForNull @QueryParameter String value) {
+  public final AutoCompletionCandidates doAutoCompleteRuntimesString(@CheckForNull @QueryParameter String value,
+                                                                     @CheckForNull @AncestorInPath Item item) {
+    if (item != null) {
+      item.checkPermission(Permission.CONFIGURE);
+    }
     return Runtime.getInstance().autoCompleteIdentifier(value);
   }
 
@@ -98,12 +121,16 @@ public abstract class CommandDescriptor extends BuildStepDescriptor<Builder> imp
    * Performs validation on a Java charset name.
    *
    * @param value The value to validate.
+   * @param item  The item being configured.
    *
    * @return The result of the validation.
    */
   @NonNull
   @POST
-  public FormValidation doCheckCharset(@CheckForNull @QueryParameter String value) {
+  public FormValidation doCheckCharset(@CheckForNull @QueryParameter String value, @CheckForNull @AncestorInPath Item item) {
+    if (item != null) {
+      item.checkPermission(Permission.CONFIGURE);
+    }
     final String name = Util.fixEmptyAndTrim(value);
     if (name != null) {
       try {
@@ -120,12 +147,16 @@ public abstract class CommandDescriptor extends BuildStepDescriptor<Builder> imp
    * Performs validation on a .NET target framework moniker.
    *
    * @param value The value to validate.
+   * @param item  The item being configured.
    *
    * @return The result of the validation.
    */
   @NonNull
   @POST
-  public FormValidation doCheckFramework(@CheckForNull @QueryParameter String value) {
+  public FormValidation doCheckFramework(@CheckForNull @QueryParameter String value, @CheckForNull @AncestorInPath Item item) {
+    if (item != null) {
+      item.checkPermission(Permission.CONFIGURE);
+    }
     return Framework.getInstance().checkMoniker(value);
   }
 
@@ -133,12 +164,16 @@ public abstract class CommandDescriptor extends BuildStepDescriptor<Builder> imp
    * Performs validation on a list of .NET target framework monikers.
    *
    * @param value The value to validate.
+   * @param item  The item being configured.
    *
    * @return The result of the validation.
    */
   @NonNull
   @POST
-  public FormValidation doCheckFrameworksString(@CheckForNull @QueryParameter String value) {
+  public FormValidation doCheckFrameworksString(@CheckForNull @QueryParameter String value, @CheckForNull @AncestorInPath Item item) {
+    if (item != null) {
+      item.checkPermission(Permission.CONFIGURE);
+    }
     return Framework.getInstance().checkMonikers(value);
   }
 
@@ -146,12 +181,16 @@ public abstract class CommandDescriptor extends BuildStepDescriptor<Builder> imp
    * Performs validation on a .NET runtime identifier.
    *
    * @param value The value to validate.
+   * @param item  The item being configured.
    *
    * @return The result of the validation.
    */
   @NonNull
   @POST
-  public FormValidation doCheckRuntime(@CheckForNull @QueryParameter String value) {
+  public FormValidation doCheckRuntime(@CheckForNull @QueryParameter String value, @CheckForNull @AncestorInPath Item item) {
+    if (item != null) {
+      item.checkPermission(Permission.CONFIGURE);
+    }
     return Runtime.getInstance().checkIdentifier(value);
   }
 
@@ -159,23 +198,32 @@ public abstract class CommandDescriptor extends BuildStepDescriptor<Builder> imp
    * Performs validation on a list of .NET runtime identifiers.
    *
    * @param value The values to validate.
+   * @param item  The item being configured.
    *
    * @return The result of the validation.
    */
   @NonNull
   @POST
-  public FormValidation doCheckRuntimesString(@CheckForNull @QueryParameter String value) {
+  public FormValidation doCheckRuntimesString(@CheckForNull @QueryParameter String value, @CheckForNull @AncestorInPath Item item) {
+    if (item != null) {
+      item.checkPermission(Permission.CONFIGURE);
+    }
     return Runtime.getInstance().checkIdentifiers(value);
   }
 
   /**
    * Fills a listbox with the names of charsets supported by the running version of Java.
    *
+   * @param item The item being configured.
+   *
    * @return A suitably filled listbox model.
    */
   @NonNull
   @POST
-  public final ListBoxModel doFillCharsetItems() {
+  public final ListBoxModel doFillCharsetItems(@CheckForNull @AncestorInPath Item item) {
+    if (item != null) {
+      item.checkPermission(Permission.CONFIGURE);
+    }
     final ListBoxModel model = new ListBoxModel();
     model.add(Messages.Command_SameCharsetAsBuild(), "");
     for (final Charset cs : Charset.availableCharsets().values()) {
@@ -194,11 +242,16 @@ public abstract class CommandDescriptor extends BuildStepDescriptor<Builder> imp
   /**
    * Fills a listbox with the names of .NET SDKs that have been defined as global tools.
    *
+   * @param item The item being configured.
+   *
    * @return A suitably filled listbox model.
    */
   @NonNull
   @POST
-  public final ListBoxModel doFillSdkItems() {
+  public final ListBoxModel doFillSdkItems(@CheckForNull @AncestorInPath Item item) {
+    if (item != null) {
+      item.checkPermission(Permission.CONFIGURE);
+    }
     final ListBoxModel model = new ListBoxModel();
     model.add(Messages.Command_DefaultSDK(), "");
     DotNetSDK.addSdks(model);
@@ -208,11 +261,16 @@ public abstract class CommandDescriptor extends BuildStepDescriptor<Builder> imp
   /**
    * Fills a listbox with the possible values for the .NET CLI "verbosity" option.
    *
+   * @param item The item being configured.
+   *
    * @return A suitably filled listbox model.
    */
   @NonNull
   @POST
-  public final ListBoxModel doFillVerbosityItems() {
+  public final ListBoxModel doFillVerbosityItems(@CheckForNull @AncestorInPath Item item) {
+    if (item != null) {
+      item.checkPermission(Permission.CONFIGURE);
+    }
     final ListBoxModel model = new ListBoxModel();
     model.add(Messages.Command_Verbosity_Default(), "");
     model.add(Messages.Command_Verbosity_Quiet(), "q");

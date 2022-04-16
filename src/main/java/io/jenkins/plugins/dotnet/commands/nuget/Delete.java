@@ -5,13 +5,14 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.AbortException;
 import hudson.Extension;
 import hudson.Util;
+import hudson.model.Item;
+import hudson.security.Permission;
 import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
 import io.jenkins.plugins.dotnet.DotNetUtils;
-import io.jenkins.plugins.dotnet.commands.FreeStyleCommandConfiguration;
 import io.jenkins.plugins.dotnet.commands.DotNetArguments;
+import io.jenkins.plugins.dotnet.commands.FreeStyleCommandConfiguration;
 import io.jenkins.plugins.dotnet.commands.Messages;
-import jenkins.model.Jenkins;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.AncestorInPath;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -82,25 +83,49 @@ public final class Delete extends DeleteOrPush {
       this.load();
     }
 
+    /**
+     * Performs validation on a NuGet package name.
+     *
+     * @param value The value to validate.
+     * @param item  The item being configured.
+     *
+     * @return The result of the validation.
+     */
     @NonNull
     @POST
-    public FormValidation doCheckPackageName(@QueryParameter String value) {
+    public FormValidation doCheckPackageName(@CheckForNull @QueryParameter String value, @CheckForNull @AncestorInPath Item item) {
+      if (item != null) {
+        item.checkPermission(Permission.CONFIGURE);
+      }
       value = Util.fixEmptyAndTrim(value);
-      // TODO: Maybe do some basic semantic version validation?
       if (value != null && value.split(" \r\t\n", 2).length != 1) {
         return FormValidation.error(Messages.NuGet_Delete_InvalidPackageName());
       }
       return FormValidation.ok();
     }
 
+    /**
+     * Performs validation on a NuGet package version.
+     *
+     * @param value       The value to validate.
+     * @param packageName The name of package for which a version is being validated.
+     * @param item        The item being configured.
+     *
+     * @return The result of the validation.
+     */
     @NonNull
     @POST
-    public FormValidation doCheckPackageVersion(@QueryParameter String value, @QueryParameter String packageName) {
+    public FormValidation doCheckPackageVersion(@CheckForNull @QueryParameter String value,
+                                                @CheckForNull @QueryParameter String packageName,
+                                                @CheckForNull @AncestorInPath Item item) {
+      if (item != null) {
+        item.checkPermission(Permission.CONFIGURE);
+      }
       value = Util.fixEmptyAndTrim(value);
-      // TODO: Maybe do some basic semantic version validation?
       if (value != null && value.split(" \r\t\n", 2).length != 1) {
         return FormValidation.error(Messages.NuGet_Delete_InvalidPackageVersion());
       }
+      // TODO: Maybe do some basic semantic version validation?
       packageName = Util.fixEmptyAndTrim(packageName);
       if (packageName == null && value != null) {
         return FormValidation.warning(Messages.NuGet_Delete_PackageVersionWithoutName());
@@ -111,10 +136,20 @@ public final class Delete extends DeleteOrPush {
       return FormValidation.ok();
     }
 
+    /**
+     * Fills a listbox with all possible API keys (string credentials) defined in the system.
+     *
+     * @param item The item being configured.
+     *
+     * @return A suitably filled listbox model.
+     */
     @NonNull
     @POST
-    public ListBoxModel doFillApiKeyIdItems(@CheckForNull @AncestorInPath Jenkins context) {
-      return DotNetUtils.getStringCredentialsList(context, true);
+    public ListBoxModel doFillApiKeyIdItems(@CheckForNull @AncestorInPath Item item) {
+      if (item != null) {
+        item.checkPermission(Permission.CONFIGURE);
+      }
+      return DotNetUtils.getStringCredentialsList(true);
     }
 
     /**

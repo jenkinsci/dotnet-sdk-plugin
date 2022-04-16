@@ -1,13 +1,17 @@
 package io.jenkins.plugins.dotnet.commands.nuget;
 
+import edu.umd.cs.findbugs.annotations.CheckForNull;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.AbortException;
 import hudson.Extension;
+import hudson.model.Item;
+import hudson.security.Permission;
 import hudson.util.ListBoxModel;
-import io.jenkins.plugins.dotnet.commands.FreeStyleCommandConfiguration;
 import io.jenkins.plugins.dotnet.commands.DotNetArguments;
+import io.jenkins.plugins.dotnet.commands.FreeStyleCommandConfiguration;
 import io.jenkins.plugins.dotnet.commands.Messages;
 import org.jenkinsci.Symbol;
+import org.kohsuke.stapler.AncestorInPath;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.verb.POST;
@@ -98,9 +102,19 @@ public final class Locals extends NuGetCommand {
       this.load();
     }
 
+    /**
+     * Fills a listbox with the possible NuGet cache locations.
+     *
+     * @param item The item being configured.
+     *
+     * @return A suitably filled listbox model.
+     */
     @NonNull
     @POST
-    public ListBoxModel doFillCacheLocationItems() {
+    public ListBoxModel doFillCacheLocationItems(@CheckForNull @AncestorInPath Item item) {
+      if (item != null) {
+        item.checkPermission(Permission.CONFIGURE);
+      }
       final ListBoxModel model = new ListBoxModel();
       model.add(Messages.NuGet_Locals_Location_All(), Locals.LOCATION_ALL);
       model.add(Messages.NuGet_Locals_Location_GlobalPackages(), Locals.LOCATION_GLOBAL_PACKAGES);
@@ -109,9 +123,19 @@ public final class Locals extends NuGetCommand {
       return model;
     }
 
+    /**
+     * Fills a listbox with the possible operations that can be performed on NuGet cache locations.
+     *
+     * @param item The item being configured.
+     *
+     * @return A suitably filled listbox model.
+     */
     @NonNull
     @POST
-    public ListBoxModel doFillOperationItems() {
+    public ListBoxModel doFillOperationItems(@CheckForNull @AncestorInPath Item item) {
+      if (item != null) {
+        item.checkPermission(Permission.CONFIGURE);
+      }
       final ListBoxModel model = new ListBoxModel();
       model.add(Messages.NuGet_Locals_Operation_Clear(), Locals.OPERATION_CLEAR);
       model.add(Messages.NuGet_Locals_Operation_List(), Locals.OPERATION_LIST);

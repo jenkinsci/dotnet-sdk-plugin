@@ -1,12 +1,16 @@
 package io.jenkins.plugins.dotnet.commands.msbuild;
 
+import edu.umd.cs.findbugs.annotations.CheckForNull;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Util;
+import hudson.model.Item;
+import hudson.security.Permission;
 import hudson.util.ComboBoxModel;
 import hudson.util.FormValidation;
 import io.jenkins.plugins.dotnet.commands.CommandDescriptor;
 import io.jenkins.plugins.dotnet.commands.Messages;
 import org.jenkinsci.plugins.structs.describable.UninstantiatedDescribable;
+import org.kohsuke.stapler.AncestorInPath;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.verb.POST;
 
@@ -38,12 +42,16 @@ public abstract class MSBuildCommandDescriptor extends CommandDescriptor {
    * Performs validation on a set of MSBuild properties.
    *
    * @param value The value to validate.
+   * @param item  The item being configured.
    *
    * @return The result of the validation.
    */
   @NonNull
   @POST
-  public FormValidation doCheckPropertiesString(@QueryParameter String value) {
+  public FormValidation doCheckPropertiesString(@QueryParameter String value, @CheckForNull @AncestorInPath Item item) {
+    if (item != null) {
+      item.checkPermission(Permission.CONFIGURE);
+    }
     value = Util.fixEmptyAndTrim(value);
     if (value != null) {
       try {
@@ -59,11 +67,16 @@ public abstract class MSBuildCommandDescriptor extends CommandDescriptor {
   /**
    * Fills a combobox with standard MSBuild configuration names.
    *
+   * @param item The item being configured.
+   *
    * @return A suitable filled combobox model.
    */
   @NonNull
   @POST
-  public final ComboBoxModel doFillConfigurationItems() {
+  public final ComboBoxModel doFillConfigurationItems(@CheckForNull @AncestorInPath Item item) {
+    if (item != null) {
+      item.checkPermission(Permission.CONFIGURE);
+    }
     final ComboBoxModel model = new ComboBoxModel();
     // Note: not localized
     model.add("Debug");

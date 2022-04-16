@@ -4,6 +4,8 @@ import edu.umd.cs.findbugs.annotations.CheckForNull;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.Util;
+import hudson.model.Item;
+import hudson.security.Permission;
 import hudson.util.ListBoxModel;
 import io.jenkins.plugins.dotnet.DotNetUtils;
 import io.jenkins.plugins.dotnet.commands.DotNetArguments;
@@ -11,6 +13,7 @@ import io.jenkins.plugins.dotnet.commands.FreeStyleCommandConfiguration;
 import io.jenkins.plugins.dotnet.commands.Messages;
 import org.jenkinsci.Symbol;
 import org.jenkinsci.plugins.structs.describable.UninstantiatedDescribable;
+import org.kohsuke.stapler.AncestorInPath;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.verb.POST;
@@ -335,11 +338,16 @@ public final class Publish extends MSBuildCommand {
     /**
      * Fills a listbox with the possible values for the "self-containing" setting.
      *
+     * @param item The item being configured.
+     *
      * @return A suitably filled listbox model.
      */
     @NonNull
     @POST
-    public ListBoxModel doFillSelfContainedItems() {
+    public ListBoxModel doFillSelfContainedItems(@CheckForNull @AncestorInPath Item item) {
+      if (item != null) {
+        item.checkPermission(Permission.CONFIGURE);
+      }
       final ListBoxModel model = new ListBoxModel();
       model.add(Messages.MSBuild_Publish_ProjectDefault(), null);
       model.add(Messages.MSBuild_Publish_Yes(), "true");
