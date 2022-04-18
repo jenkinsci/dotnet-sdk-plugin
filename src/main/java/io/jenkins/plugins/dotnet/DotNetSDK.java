@@ -5,6 +5,7 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.AbortException;
 import hudson.EnvVars;
 import hudson.Extension;
+import hudson.ExtensionList;
 import hudson.FilePath;
 import hudson.Launcher;
 import hudson.model.Computer;
@@ -55,6 +56,7 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
    */
   public DotNetSDK(@NonNull String name, @NonNull String home) {
     super(name, home, Collections.emptyList());
+    this.configuration = ExtensionList.lookupSingleton(DotNetConfiguration.class);
   }
 
   /**
@@ -67,11 +69,11 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
   @DataBoundConstructor
   public DotNetSDK(@NonNull String name, @NonNull String home, @CheckForNull List<? extends ToolProperty<?>> properties) {
     super(name, home, properties);
+    this.configuration = ExtensionList.lookupSingleton(DotNetConfiguration.class);
   }
 
-  // FIXME: The 'telemetry opt-out' settings makes more sense as a global configuration option.
-  // FIXME: However, attempts at creating a GlobalConfiguration failed, with the checkbox not getting shown in/under the section
-  // FIXME: (despite using the same setup done by the GlobalMavenConfig).
+  @NonNull
+  private final DotNetConfiguration configuration;
 
   private boolean telemetryOptOut = true;
 
@@ -101,8 +103,9 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
    */
   public static void addSdks(@NonNull ListBoxModel model) {
     final DotNetSDK[] sdks = Jenkins.get().getDescriptorByType(DescriptorImpl.class).getInstallations();
-    for (final DotNetSDK _sdk : sdks)
+    for (final DotNetSDK _sdk : sdks) {
       model.add(_sdk.getName());
+    }
   }
 
   /**
@@ -118,7 +121,7 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
       env.put(DotNetSDK.ROOT_ENVIRONMENT_VARIABLE, home);
       env.put("PATH+DOTNET", home);
     }
-    if (this.telemetryOptOut) {
+    if (this.configuration.isTelemetryOptOut() || this.telemetryOptOut) {
       env.put("DOTNET_CLI_TELEMETRY_OPTOUT", "1");
     }
   }
@@ -136,7 +139,8 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
     try {
       final FilePath home = this.getHomePath(dir.getChannel());
       if (home == null) {
-        listener.getLogger().println(Messages.DotNetSDK_GlobalJson_NoVersion(this.getName(), Messages.DotNetSDK_GlobalJson_NoHome()));
+        final String problem = Messages.DotNetSDK_GlobalJson_NoHome();
+        listener.getLogger().println(Messages.DotNetSDK_GlobalJson_NoVersion(this.getName(), problem));
         return false;
       }
       final FilePath sdkRoot = home.child("sdk");
@@ -144,17 +148,21 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
         String singleSdkVersion = null;
         for (final FilePath sdkDir : sdkRoot.listDirectories()) {
           // Assumption: the presence of 'dotnet.dll' is a correct way of distinguishing between SDK dirs and things like the NuGet
-          //             fallback folder. So far this has been shown to be true (.NET Core 1.0 up to .NET 5.0 preview 5).
-          if (!sdkDir.child("dotnet.dll").exists())
+          //             fallback folder.
+          if (!sdkDir.child("dotnet.dll").exists()) {
             continue;
-          if (singleSdkVersion != null)
-            listener.getLogger().println(Messages.DotNetSDK_GlobalJson_NoVersion(this.getName(), Messages.DotNetSDK_GlobalJson_MultiSdk(singleSdkVersion, sdkDir.getName())));
+          }
+          if (singleSdkVersion != null) {
+            final String problem = Messages.DotNetSDK_GlobalJson_MultiSdk(singleSdkVersion, sdkDir.getName());
+            listener.getLogger().println(Messages.DotNetSDK_GlobalJson_NoVersion(this.getName(), problem));
+          }
           singleSdkVersion = sdkDir.getName();
         }
         version = singleSdkVersion;
       }
       else {
-        listener.getLogger().println(Messages.DotNetSDK_GlobalJson_NoVersion(this.getName(), Messages.DotNetSDK_GlobalJson_NoSdk()));
+        final String problem = Messages.DotNetSDK_GlobalJson_NoSdk();
+        listener.getLogger().println(Messages.DotNetSDK_GlobalJson_NoVersion(this.getName(), problem));
         return false;
       }
     }
@@ -188,14 +196,16 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
   @NonNull
   public String ensureExecutableExists(@NonNull Launcher launcher) throws IOException, InterruptedException {
     final FilePath homePath = this.getHomePath(launcher.getChannel());
-    if (homePath == null || !homePath.exists())
+    if (homePath == null || !homePath.exists()) {
       throw new AbortException(Messages.DotNetSDK_NoHome(this.getName()));
+    }
     final FilePath fullExecutablePath;
     {
       final String executable = DotNetSDK.getExecutableFileName(launcher);
       fullExecutablePath = homePath.child(executable);
-      if (!fullExecutablePath.exists())
+      if (!fullExecutablePath.exists()) {
         throw new AbortException(Messages.DotNetSDK_NoExecutable(this.getName(), executable));
+      }
     }
     return fullExecutablePath.getRemote();
   }
@@ -252,8 +262,9 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
   @CheckForNull
   public FilePath getHomePath(@CheckForNull VirtualChannel channel) {
     final String home = this.getHome();
-    if (home == null)
+    if (home == null) {
       return null;
+    }
     return new FilePath(channel, home);
   }
 
@@ -302,23 +313,26 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
     @NonNull
     protected FormValidation checkHomeDirectory(@NonNull File home) {
       // This can be used to check the existence of a file on the server, so needs to be protected.
-      if (!Jenkins.get().hasPermission(Jenkins.ADMINISTER))
-        return FormValidation.ok();
+      Jenkins.get().checkPermission(Jenkins.ADMINISTER);
       { // Top level needs a 'dotnet' executable
         final File dotnet_exe = new File(home, "dotnet.exe");
         final File dotnet = new File(home, "dotnet");
-        if (!(dotnet_exe.exists() && dotnet_exe.isFile()) && !(dotnet.exists() && dotnet.isFile()))
+        if (!(dotnet_exe.exists() && dotnet_exe.isFile()) && !(dotnet.exists() && dotnet.isFile())) {
           return FormValidation.error(Messages.DotNetSDK_Home_NoExecutable());
-        if (!dotnet_exe.canExecute() && !dotnet.canExecute())
+        }
+        if (!dotnet_exe.canExecute() && !dotnet.canExecute()) {
           return FormValidation.error(Messages.DotNetSDK_Home_NotExecutable());
+        }
       }
       { // Should have 'sdk' and 'shared/Microsoft.NETCore.App' subdirs
         final File sdk = new File(home, "sdk");
-        if (!sdk.exists() || !sdk.isDirectory())
+        if (!sdk.exists() || !sdk.isDirectory()) {
           return FormValidation.error(Messages.DotNetSDK_Home_NoSdkSubdir());
+        }
         final File sharedNetCoreApp = new File(home, "shared/Microsoft.NETCore.App");
-        if (!sharedNetCoreApp.exists() || !sharedNetCoreApp.isDirectory())
+        if (!sharedNetCoreApp.exists() || !sharedNetCoreApp.isDirectory()) {
           return FormValidation.error(Messages.DotNetSDK_Home_NoSharedNetCoreSubdir());
+        }
         // Potential further checks:
         // - at least one folder under 'sdk' should contain 'dotnet.dll'
         // - a folder of the same name must exist under shared/Microsoft.NETCore.App
@@ -347,6 +361,10 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
       return Messages.DotNetSDK_DisplayName();
     }
 
+    public boolean isTelemetryGloballyDisabled() {
+      return ExtensionList.lookupSingleton(DotNetConfiguration.class).isTelemetryOptOut();
+    }
+
     /**
      * Gets a .NET SDK installation by its name, and prepare it for use in the specified context.
      *
@@ -362,7 +380,8 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
      * @throws InterruptedException When processing is interrupted.
      */
     @NonNull
-    public DotNetSDK prepareAndValidateInstance(@NonNull String name, @NonNull FilePath workspace, @NonNull EnvVars env, @NonNull TaskListener listener) throws IOException, InterruptedException {
+    public DotNetSDK prepareAndValidateInstance(@NonNull String name, @NonNull FilePath workspace, @NonNull EnvVars env,
+                                                @NonNull TaskListener listener) throws IOException, InterruptedException {
       DotNetSDK sdkInstance = null;
       {
         for (final DotNetSDK sdk : this.getInstallations()) {
@@ -371,8 +390,9 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
             break;
           }
         }
-        if (sdkInstance == null)
+        if (sdkInstance == null) {
           throw new AbortException(Messages.DotNetSDK_UnknownSDK(name));
+        }
       }
       { // Apply NodeSpecific
         final Node node;
@@ -380,8 +400,9 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
           final Computer computer = workspace.toComputer();
           node = (computer != null) ? computer.getNode() : null;
         }
-        if (node == null)
+        if (node == null) {
           throw new AbortException(Messages.DotNetSDK_NoNode());
+        }
         sdkInstance = sdkInstance.forNode(node, listener);
       }
       sdkInstance = sdkInstance.forEnvironment(env);

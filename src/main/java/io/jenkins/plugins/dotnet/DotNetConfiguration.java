@@ -302,6 +302,27 @@ public class DotNetConfiguration extends GlobalConfiguration implements Serializ
     this.save();
   }
 
+  private boolean telemetryOptOut = true;
+
+  /**
+   * Determines whether the telemetry opt-out is set.
+   *
+   * @return {@code true} when the telemetry opt-out is set; {@code false} otherwise.
+   */
+  public boolean isTelemetryOptOut() {
+    return this.telemetryOptOut;
+  }
+
+  /**
+   * Determines whether the telemetry opt-out should be set.
+   *
+   * @param telemetryOptOut {@code true} to opt out of telemetry; {@code false} otherwise.
+   */
+  @DataBoundSetter
+  public void setTelemetryOptOut(boolean telemetryOptOut) {
+    this.telemetryOptOut = telemetryOptOut;
+  }
+
   private boolean testAllowed = true;
 
   @NonNull

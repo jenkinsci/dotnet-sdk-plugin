@@ -3,6 +3,10 @@
 
   <f:section title="${%Section.Name}">
 
+    <f:entry title="${%Field.TelemetryOptOut}" field="telemetryOptOut">
+      <f:checkbox default="true"/>
+    </f:entry>
+
     <f:advanced title="${%Section.FreeStyle}">
 
       <div class="setting-name help-sibling">
