@@ -75,7 +75,7 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
   @NonNull
   private final DotNetConfiguration configuration;
 
-  private boolean telemetryOptOut = true;
+  private boolean telemetryOptOut = false;
 
   /**
    * Determines whether the telemetry opt-out is set.
