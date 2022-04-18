@@ -1,10 +1,14 @@
-package io.jenkins.plugins.dotnet.commands;
+package io.jenkins.plugins.dotnet;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.model.FreeStyleProject;
 import hudson.tasks.Builder;
 import hudson.util.FormValidation;
+import io.jenkins.plugins.dotnet.commands.Command;
+import io.jenkins.plugins.dotnet.commands.ListPackage;
+import io.jenkins.plugins.dotnet.commands.Messages;
+import io.jenkins.plugins.dotnet.commands.Restore;
 import io.jenkins.plugins.dotnet.commands.msbuild.Build;
 import io.jenkins.plugins.dotnet.commands.msbuild.Clean;
 import io.jenkins.plugins.dotnet.commands.msbuild.Pack;
@@ -25,12 +29,12 @@ import org.kohsuke.stapler.verb.POST;
 import java.io.Serializable;
 
 @Extension
-public class FreeStyleCommandConfiguration extends GlobalConfiguration implements Serializable {
+public class DotNetConfiguration extends GlobalConfiguration implements Serializable {
 
   private static final long serialVersionUID = 7543404699990461923L;
 
   @DataBoundConstructor
-  public FreeStyleCommandConfiguration() {
+  public DotNetConfiguration() {
     super();
     this.load();
   }
@@ -51,7 +55,7 @@ public class FreeStyleCommandConfiguration extends GlobalConfiguration implement
   @NonNull
   @POST
   public FormValidation doCheckBuildAllowed(@QueryParameter boolean buildAllowed) {
-    return FreeStyleCommandConfiguration.ensureNotInUseWhenDisallowed(buildAllowed, Build.class);
+    return DotNetConfiguration.ensureNotInUseWhenDisallowed(buildAllowed, Build.class);
   }
 
   /**
@@ -79,7 +83,7 @@ public class FreeStyleCommandConfiguration extends GlobalConfiguration implement
   @NonNull
   @POST
   public FormValidation doCheckCleanAllowed(@QueryParameter boolean cleanAllowed) {
-    return FreeStyleCommandConfiguration.ensureNotInUseWhenDisallowed(cleanAllowed, Clean.class);
+    return DotNetConfiguration.ensureNotInUseWhenDisallowed(cleanAllowed, Clean.class);
   }
 
   /**
@@ -107,7 +111,7 @@ public class FreeStyleCommandConfiguration extends GlobalConfiguration implement
   @NonNull
   @POST
   public FormValidation doCheckListPackageAllowed(@QueryParameter boolean listPackageAllowed) {
-    return FreeStyleCommandConfiguration.ensureNotInUseWhenDisallowed(listPackageAllowed, ListPackage.class);
+    return DotNetConfiguration.ensureNotInUseWhenDisallowed(listPackageAllowed, ListPackage.class);
   }
 
   /**
@@ -135,7 +139,7 @@ public class FreeStyleCommandConfiguration extends GlobalConfiguration implement
   @NonNull
   @POST
   public FormValidation doCheckNuGetDeleteAllowed(@QueryParameter boolean nuGetDeleteAllowed) {
-    return FreeStyleCommandConfiguration.ensureNotInUseWhenDisallowed(nuGetDeleteAllowed, Delete.class);
+    return DotNetConfiguration.ensureNotInUseWhenDisallowed(nuGetDeleteAllowed, Delete.class);
   }
 
   /**
@@ -163,7 +167,7 @@ public class FreeStyleCommandConfiguration extends GlobalConfiguration implement
   @NonNull
   @POST
   public FormValidation doCheckNuGetLocalsAllowed(@QueryParameter boolean nuGetLocalsAllowed) {
-    return FreeStyleCommandConfiguration.ensureNotInUseWhenDisallowed(nuGetLocalsAllowed, Locals.class);
+    return DotNetConfiguration.ensureNotInUseWhenDisallowed(nuGetLocalsAllowed, Locals.class);
   }
 
   /**
@@ -191,7 +195,7 @@ public class FreeStyleCommandConfiguration extends GlobalConfiguration implement
   @NonNull
   @POST
   public FormValidation doCheckNuGetPushAllowed(@QueryParameter boolean nuGetPushAllowed) {
-    return FreeStyleCommandConfiguration.ensureNotInUseWhenDisallowed(nuGetPushAllowed, Push.class);
+    return DotNetConfiguration.ensureNotInUseWhenDisallowed(nuGetPushAllowed, Push.class);
   }
 
   /**
@@ -219,7 +223,7 @@ public class FreeStyleCommandConfiguration extends GlobalConfiguration implement
   @NonNull
   @POST
   public FormValidation doCheckPackAllowed(@QueryParameter boolean packAllowed) {
-    return FreeStyleCommandConfiguration.ensureNotInUseWhenDisallowed(packAllowed, Pack.class);
+    return DotNetConfiguration.ensureNotInUseWhenDisallowed(packAllowed, Pack.class);
   }
 
   /**
@@ -247,7 +251,7 @@ public class FreeStyleCommandConfiguration extends GlobalConfiguration implement
   @NonNull
   @POST
   public FormValidation doCheckPublishAllowed(@QueryParameter boolean publishAllowed) {
-    return FreeStyleCommandConfiguration.ensureNotInUseWhenDisallowed(publishAllowed, Publish.class);
+    return DotNetConfiguration.ensureNotInUseWhenDisallowed(publishAllowed, Publish.class);
   }
 
   /**
@@ -275,7 +279,7 @@ public class FreeStyleCommandConfiguration extends GlobalConfiguration implement
   @NonNull
   @POST
   public FormValidation doCheckRestoreAllowed(@QueryParameter boolean restoreAllowed) {
-    return FreeStyleCommandConfiguration.ensureNotInUseWhenDisallowed(restoreAllowed, Restore.class);
+    return DotNetConfiguration.ensureNotInUseWhenDisallowed(restoreAllowed, Restore.class);
   }
 
   /**
@@ -298,12 +302,33 @@ public class FreeStyleCommandConfiguration extends GlobalConfiguration implement
     this.save();
   }
 
+  private boolean telemetryOptOut = true;
+
+  /**
+   * Determines whether the telemetry opt-out is set.
+   *
+   * @return {@code true} when the telemetry opt-out is set; {@code false} otherwise.
+   */
+  public boolean isTelemetryOptOut() {
+    return this.telemetryOptOut;
+  }
+
+  /**
+   * Determines whether the telemetry opt-out should be set.
+   *
+   * @param telemetryOptOut {@code true} to opt out of telemetry; {@code false} otherwise.
+   */
+  @DataBoundSetter
+  public void setTelemetryOptOut(boolean telemetryOptOut) {
+    this.telemetryOptOut = telemetryOptOut;
+  }
+
   private boolean testAllowed = true;
 
   @NonNull
   @POST
   public FormValidation doCheckTestAllowed(@QueryParameter boolean testAllowed) {
-    return FreeStyleCommandConfiguration.ensureNotInUseWhenDisallowed(testAllowed, Test.class);
+    return DotNetConfiguration.ensureNotInUseWhenDisallowed(testAllowed, Test.class);
   }
 
   /**
@@ -332,7 +357,7 @@ public class FreeStyleCommandConfiguration extends GlobalConfiguration implement
   @POST
   public FormValidation doCheckToolRestoreAllowed(@QueryParameter boolean toolRestoreAllowed) {
     final Class<? extends Command> toolRestore = io.jenkins.plugins.dotnet.commands.tool.Restore.class;
-    return FreeStyleCommandConfiguration.ensureNotInUseWhenDisallowed(toolRestoreAllowed, toolRestore);
+    return DotNetConfiguration.ensureNotInUseWhenDisallowed(toolRestoreAllowed, toolRestore);
   }
 
   /**
@@ -363,7 +388,7 @@ public class FreeStyleCommandConfiguration extends GlobalConfiguration implement
     final Jenkins jenkins = Jenkins.get();
     jenkins.checkPermission(Jenkins.MANAGE);
     final int uses = jenkins.getAllItems(FreeStyleProject.class,
-      project -> FreeStyleCommandConfiguration.includesCommand(project, command)).size();
+      project -> DotNetConfiguration.includesCommand(project, command)).size();
     if (uses == 0) {
       return FormValidation.ok();
     }
@@ -371,7 +396,7 @@ public class FreeStyleCommandConfiguration extends GlobalConfiguration implement
   }
 
   private static boolean includesCommand(@NonNull FreeStyleProject project, @NonNull Class<? extends Command> command) {
-    for (final Builder step: project.getBuilders()) {
+    for (final Builder step : project.getBuilders()) {
       if (step.getClass() == command) {
         return true;
       }

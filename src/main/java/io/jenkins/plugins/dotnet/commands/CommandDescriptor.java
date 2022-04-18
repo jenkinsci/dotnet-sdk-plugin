@@ -13,6 +13,7 @@ import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
+import io.jenkins.plugins.dotnet.DotNetConfiguration;
 import io.jenkins.plugins.dotnet.DotNetSDK;
 import io.jenkins.plugins.dotnet.data.Framework;
 import io.jenkins.plugins.dotnet.data.Runtime;
@@ -301,7 +302,7 @@ public abstract class CommandDescriptor extends BuildStepDescriptor<Builder> imp
    */
   public final boolean isApplicable(@CheckForNull Class<? extends AbstractProject> jobType) {
     if (jobType != null && FreeStyleProject.class.isAssignableFrom(jobType)) {
-      final FreeStyleCommandConfiguration configuration = ExtensionList.lookupSingleton(FreeStyleCommandConfiguration.class);
+      final DotNetConfiguration configuration = ExtensionList.lookupSingleton(DotNetConfiguration.class);
       return this.isApplicableToFreeStyleProjects(configuration);
     }
     return true;
@@ -314,7 +315,7 @@ public abstract class CommandDescriptor extends BuildStepDescriptor<Builder> imp
    *
    * @return {@code true} when the command should be available for use in freestyle projects; {@code false} otherwise.
    */
-  protected boolean isApplicableToFreeStyleProjects(@NonNull FreeStyleCommandConfiguration configuration) {
+  protected boolean isApplicableToFreeStyleProjects(@NonNull DotNetConfiguration configuration) {
     return true;
   }
 

@@ -7,8 +7,8 @@ import hudson.Extension;
 import hudson.model.Item;
 import hudson.security.Permission;
 import hudson.util.ListBoxModel;
+import io.jenkins.plugins.dotnet.DotNetConfiguration;
 import io.jenkins.plugins.dotnet.commands.DotNetArguments;
-import io.jenkins.plugins.dotnet.commands.FreeStyleCommandConfiguration;
 import io.jenkins.plugins.dotnet.commands.Messages;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.AncestorInPath;
@@ -153,7 +153,7 @@ public final class Locals extends NuGetCommand {
     }
 
     @Override
-    protected boolean isApplicableToFreeStyleProjects(@NonNull FreeStyleCommandConfiguration configuration) {
+    protected boolean isApplicableToFreeStyleProjects(@NonNull DotNetConfiguration configuration) {
       return configuration.isNuGetLocalsAllowed();
     }
 
