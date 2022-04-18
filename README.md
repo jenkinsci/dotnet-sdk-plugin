@@ -1,8 +1,9 @@
 # dotnet-sdk-plugin
 
 [![Jenkins Plugin][Badge:Version]](https://plugins.jenkins.io/dotnet-sdk)
+[![GitHub Release][Badge:ReleaseNotes]](https://github.com/jenkinsci/dotnet-sdk-plugin/releases/latest)
 [![Jenkins Plugin Installs][Badge:Installs]](https://plugins.jenkins.io/dotnet-sdk)
-[![Jenkins][Badge:Build]](https://ci.jenkins.io/job/Plugins/job/dotnet-sdk-plugin/job/main/)
+[![Jenkins CI Status][Badge:Build]](https://ci.jenkins.io/job/Plugins/job/dotnet-sdk-plugin/job/main/)
 
 This is a plugin for [Jenkins][Jenkins], providing convenient use of
 [.NET SDKs][MS:Download], specifically the SDKs for .NET Core and .NET
@@ -43,6 +44,7 @@ File them under the `JENKINS` project, making sure to add the
 Available as part of the [GitHub Releases][Releases].
 
 [Badge:Version]: https://img.shields.io/jenkins/plugin/v/dotnet-sdk.svg?label=latest%20version&color=indigo
+[Badge:ReleaseNotes]: https://img.shields.io/github/release/jenkinsci/dotnet-sdk-plugin.svg?label=Release%20Notes&color=indigo
 [Badge:Installs]: https://img.shields.io/jenkins/plugin/i/dotnet-sdk.svg?color=indigo
 [Badge:Build]: https://ci.jenkins.io/job/Plugins/job/dotnet-sdk-plugin/job/main/badge/icon?subject=Jenkins%20CI
 [Issues]: https://issues.jenkins-ci.org/
