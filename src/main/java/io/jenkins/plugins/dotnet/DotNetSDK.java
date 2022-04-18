@@ -46,6 +46,8 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
   public static final String HOME_ENVIRONMENT_VARIABLE = "DOTNET_SDK_JENKINS_TOOL_HOME";
 
   /** The environment variable that will be set to the full path to the SDK (used by the SDK in some cases). */
+  // FIXME: There is also a %DOTNET_ROOT(x86)%, used when running x86 programs on an x64 host. But we can't tell whether that is the
+  // FIXME: case, so we can't know whether it would be appropriate to set it.
   public static final String ROOT_ENVIRONMENT_VARIABLE = "DOTNET_ROOT";
 
   /**
