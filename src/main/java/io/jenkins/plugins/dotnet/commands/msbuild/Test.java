@@ -8,9 +8,9 @@ import hudson.model.Item;
 import hudson.security.Permission;
 import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
+import io.jenkins.plugins.dotnet.DotNetConfiguration;
 import io.jenkins.plugins.dotnet.DotNetUtils;
 import io.jenkins.plugins.dotnet.commands.DotNetArguments;
-import io.jenkins.plugins.dotnet.commands.FreeStyleCommandConfiguration;
 import io.jenkins.plugins.dotnet.commands.Messages;
 import org.jenkinsci.Symbol;
 import org.jenkinsci.plugins.structs.describable.UninstantiatedDescribable;
@@ -712,7 +712,7 @@ public final class Test extends MSBuildCommand {
     }
 
     @Override
-    protected boolean isApplicableToFreeStyleProjects(@NonNull FreeStyleCommandConfiguration configuration) {
+    protected boolean isApplicableToFreeStyleProjects(@NonNull DotNetConfiguration configuration) {
       return configuration.isTestAllowed();
     }
 
