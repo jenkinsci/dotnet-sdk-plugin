@@ -5,7 +5,6 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.Util;
 import hudson.model.Item;
-import hudson.security.Permission;
 import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
 import io.jenkins.plugins.dotnet.DotNetConfiguration;
@@ -605,7 +604,7 @@ public final class Test extends MSBuildCommand {
     public FormValidation doCheckBlameHangTimeout(@CheckForNull @QueryParameter Integer value,
                                                   @CheckForNull @AncestorInPath Item item) {
       if (item != null) {
-        item.checkPermission(Permission.CONFIGURE);
+        item.checkPermission(Item.CONFIGURE);
       }
       if (value == null) {
         return FormValidation.ok();
@@ -646,7 +645,7 @@ public final class Test extends MSBuildCommand {
     public FormValidation doCheckRunSettingsString(@CheckForNull @QueryParameter String value,
                                                    @CheckForNull @AncestorInPath Item item) {
       if (item != null) {
-        item.checkPermission(Permission.CONFIGURE);
+        item.checkPermission(Item.CONFIGURE);
       }
       value = Util.fixEmptyAndTrim(value);
       if (value != null) {
@@ -671,7 +670,7 @@ public final class Test extends MSBuildCommand {
     @POST
     public ListBoxModel doFillBlameCrashDumpTypeItems(@CheckForNull @AncestorInPath Item item) {
       if (item != null) {
-        item.checkPermission(Permission.CONFIGURE);
+        item.checkPermission(Item.CONFIGURE);
       }
       final ListBoxModel model = new ListBoxModel();
       model.add("");
@@ -691,7 +690,7 @@ public final class Test extends MSBuildCommand {
     @POST
     public ListBoxModel doFillBlameHangDumpTypeItems(@CheckForNull @AncestorInPath Item item) {
       if (item != null) {
-        item.checkPermission(Permission.CONFIGURE);
+        item.checkPermission(Item.CONFIGURE);
       }
       final ListBoxModel model = new ListBoxModel();
       model.add("");

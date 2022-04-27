@@ -386,7 +386,7 @@ public class DotNetConfiguration extends GlobalConfiguration implements Serializ
       return FormValidation.ok();
     }
     final Jenkins jenkins = Jenkins.get();
-    jenkins.checkPermission(Jenkins.MANAGE);
+    jenkins.checkPermission(Jenkins.ADMINISTER);
     final int uses = jenkins.getAllItems(FreeStyleProject.class,
       project -> DotNetConfiguration.includesCommand(project, command)).size();
     if (uses == 0) {

@@ -205,7 +205,7 @@ public final class DotNetSDKInstaller extends ToolInstaller {
     @NonNull
     @POST
     public AutoCompletionCandidates doAutoCompleteLabel(@CheckForNull @QueryParameter String value) {
-      Jenkins.get().checkPermission(Jenkins.MANAGE);
+      Jenkins.get().checkPermission(Jenkins.ADMINISTER);
       return LabelExpression.autoComplete(value);
     }
 
@@ -219,7 +219,7 @@ public final class DotNetSDKInstaller extends ToolInstaller {
     @NonNull
     @POST
     public FormValidation doCheckLabel(@CheckForNull @QueryParameter String value) {
-      Jenkins.get().checkPermission(Jenkins.MANAGE);
+      Jenkins.get().checkPermission(Jenkins.ADMINISTER);
       return LabelExpression.validate(value, null);
     }
 
@@ -234,7 +234,7 @@ public final class DotNetSDKInstaller extends ToolInstaller {
     @NonNull
     @POST
     public FormValidation doCheckRelease(@CheckForNull @QueryParameter String version, @CheckForNull @QueryParameter String value) {
-      Jenkins.get().checkPermission(Jenkins.MANAGE);
+      Jenkins.get().checkPermission(Jenkins.ADMINISTER);
       if (Util.fixEmpty(version) == null)
         return FormValidation.error(Messages.DotNetSDKInstaller_VersionRequired());
       if (Util.fixEmpty(value) == null)
@@ -261,7 +261,7 @@ public final class DotNetSDKInstaller extends ToolInstaller {
     @POST
     public FormValidation doCheckSdk(@CheckForNull @QueryParameter String version, @CheckForNull @QueryParameter String release,
                                      @CheckForNull @QueryParameter String value) {
-      Jenkins.get().checkPermission(Jenkins.MANAGE);
+      Jenkins.get().checkPermission(Jenkins.ADMINISTER);
       if (Util.fixEmpty(version) == null)
         return FormValidation.error(Messages.DotNetSDKInstaller_VersionRequired());
       if (Util.fixEmpty(release) == null)
@@ -290,7 +290,7 @@ public final class DotNetSDKInstaller extends ToolInstaller {
     @POST
     public FormValidation doCheckUrl(@CheckForNull @QueryParameter String version, @CheckForNull @QueryParameter String release,
                                      @CheckForNull @QueryParameter String sdk, @CheckForNull @QueryParameter String value) {
-      Jenkins.get().checkPermission(Jenkins.MANAGE);
+      Jenkins.get().checkPermission(Jenkins.ADMINISTER);
       if (Util.fixEmpty(version) == null)
         return FormValidation.error(Messages.DotNetSDKInstaller_VersionRequired());
       if (Util.fixEmpty(release) == null)
@@ -315,7 +315,7 @@ public final class DotNetSDKInstaller extends ToolInstaller {
     @NonNull
     @POST
     public FormValidation doCheckVersion(@CheckForNull @QueryParameter String value) {
-      Jenkins.get().checkPermission(Jenkins.MANAGE);
+      Jenkins.get().checkPermission(Jenkins.ADMINISTER);
       if (Util.fixEmpty(value) == null)
         return FormValidation.error(Messages.DotNetSDKInstaller_Required());
       if (Downloads.getInstance().getVersion(value) == null)
@@ -333,7 +333,7 @@ public final class DotNetSDKInstaller extends ToolInstaller {
     @NonNull
     @POST
     public ListBoxModel doFillUrlItems(@CheckForNull @QueryParameter String sdk) {
-      Jenkins.get().checkPermission(Jenkins.MANAGE);
+      Jenkins.get().checkPermission(Jenkins.ADMINISTER);
       return Downloads.getInstance().addPackages(this.createList(), sdk);
     }
 
@@ -348,7 +348,7 @@ public final class DotNetSDKInstaller extends ToolInstaller {
     @NonNull
     @POST
     public ListBoxModel doFillReleaseItems(@CheckForNull @QueryParameter String version, @QueryParameter boolean includePreview) {
-      Jenkins.get().checkPermission(Jenkins.MANAGE);
+      Jenkins.get().checkPermission(Jenkins.ADMINISTER);
       return Downloads.getInstance().addReleases(this.createList(), version, includePreview);
     }
 
@@ -363,7 +363,7 @@ public final class DotNetSDKInstaller extends ToolInstaller {
     @NonNull
     @POST
     public ListBoxModel doFillSdkItems(@CheckForNull @QueryParameter String version, @CheckForNull @QueryParameter String release) {
-      Jenkins.get().checkPermission(Jenkins.MANAGE);
+      Jenkins.get().checkPermission(Jenkins.ADMINISTER);
       return Downloads.getInstance().addSdks(this.createList(), version, release);
     }
 
@@ -375,7 +375,7 @@ public final class DotNetSDKInstaller extends ToolInstaller {
     @NonNull
     @POST
     public ListBoxModel doFillVersionItems() {
-      Jenkins.get().checkPermission(Jenkins.MANAGE);
+      Jenkins.get().checkPermission(Jenkins.ADMINISTER);
       return Downloads.getInstance().addVersions(this.createList());
     }
 

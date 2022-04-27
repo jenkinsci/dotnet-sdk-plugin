@@ -5,7 +5,6 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.Util;
 import hudson.model.Item;
-import hudson.security.Permission;
 import hudson.util.ListBoxModel;
 import io.jenkins.plugins.dotnet.DotNetConfiguration;
 import io.jenkins.plugins.dotnet.DotNetUtils;
@@ -346,7 +345,7 @@ public final class Publish extends MSBuildCommand {
     @POST
     public ListBoxModel doFillSelfContainedItems(@CheckForNull @AncestorInPath Item item) {
       if (item != null) {
-        item.checkPermission(Permission.CONFIGURE);
+        item.checkPermission(Item.CONFIGURE);
       }
       final ListBoxModel model = new ListBoxModel();
       model.add(Messages.MSBuild_Publish_ProjectDefault(), null);

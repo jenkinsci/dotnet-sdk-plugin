@@ -5,7 +5,6 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.AbortException;
 import hudson.Extension;
 import hudson.model.Item;
-import hudson.security.Permission;
 import hudson.util.ListBoxModel;
 import io.jenkins.plugins.dotnet.DotNetConfiguration;
 import io.jenkins.plugins.dotnet.commands.DotNetArguments;
@@ -113,7 +112,7 @@ public final class Locals extends NuGetCommand {
     @POST
     public ListBoxModel doFillCacheLocationItems(@CheckForNull @AncestorInPath Item item) {
       if (item != null) {
-        item.checkPermission(Permission.CONFIGURE);
+        item.checkPermission(Item.CONFIGURE);
       }
       final ListBoxModel model = new ListBoxModel();
       model.add(Messages.NuGet_Locals_Location_All(), Locals.LOCATION_ALL);
@@ -134,7 +133,7 @@ public final class Locals extends NuGetCommand {
     @POST
     public ListBoxModel doFillOperationItems(@CheckForNull @AncestorInPath Item item) {
       if (item != null) {
-        item.checkPermission(Permission.CONFIGURE);
+        item.checkPermission(Item.CONFIGURE);
       }
       final ListBoxModel model = new ListBoxModel();
       model.add(Messages.NuGet_Locals_Operation_Clear(), Locals.OPERATION_CLEAR);
