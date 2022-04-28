@@ -7,13 +7,13 @@
   <name>.NET SDK Support</name>
   <packaging>hpi</packaging>
   <url>https://github.com/jenkinsci/${project.artifactId}-plugin</url>
-  <version>1.3.1</version>
+  <version>${revision}${changelist}</version>
 
   <scm>
     <connection>scm:git:git://github.com/jenkinsci/${project.artifactId}-plugin.git</connection>
     <developerConnection>scm:git:git@github.com:jenkinsci/${project.artifactId}-plugin.git</developerConnection>
     <url>https://github.com/jenkinsci/${project.artifactId}-plugin</url>
-    <tag>dotnet-sdk-1.3.1</tag>
+    <tag>${scmTag}</tag>
   </scm>
 
   <developers>
@@ -25,7 +25,7 @@
   </developers>
 
   <properties>
-    <revision>1.3.1</revision>
+    <revision>1.3.2</revision>
     <changelist>-SNAPSHOT</changelist>
     <jenkins.version>2.289.1</jenkins.version>
     <useBeta>true</useBeta>
