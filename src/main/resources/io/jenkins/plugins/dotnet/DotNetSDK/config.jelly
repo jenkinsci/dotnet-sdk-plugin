@@ -10,7 +10,7 @@
   </f:entry>
 
   <f:entry title="${%Telemetry Opt-Out}" field="telemetryOptOut">
-    <f:checkbox default="true" />
+    <f:checkbox />
   </f:entry>
 
 </j:jelly>
