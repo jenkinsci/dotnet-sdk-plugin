@@ -197,6 +197,7 @@ public class DotNetWrapper extends SimpleBuildWrapper {
         item.checkPermission(Item.CONFIGURE);
       }
       final ListBoxModel model = new ListBoxModel();
+      model.add(Messages.DotNetWrapper_NotSelected(), "");
       DotNetSDK.addSdks(model);
       return model;
     }
