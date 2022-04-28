@@ -13,7 +13,6 @@ import hudson.model.AbstractProject;
 import hudson.model.Item;
 import hudson.model.Run;
 import hudson.model.TaskListener;
-import hudson.security.Permission;
 import hudson.tasks.BuildWrapperDescriptor;
 import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
@@ -177,8 +176,10 @@ public class DotNetWrapper extends SimpleBuildWrapper {
      */
     @NonNull
     @POST
-    public FormValidation doCheckSdk(@CheckForNull @QueryParameter String value, @NonNull @AncestorInPath Item item) {
-      item.checkPermission(Permission.CONFIGURE);
+    public FormValidation doCheckSdk(@CheckForNull @QueryParameter String value, @CheckForNull @AncestorInPath Item item) {
+      if (item != null) {
+        item.checkPermission(Item.CONFIGURE);
+      }
       return FormValidation.validateRequired(value);
     }
 
@@ -191,8 +192,10 @@ public class DotNetWrapper extends SimpleBuildWrapper {
      */
     @NonNull
     @POST
-    public ListBoxModel doFillSdkItems(@NonNull @AncestorInPath Item item) {
-      item.checkPermission(Permission.CONFIGURE);
+    public ListBoxModel doFillSdkItems(@CheckForNull @AncestorInPath Item item) {
+      if (item != null) {
+        item.checkPermission(Item.CONFIGURE);
+      }
       final ListBoxModel model = new ListBoxModel();
       model.add(Messages.DotNetWrapper_NotSelected(), "");
       DotNetSDK.addSdks(model);

@@ -6,7 +6,6 @@ import hudson.AbortException;
 import hudson.Extension;
 import hudson.Util;
 import hudson.model.Item;
-import hudson.security.Permission;
 import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
 import io.jenkins.plugins.dotnet.DotNetConfiguration;
@@ -95,7 +94,7 @@ public final class Delete extends DeleteOrPush {
     @POST
     public FormValidation doCheckPackageName(@CheckForNull @QueryParameter String value, @CheckForNull @AncestorInPath Item item) {
       if (item != null) {
-        item.checkPermission(Permission.CONFIGURE);
+        item.checkPermission(Item.CONFIGURE);
       }
       value = Util.fixEmptyAndTrim(value);
       if (value != null && value.split(" \r\t\n", 2).length != 1) {
@@ -119,7 +118,7 @@ public final class Delete extends DeleteOrPush {
                                                 @CheckForNull @QueryParameter String packageName,
                                                 @CheckForNull @AncestorInPath Item item) {
       if (item != null) {
-        item.checkPermission(Permission.CONFIGURE);
+        item.checkPermission(Item.CONFIGURE);
       }
       value = Util.fixEmptyAndTrim(value);
       if (value != null && value.split(" \r\t\n", 2).length != 1) {
@@ -147,7 +146,7 @@ public final class Delete extends DeleteOrPush {
     @POST
     public ListBoxModel doFillApiKeyIdItems(@CheckForNull @AncestorInPath Item item) {
       if (item != null) {
-        item.checkPermission(Permission.CONFIGURE);
+        item.checkPermission(Item.CONFIGURE);
       }
       return DotNetUtils.getStringCredentialsList(true);
     }

@@ -5,7 +5,6 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.Util;
 import hudson.model.Item;
-import hudson.security.Permission;
 import hudson.util.FormValidation;
 import io.jenkins.plugins.dotnet.DotNetConfiguration;
 import io.jenkins.plugins.dotnet.DotNetUtils;
@@ -478,7 +477,7 @@ public final class ListPackage extends Command {
     public FormValidation doCheckConfig(@CheckForNull @QueryParameter String value, @QueryParameter boolean deprecated,
                                         @QueryParameter boolean outdated, @CheckForNull @AncestorInPath Item item) {
       if (item != null) {
-        item.checkPermission(Permission.CONFIGURE);
+        item.checkPermission(Item.CONFIGURE);
       }
       if (Util.fixEmptyAndTrim(value) != null && !deprecated && !outdated) {
         return FormValidation.warning(Messages.ListPackage_OnlyForPackageUpdateSearch());
@@ -500,7 +499,7 @@ public final class ListPackage extends Command {
     public FormValidation doCheckDeprecated(@QueryParameter boolean deprecated, @QueryParameter boolean outdated,
                                             @CheckForNull @AncestorInPath Item item) {
       if (item != null) {
-        item.checkPermission(Permission.CONFIGURE);
+        item.checkPermission(Item.CONFIGURE);
       }
       if (deprecated && outdated) {
         return FormValidation.error(Messages.ListPackage_EitherDeprecatedOrOutdated());
@@ -523,7 +522,7 @@ public final class ListPackage extends Command {
     public FormValidation doCheckHighestMinor(@QueryParameter boolean value, @QueryParameter boolean deprecated,
                                               @QueryParameter boolean outdated, @CheckForNull @AncestorInPath Item item) {
       if (item != null) {
-        item.checkPermission(Permission.CONFIGURE);
+        item.checkPermission(Item.CONFIGURE);
       }
       if (value && !deprecated && !outdated) {
         return FormValidation.warning(Messages.ListPackage_OnlyForPackageUpdateSearch());
@@ -546,7 +545,7 @@ public final class ListPackage extends Command {
     public FormValidation doCheckHighestPatch(@QueryParameter boolean value, @QueryParameter boolean deprecated,
                                               @QueryParameter boolean outdated, @CheckForNull @AncestorInPath Item item) {
       if (item != null) {
-        item.checkPermission(Permission.CONFIGURE);
+        item.checkPermission(Item.CONFIGURE);
       }
       if (value && !deprecated && !outdated) {
         return FormValidation.warning(Messages.ListPackage_OnlyForPackageUpdateSearch());
@@ -569,7 +568,7 @@ public final class ListPackage extends Command {
     public FormValidation doCheckIncludePrerelease(@QueryParameter boolean value, @QueryParameter boolean deprecated,
                                                    @QueryParameter boolean outdated, @CheckForNull @AncestorInPath Item item) {
       if (item != null) {
-        item.checkPermission(Permission.CONFIGURE);
+        item.checkPermission(Item.CONFIGURE);
       }
       if (value && !deprecated && !outdated) {
         return FormValidation.warning(Messages.ListPackage_OnlyForPackageUpdateSearch());
@@ -591,7 +590,7 @@ public final class ListPackage extends Command {
     public FormValidation doCheckOutdated(@QueryParameter boolean deprecated, @QueryParameter boolean outdated,
                                           @CheckForNull @AncestorInPath Item item) {
       if (item != null) {
-        item.checkPermission(Permission.CONFIGURE);
+        item.checkPermission(Item.CONFIGURE);
       }
       if (deprecated && outdated) {
         return FormValidation.error(Messages.ListPackage_EitherDeprecatedOrOutdated());
@@ -614,7 +613,7 @@ public final class ListPackage extends Command {
     public FormValidation doCheckSourcesString(@CheckForNull @QueryParameter String value, @QueryParameter boolean deprecated,
                                                @QueryParameter boolean outdated, @CheckForNull @AncestorInPath Item item) {
       if (item != null) {
-        item.checkPermission(Permission.CONFIGURE);
+        item.checkPermission(Item.CONFIGURE);
       }
       if (Util.fixEmptyAndTrim(value) != null && !deprecated && !outdated) {
         return FormValidation.warning(Messages.ListPackage_OnlyForPackageUpdateSearch());

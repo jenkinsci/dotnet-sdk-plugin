@@ -6,7 +6,6 @@ import hudson.AbortException;
 import hudson.Extension;
 import hudson.Util;
 import hudson.model.Item;
-import hudson.security.Permission;
 import hudson.util.ListBoxModel;
 import io.jenkins.plugins.dotnet.DotNetConfiguration;
 import io.jenkins.plugins.dotnet.DotNetUtils;
@@ -183,7 +182,7 @@ public final class Push extends DeleteOrPush {
     @POST
     public ListBoxModel doFillApiKeyIdItems(@CheckForNull @AncestorInPath Item item) {
       if (item != null) {
-        item.checkPermission(Permission.CONFIGURE);
+        item.checkPermission(Item.CONFIGURE);
       }
       return DotNetUtils.getStringCredentialsList(true);
     }
@@ -199,7 +198,7 @@ public final class Push extends DeleteOrPush {
     @POST
     public ListBoxModel doFillSymbolApiKeyIdItems(@CheckForNull @AncestorInPath Item item) {
       if (item != null) {
-        item.checkPermission(Permission.CONFIGURE);
+        item.checkPermission(Item.CONFIGURE);
       }
       return DotNetUtils.getStringCredentialsList(true);
     }

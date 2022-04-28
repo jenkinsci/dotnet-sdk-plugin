@@ -4,7 +4,6 @@ import edu.umd.cs.findbugs.annotations.CheckForNull;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Util;
 import hudson.model.Item;
-import hudson.security.Permission;
 import hudson.util.ComboBoxModel;
 import hudson.util.FormValidation;
 import io.jenkins.plugins.dotnet.commands.CommandDescriptor;
@@ -50,7 +49,7 @@ public abstract class MSBuildCommandDescriptor extends CommandDescriptor {
   @POST
   public FormValidation doCheckPropertiesString(@QueryParameter String value, @CheckForNull @AncestorInPath Item item) {
     if (item != null) {
-      item.checkPermission(Permission.CONFIGURE);
+      item.checkPermission(Item.CONFIGURE);
     }
     value = Util.fixEmptyAndTrim(value);
     if (value != null) {
@@ -75,7 +74,7 @@ public abstract class MSBuildCommandDescriptor extends CommandDescriptor {
   @POST
   public final ComboBoxModel doFillConfigurationItems(@CheckForNull @AncestorInPath Item item) {
     if (item != null) {
-      item.checkPermission(Permission.CONFIGURE);
+      item.checkPermission(Item.CONFIGURE);
     }
     final ComboBoxModel model = new ComboBoxModel();
     // Note: not localized

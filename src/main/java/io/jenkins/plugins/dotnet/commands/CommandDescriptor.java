@@ -8,7 +8,6 @@ import hudson.model.AbstractProject;
 import hudson.model.AutoCompletionCandidates;
 import hudson.model.FreeStyleProject;
 import hudson.model.Item;
-import hudson.security.Permission;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.util.FormValidation;
@@ -59,7 +58,7 @@ public abstract class CommandDescriptor extends BuildStepDescriptor<Builder> imp
   public final AutoCompletionCandidates doAutoCompleteFramework(@CheckForNull @QueryParameter String value,
                                                                 @CheckForNull @AncestorInPath Item item) {
     if (item != null) {
-      item.checkPermission(Permission.CONFIGURE);
+      item.checkPermission(Item.CONFIGURE);
     }
     return Framework.getInstance().autoCompleteMoniker(value);
   }
@@ -77,7 +76,7 @@ public abstract class CommandDescriptor extends BuildStepDescriptor<Builder> imp
   public final AutoCompletionCandidates doAutoCompleteFrameworksString(@CheckForNull @QueryParameter String value,
                                                                        @CheckForNull @AncestorInPath Item item) {
     if (item != null) {
-      item.checkPermission(Permission.CONFIGURE);
+      item.checkPermission(Item.CONFIGURE);
     }
     return Framework.getInstance().autoCompleteMoniker(value);
   }
@@ -95,7 +94,7 @@ public abstract class CommandDescriptor extends BuildStepDescriptor<Builder> imp
   public final AutoCompletionCandidates doAutoCompleteRuntime(@CheckForNull @QueryParameter String value,
                                                               @CheckForNull @AncestorInPath Item item) {
     if (item != null) {
-      item.checkPermission(Permission.CONFIGURE);
+      item.checkPermission(Item.CONFIGURE);
     }
     return Runtime.getInstance().autoCompleteIdentifier(value);
   }
@@ -113,7 +112,7 @@ public abstract class CommandDescriptor extends BuildStepDescriptor<Builder> imp
   public final AutoCompletionCandidates doAutoCompleteRuntimesString(@CheckForNull @QueryParameter String value,
                                                                      @CheckForNull @AncestorInPath Item item) {
     if (item != null) {
-      item.checkPermission(Permission.CONFIGURE);
+      item.checkPermission(Item.CONFIGURE);
     }
     return Runtime.getInstance().autoCompleteIdentifier(value);
   }
@@ -130,7 +129,7 @@ public abstract class CommandDescriptor extends BuildStepDescriptor<Builder> imp
   @POST
   public FormValidation doCheckCharset(@CheckForNull @QueryParameter String value, @CheckForNull @AncestorInPath Item item) {
     if (item != null) {
-      item.checkPermission(Permission.CONFIGURE);
+      item.checkPermission(Item.CONFIGURE);
     }
     final String name = Util.fixEmptyAndTrim(value);
     if (name != null) {
@@ -156,7 +155,7 @@ public abstract class CommandDescriptor extends BuildStepDescriptor<Builder> imp
   @POST
   public FormValidation doCheckFramework(@CheckForNull @QueryParameter String value, @CheckForNull @AncestorInPath Item item) {
     if (item != null) {
-      item.checkPermission(Permission.CONFIGURE);
+      item.checkPermission(Item.CONFIGURE);
     }
     return Framework.getInstance().checkMoniker(value);
   }
@@ -173,7 +172,7 @@ public abstract class CommandDescriptor extends BuildStepDescriptor<Builder> imp
   @POST
   public FormValidation doCheckFrameworksString(@CheckForNull @QueryParameter String value, @CheckForNull @AncestorInPath Item item) {
     if (item != null) {
-      item.checkPermission(Permission.CONFIGURE);
+      item.checkPermission(Item.CONFIGURE);
     }
     return Framework.getInstance().checkMonikers(value);
   }
@@ -190,7 +189,7 @@ public abstract class CommandDescriptor extends BuildStepDescriptor<Builder> imp
   @POST
   public FormValidation doCheckRuntime(@CheckForNull @QueryParameter String value, @CheckForNull @AncestorInPath Item item) {
     if (item != null) {
-      item.checkPermission(Permission.CONFIGURE);
+      item.checkPermission(Item.CONFIGURE);
     }
     return Runtime.getInstance().checkIdentifier(value);
   }
@@ -207,7 +206,7 @@ public abstract class CommandDescriptor extends BuildStepDescriptor<Builder> imp
   @POST
   public FormValidation doCheckRuntimesString(@CheckForNull @QueryParameter String value, @CheckForNull @AncestorInPath Item item) {
     if (item != null) {
-      item.checkPermission(Permission.CONFIGURE);
+      item.checkPermission(Item.CONFIGURE);
     }
     return Runtime.getInstance().checkIdentifiers(value);
   }
@@ -223,7 +222,7 @@ public abstract class CommandDescriptor extends BuildStepDescriptor<Builder> imp
   @POST
   public final ListBoxModel doFillCharsetItems(@CheckForNull @AncestorInPath Item item) {
     if (item != null) {
-      item.checkPermission(Permission.CONFIGURE);
+      item.checkPermission(Item.CONFIGURE);
     }
     final ListBoxModel model = new ListBoxModel();
     model.add(Messages.Command_SameCharsetAsBuild(), "");
@@ -251,7 +250,7 @@ public abstract class CommandDescriptor extends BuildStepDescriptor<Builder> imp
   @POST
   public final ListBoxModel doFillSdkItems(@CheckForNull @AncestorInPath Item item) {
     if (item != null) {
-      item.checkPermission(Permission.CONFIGURE);
+      item.checkPermission(Item.CONFIGURE);
     }
     final ListBoxModel model = new ListBoxModel();
     model.add(Messages.Command_DefaultSDK(), "");
@@ -270,7 +269,7 @@ public abstract class CommandDescriptor extends BuildStepDescriptor<Builder> imp
   @POST
   public final ListBoxModel doFillVerbosityItems(@CheckForNull @AncestorInPath Item item) {
     if (item != null) {
-      item.checkPermission(Permission.CONFIGURE);
+      item.checkPermission(Item.CONFIGURE);
     }
     final ListBoxModel model = new ListBoxModel();
     model.add(Messages.Command_Verbosity_Default(), "");
