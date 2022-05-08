@@ -371,10 +371,6 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
       return Messages.DotNetSDK_DisplayName();
     }
 
-    public boolean isTelemetryGloballyDisabled() {
-      return ExtensionList.lookupSingleton(DotNetConfiguration.class).isTelemetryOptOut();
-    }
-
     /**
      * Gets a .NET SDK installation by its name, and prepare it for use in the specified context.
      *
