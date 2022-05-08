@@ -104,7 +104,11 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
    * @param model The listbox model to add the .NET SDK installations to.
    */
   public static void addSdks(@NonNull ListBoxModel model) {
-    final DotNetSDK[] sdks = Jenkins.get().getDescriptorByType(DescriptorImpl.class).getInstallations();
+    final DescriptorImpl descriptor = Jenkins.get().getDescriptorByType(DescriptorImpl.class);
+    if (descriptor == null) {
+      return;
+    }
+    final DotNetSDK[] sdks = descriptor.getInstallations();
     for (final DotNetSDK _sdk : sdks) {
       model.add(_sdk.getName());
     }
@@ -276,7 +280,11 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
    * @return {@code true} when at least one .NET SDK has been configured; otherwise, {@code false}.
    */
   public static boolean hasConfiguration() {
-    final DotNetSDK[] sdks = Jenkins.get().getDescriptorByType(DescriptorImpl.class).getInstallations();
+    final DescriptorImpl descriptor = Jenkins.get().getDescriptorByType(DescriptorImpl.class);
+    if (descriptor == null) {
+      return false;
+    }
+    final DotNetSDK[] sdks = descriptor.getInstallations();
     return sdks != null && sdks.length > 0;
   }
 
