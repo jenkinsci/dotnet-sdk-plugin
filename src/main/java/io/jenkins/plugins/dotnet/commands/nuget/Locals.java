@@ -67,7 +67,7 @@ public final class Locals extends NuGetCommand {
   /**
    * Sets the cache location to operate on.
    *
-   * @param cacheLocation The cache location to operate on.<br/> This can be one of:
+   * @param cacheLocation The cache location to operate on; this can be one of:
    *                      <ul>
    *                        <li>{@value LOCATION_GLOBAL_PACKAGES}: the global package cache</li>
    *                        <li>{@value LOCATION_HTTP_CACHE}: the cache used for HTTP responses</li>
@@ -116,7 +116,7 @@ public final class Locals extends NuGetCommand {
   /**
    * Sets the operation to apply.
    *
-   * @param operation The operation to apply.<br/> This can be one of:
+   * @param operation The operation to apply; this can be one of:
    *                  <ul>
    *                    <li>{@value OPERATION_CLEAR}: clears the contents of the cache location</li>
    *                    <li>{@value OPERATION_LIST}: shows the path to the cache location</li>
