@@ -74,9 +74,11 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
     this.configuration = ExtensionList.lookupSingleton(DotNetConfiguration.class);
   }
 
+  /** The global configuration for the .NET SDK plugin. */
   @NonNull
   private final DotNetConfiguration configuration;
 
+  /** Indicates whether the telemetry opt-out is set. */
   private boolean telemetryOptOut = false;
 
   /**

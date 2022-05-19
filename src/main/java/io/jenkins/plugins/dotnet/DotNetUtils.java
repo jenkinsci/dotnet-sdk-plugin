@@ -29,6 +29,15 @@ public interface DotNetUtils {
   /** A string variable resolver that does not resolve any variables. */
   VariableResolver<String> RESOLVE_NOTHING = name -> null;
 
+  /**
+   * Creates a property map based on a string containing property assignments.
+   *
+   * @param propertyString A string containing property assignments.
+   *
+   * @return A map of the properties as key/value pairs.
+   *
+   * @throws IOException When {@code propertyString} could not be loaded as a set of properties.
+   */
   @CheckForNull
   static Map<String, String> createPropertyMap(@CheckForNull String propertyString) throws IOException {
     if (Util.fixEmpty(propertyString) == null)
@@ -37,6 +46,15 @@ public interface DotNetUtils {
     return properties.entrySet().stream().collect(Collectors.toMap(e -> (String) e.getKey(), e -> (String) e.getValue()));
   }
 
+  /**
+   * Creates a string containing property assignments based on a property map.
+   *
+   * @param propertyMap A map of properties as key/value pairs.
+   *
+   * @return A string containing property assignments.
+   *
+   * @throws IOException When the properties could not be written as a string.
+   */
   @CheckForNull
   static String createPropertyString(@CheckForNull Map<String, String> propertyMap) throws IOException {
     if (propertyMap == null || propertyMap.isEmpty())
