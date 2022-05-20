@@ -18,10 +18,16 @@ import java.util.logging.Logger;
 /** A build step executing an MSBuild-based .NET CLI command. */
 public class MSBuildCommand extends Command {
 
+  /** Creates a new {@code dotnet} build step based on MSBuild processing. */
   public MSBuildCommand() {
     this.command = null;
   }
 
+  /**
+   * Creates a new {@code dotnet} build step based on MSBuild processing.
+   *
+   * @param command The {@code dotnet} command to execute.
+   */
   public MSBuildCommand(@NonNull String command) {
     this.command = command;
   }
@@ -217,8 +223,8 @@ public class MSBuildCommand extends Command {
   protected String project;
 
   /**
-   * Gets the name of the project file to process. For some commands, this can also be a directory or a solution file. When {@code
-   * null}, a project or solution from the current directory will usually be processed.
+   * Gets the name of the project file to process. For some commands, this can also be a directory or a solution file. When
+   * {@code null}, a project or solution from the current directory will usually be processed.
    *
    * @return The project to process.
    */
@@ -228,8 +234,8 @@ public class MSBuildCommand extends Command {
   }
 
   /**
-   * Sets the name of the project file to process. For some commands, this can also be a directory or a solution file. When {@code
-   * null}, a project or solution from the current directory will usually be processed.
+   * Sets the name of the project file to process. For some commands, this can also be a directory or a solution file. When
+   * {@code null}, a project or solution from the current directory will usually be processed.
    *
    * @param project The project to process.
    */
@@ -298,8 +304,8 @@ public class MSBuildCommand extends Command {
   /**
    * Determines whether any build servers started by the main command should be shut down.
    *
-   * @param shutDownBuildServers {@code true} if "{@code dotnet build-server shutdown}" should be run after the main command; {@code
-   *                             false} otherwise.
+   * @param shutDownBuildServers {@code true} if "{@code dotnet build-server shutdown}" should be run after the main command;
+   *                             {@code false} otherwise.
    */
   @DataBoundSetter
   public void setShutDownBuildServers(boolean shutDownBuildServers) {
@@ -338,8 +344,8 @@ public class MSBuildCommand extends Command {
   /**
    * Determines whether the presence of warnings makes the build unstable (instead of successful).
    *
-   * @param unstableIfWarnings {@code true} if warnings cause the build to be marked as unstable (instead of successful); {@code
-   *                           false} otherwise.
+   * @param unstableIfWarnings {@code true} if warnings cause the build to be marked as unstable (instead of successful);
+   *                           {@code false} otherwise.
    */
   @DataBoundSetter
   public void setUnstableIfWarnings(boolean unstableIfWarnings) {

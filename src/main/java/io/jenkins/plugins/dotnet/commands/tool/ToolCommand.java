@@ -8,10 +8,16 @@ import io.jenkins.plugins.dotnet.commands.DotNetArguments;
 /** A build step executing a subcommand of {@code dotnet tool}. */
 public class ToolCommand extends Command {
 
+  /** Creates a new {@code dotnet nuget} build step. */
   protected ToolCommand() {
     this.subCommand = null;
   }
 
+  /**
+   * Creates a new {@code dotnet tool} build step.
+   *
+   * @param subCommand The {@code dotnet tool} subcommand to execute.
+   */
   protected ToolCommand(@NonNull String subCommand) {
     this.subCommand = subCommand;
   }

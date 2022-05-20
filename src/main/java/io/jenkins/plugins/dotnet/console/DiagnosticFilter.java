@@ -15,6 +15,7 @@ public final class DiagnosticFilter extends ConsoleLogFilter implements Serializ
 
   private static final long serialVersionUID = 5093823694192317972L;
 
+  /** An encoded diagnostic note. */
   private final byte[] diagnosticNote = DotNetUtils.encodeNote(DiagnosticNote::new);
 
   /**

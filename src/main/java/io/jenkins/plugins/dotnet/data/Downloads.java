@@ -43,7 +43,8 @@ public final class Downloads extends DownloadService.Downloadable {
    * @return The requested package, or {@code null} if it was not found.
    */
   @CheckForNull
-  public Package getPackage(@CheckForNull String version, @CheckForNull String release, @CheckForNull String sdk, @CheckForNull String url) {
+  public Package getPackage(@CheckForNull String version, @CheckForNull String release, @CheckForNull String sdk,
+                            @CheckForNull String url) {
     final Sdk s = this.getSdk(version, release, sdk);
     if (s == null)
       return null;
@@ -670,8 +671,21 @@ public final class Downloads extends DownloadService.Downloadable {
     return this;
   }
 
+  /**
+   * Reads a JSON property containing an array of objects, converting them to a map of typed Java objects.
+   *
+   * @param o         The JSON object to take the property from.
+   * @param prop      The name of the property to process.
+   * @param convert   A function to convert an array element to the desired Java object.
+   * @param createKey A function to determine the key to use for a given (already-converted) object.
+   * @param <T>       The specific Java object type to create from the array elements.
+   *
+   * @return The resulting map.
+   */
   @NonNull
-  public static <T> Map<String, T> readJsonObjectArray(@NonNull JSONObject o, @NonNull String prop, @NonNull Function<JSONObject, T> convert, @NonNull Function<T, String> createKey) {
+  public static <T> Map<String, T> readJsonObjectArray(@NonNull JSONObject o, @NonNull String prop,
+                                                       @NonNull Function<JSONObject, T> convert,
+                                                       @NonNull Function<T, String> createKey) {
     final Map<String, T> map = new LinkedHashMap<>();
     final Object array = o.get(prop);
     if (array instanceof JSONArray) {
@@ -697,8 +711,16 @@ public final class Downloads extends DownloadService.Downloadable {
     return map;
   }
 
+  /**
+   * Reads a JSON property containing an array of strings.
+   *
+   * @param o    The JSON object to take the property from.
+   * @param prop The name of the property to process.
+   *
+   * @return The resulting list of strings.
+   */
   @NonNull
-  public static <T> List<String> readJsonStringArray(@NonNull JSONObject o, @NonNull String prop) {
+  public static List<String> readJsonStringArray(@NonNull JSONObject o, @NonNull String prop) {
     final List<String> list = new ArrayList<>();
     final Object array = o.get(prop);
     if (array instanceof JSONArray) {

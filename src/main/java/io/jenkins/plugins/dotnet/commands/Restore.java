@@ -285,7 +285,7 @@ public final class Restore extends Command {
     this.packages = Util.fixEmptyAndTrim(packages);
   }
 
-  protected String project;
+  private String project;
 
   /**
    * Gets the project to restore.

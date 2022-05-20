@@ -74,9 +74,11 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
     this.configuration = ExtensionList.lookupSingleton(DotNetConfiguration.class);
   }
 
+  /** The global configuration for the .NET SDK plugin. */
   @NonNull
   private final DotNetConfiguration configuration;
 
+  /** Indicates whether the telemetry opt-out is set. */
   private boolean telemetryOptOut = false;
 
   /**
@@ -104,7 +106,11 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
    * @param model The listbox model to add the .NET SDK installations to.
    */
   public static void addSdks(@NonNull ListBoxModel model) {
-    final DotNetSDK[] sdks = Jenkins.get().getDescriptorByType(DescriptorImpl.class).getInstallations();
+    final DescriptorImpl descriptor = Jenkins.get().getDescriptorByType(DescriptorImpl.class);
+    if (descriptor == null) {
+      return;
+    }
+    final DotNetSDK[] sdks = descriptor.getInstallations();
     for (final DotNetSDK _sdk : sdks) {
       model.add(_sdk.getName());
     }
@@ -276,7 +282,11 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
    * @return {@code true} when at least one .NET SDK has been configured; otherwise, {@code false}.
    */
   public static boolean hasConfiguration() {
-    final DotNetSDK[] sdks = Jenkins.get().getDescriptorByType(DescriptorImpl.class).getInstallations();
+    final DescriptorImpl descriptor = Jenkins.get().getDescriptorByType(DescriptorImpl.class);
+    if (descriptor == null) {
+      return false;
+    }
+    final DotNetSDK[] sdks = descriptor.getInstallations();
     return sdks != null && sdks.length > 0;
   }
 
@@ -361,10 +371,6 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
     @NonNull
     public String getDisplayName() {
       return Messages.DotNetSDK_DisplayName();
-    }
-
-    public boolean isTelemetryGloballyDisabled() {
-      return ExtensionList.lookupSingleton(DotNetConfiguration.class).isTelemetryOptOut();
     }
 
     /**

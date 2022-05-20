@@ -48,10 +48,20 @@ public final class Delete extends DeleteOrPush {
 
   private String packageName;
 
+  /**
+   * Gets the name of the package to delete.
+   *
+   * @return The name of the package to delete.
+   */
   public String getPackageName() {
     return this.packageName;
   }
 
+  /**
+   * Sets the name of the package to delete.
+   *
+   * @param packageName The name of the package to delete.
+   */
   @DataBoundSetter
   public void setPackageName(String packageName) {
     this.packageName = Util.fixEmptyAndTrim(packageName);
@@ -59,10 +69,20 @@ public final class Delete extends DeleteOrPush {
 
   private String packageVersion;
 
+  /**
+   * The version of the package to delete.
+   *
+   * @return The version of the package to delete.
+   */
   public String getPackageVersion() {
     return this.packageVersion;
   }
 
+  /**
+   * Sets the version of the package to delete.
+   *
+   * @param packageVersion The version of the package to delete.
+   */
   @DataBoundSetter
   public void setPackageVersion(String packageVersion) {
     this.packageVersion = Util.fixEmptyAndTrim(packageVersion);

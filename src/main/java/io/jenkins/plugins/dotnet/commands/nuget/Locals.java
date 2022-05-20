@@ -36,18 +36,45 @@ public final class Locals extends NuGetCommand {
   //region Properties
 
   private static final String LOCATION_ALL = "all";
+
   private static final String LOCATION_GLOBAL_PACKAGES = "global-packages";
+
   private static final String LOCATION_HTTP_CACHE = "http-cache";
+
   private static final String LOCATION_TEMP = "temp";
 
   @NonNull
   private String cacheLocation;
 
+  /**
+   * Gets the cache location to operate on.
+   * <p>
+   * This can be one of:
+   * <ul>
+   *   <li>{@value LOCATION_GLOBAL_PACKAGES}: the global package cache</li>
+   *   <li>{@value LOCATION_HTTP_CACHE}: the cache used for HTTP responses</li>
+   *   <li>{@value LOCATION_TEMP}: temporary storage</li>
+   *   <li>{@value LOCATION_ALL}: all of the above</li>
+   * </ul>
+   *
+   * @return The cache location to operate on.
+   */
   @NonNull
   public String getCacheLocation() {
     return this.cacheLocation;
   }
 
+  /**
+   * Sets the cache location to operate on.
+   *
+   * @param cacheLocation The cache location to operate on; this can be one of:
+   *                      <ul>
+   *                        <li>{@value LOCATION_GLOBAL_PACKAGES}: the global package cache</li>
+   *                        <li>{@value LOCATION_HTTP_CACHE}: the cache used for HTTP responses</li>
+   *                        <li>{@value LOCATION_TEMP}: temporary storage</li>
+   *                        <li>{@value LOCATION_ALL}: all of the above</li>
+   *                      </ul>
+   */
   @DataBoundSetter
   public void setCacheLocation(@NonNull String cacheLocation) {
     cacheLocation = cacheLocation.trim().toLowerCase();
@@ -64,16 +91,37 @@ public final class Locals extends NuGetCommand {
   }
 
   private static final String OPERATION_CLEAR = "clear";
+
   private static final String OPERATION_LIST = "list";
 
   @NonNull
   private String operation;
 
+  /**
+   * Gets the operation to apply.
+   * <p>
+   * This can be one of:
+   * <ul>
+   *   <li>{@value OPERATION_CLEAR}: clears the contents of the cache location</li>
+   *   <li>{@value OPERATION_LIST}: shows the path to the cache location</li>
+   * </ul>
+   *
+   * @return The operation to apply.
+   */
   @NonNull
   public String getOperation() {
     return this.operation;
   }
 
+  /**
+   * Sets the operation to apply.
+   *
+   * @param operation The operation to apply; this can be one of:
+   *                  <ul>
+   *                    <li>{@value OPERATION_CLEAR}: clears the contents of the cache location</li>
+   *                    <li>{@value OPERATION_LIST}: shows the path to the cache location</li>
+   *                  </ul>
+   */
   @DataBoundSetter
   public void setOperation(@NonNull String operation) {
     operation = operation.trim().toLowerCase();

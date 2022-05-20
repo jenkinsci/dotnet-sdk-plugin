@@ -7,11 +7,18 @@ import hudson.Util;
 import io.jenkins.plugins.dotnet.commands.DotNetArguments;
 import org.kohsuke.stapler.DataBoundSetter;
 
+/** A build step to run "{@code dotnet nuget delete}" or "{@code dotnet nuget push}". */
 public class DeleteOrPush extends NuGetCommand {
 
+  /** Creates a new build step to run "{@code dotnet nuget delete}" or "{@code dotnet nuget push}". */
   public DeleteOrPush() {
   }
 
+  /**
+   * Creates a new build step to run "{@code dotnet nuget delete}" or "{@code dotnet nuget push}".
+   *
+   * @param subCommand The specific subcommand to run (i.e. {@code delete} or {@code push}).
+   */
   public DeleteOrPush(@NonNull String subCommand) {
     super(subCommand);
   }
@@ -61,10 +68,22 @@ public class DeleteOrPush extends NuGetCommand {
 
   private boolean noServiceEndpoint;
 
+  /**
+   * Indicates whether the service endpoint ({@code api/v2/package}) should be added to the configured package source URL.
+   *
+   * @return {@code true} if the package source URL will be used as-is; {@code false} if {@code api/v2/package} will be appended to
+   * it.
+   */
   public boolean isNoServiceEndpoint() {
     return this.noServiceEndpoint;
   }
 
+  /**
+   * Sets whether the service endpoint ({@code api/v2/package}) should be added to the configured package source URL.
+   *
+   * @param noServiceEndpoint {@code true} if the package source URL should be used as-is; {@code false} if {@code api/v2/package}
+   *                          should be appended to * it.
+   */
   @DataBoundSetter
   public void setNoServiceEndpoint(boolean noServiceEndpoint) {
     this.noServiceEndpoint = noServiceEndpoint;
@@ -72,10 +91,20 @@ public class DeleteOrPush extends NuGetCommand {
 
   private String source;
 
+  /**
+   * Sets the package source to use.
+   *
+   * @return The package source to use.
+   */
   public String getSource() {
     return this.source;
   }
 
+  /**
+   * Sets the package source to use.
+   *
+   * @param source The package source to use.
+   */
   @DataBoundSetter
   public void setSource(String source) {
     this.source = Util.fixEmptyAndTrim(source);

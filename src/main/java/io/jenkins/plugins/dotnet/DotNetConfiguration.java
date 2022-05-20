@@ -28,30 +28,43 @@ import org.kohsuke.stapler.verb.POST;
 
 import java.io.Serializable;
 
+/** Global configuration for the .NET SDK plugin. */
 @Extension
 public class DotNetConfiguration extends GlobalConfiguration implements Serializable {
 
   private static final long serialVersionUID = 7543404699990461923L;
 
+  /** Creates the global configuration for the .NET SDK plugin. */
   @DataBoundConstructor
   public DotNetConfiguration() {
     super();
     this.load();
   }
 
+  /**
+   * Gets the category for this global configuration.
+   *
+   * @return {@link ToolConfigurationCategory}.
+   */
   @NonNull
   @Override
   public GlobalConfigurationCategory getCategory() {
     return GlobalConfigurationCategory.get(ToolConfigurationCategory.class);
   }
 
-  @Override
-  public String getConfigPage() {
-    return super.getConfigPage();
-  }
-
+  /** Indicates whether the "build" command should be available for use in freestyle projects. */
   private boolean buildAllowed = true;
 
+  /**
+   * Runs validation when enabling/disabling the "build" command for use in freestyle projects.
+   * <p>
+   * In particular, when disabling the command, this will check to see whether there are any freestyle projects currently using the
+   * command.
+   *
+   * @param buildAllowed The checked state of the relevant checkbox on the configuration page.
+   *
+   * @return The validation result; either "OK" or a warning indicating the command is still in use.
+   */
   @NonNull
   @POST
   public FormValidation doCheckBuildAllowed(@QueryParameter boolean buildAllowed) {
@@ -78,8 +91,19 @@ public class DotNetConfiguration extends GlobalConfiguration implements Serializ
     this.save();
   }
 
+  /** Indicates whether the "clean" command should be available for use in freestyle projects. */
   private boolean cleanAllowed = true;
 
+  /**
+   * Runs validation when enabling/disabling the "clean" command for use in freestyle projects.
+   * <p>
+   * In particular, when disabling the command, this will check to see whether there are any freestyle projects currently using the
+   * command.
+   *
+   * @param cleanAllowed The checked state of the relevant checkbox on the configuration page.
+   *
+   * @return The validation result; either "OK" or a warning indicating the command is still in use.
+   */
   @NonNull
   @POST
   public FormValidation doCheckCleanAllowed(@QueryParameter boolean cleanAllowed) {
@@ -106,8 +130,19 @@ public class DotNetConfiguration extends GlobalConfiguration implements Serializ
     this.save();
   }
 
+  /** Indicates whether the "list package" command should be available for use in freestyle projects. */
   private boolean listPackageAllowed = true;
 
+  /**
+   * Runs validation when enabling/disabling the "list package" command for use in freestyle projects.
+   * <p>
+   * In particular, when disabling the command, this will check to see whether there are any freestyle projects currently using the
+   * command.
+   *
+   * @param listPackageAllowed The checked state of the relevant checkbox on the configuration page.
+   *
+   * @return The validation result; either "OK" or a warning indicating the command is still in use.
+   */
   @NonNull
   @POST
   public FormValidation doCheckListPackageAllowed(@QueryParameter boolean listPackageAllowed) {
@@ -134,8 +169,19 @@ public class DotNetConfiguration extends GlobalConfiguration implements Serializ
     this.save();
   }
 
+  /** Indicates whether the "nuget delete" command should be available for use in freestyle projects. */
   private boolean nuGetDeleteAllowed = true;
 
+  /**
+   * Runs validation when enabling/disabling the "nuget delete" command for use in freestyle projects.
+   * <p>
+   * In particular, when disabling the command, this will check to see whether there are any freestyle projects currently using the
+   * command.
+   *
+   * @param nuGetDeleteAllowed The checked state of the relevant checkbox on the configuration page.
+   *
+   * @return The validation result; either "OK" or a warning indicating the command is still in use.
+   */
   @NonNull
   @POST
   public FormValidation doCheckNuGetDeleteAllowed(@QueryParameter boolean nuGetDeleteAllowed) {
@@ -162,8 +208,19 @@ public class DotNetConfiguration extends GlobalConfiguration implements Serializ
     this.save();
   }
 
+  /** Indicates whether the "nuget locals" command should be available for use in freestyle projects. */
   private boolean nuGetLocalsAllowed = true;
 
+  /**
+   * Runs validation when enabling/disabling the "nuget locals" command for use in freestyle projects.
+   * <p>
+   * In particular, when disabling the command, this will check to see whether there are any freestyle projects currently using the
+   * command.
+   *
+   * @param nuGetLocalsAllowed The checked state of the relevant checkbox on the configuration page.
+   *
+   * @return The validation result; either "OK" or a warning indicating the command is still in use.
+   */
   @NonNull
   @POST
   public FormValidation doCheckNuGetLocalsAllowed(@QueryParameter boolean nuGetLocalsAllowed) {
@@ -190,8 +247,19 @@ public class DotNetConfiguration extends GlobalConfiguration implements Serializ
     this.save();
   }
 
+  /** Indicates whether the "nuget push" command should be available for use in freestyle projects. */
   private boolean nuGetPushAllowed = true;
 
+  /**
+   * Runs validation when enabling/disabling the "nuget push" command for use in freestyle projects.
+   * <p>
+   * In particular, when disabling the command, this will check to see whether there are any freestyle projects currently using the
+   * command.
+   *
+   * @param nuGetPushAllowed The checked state of the relevant checkbox on the configuration page.
+   *
+   * @return The validation result; either "OK" or a warning indicating the command is still in use.
+   */
   @NonNull
   @POST
   public FormValidation doCheckNuGetPushAllowed(@QueryParameter boolean nuGetPushAllowed) {
@@ -218,8 +286,19 @@ public class DotNetConfiguration extends GlobalConfiguration implements Serializ
     this.save();
   }
 
+  /** Indicates whether the "pack" command should be available for use in freestyle projects. */
   private boolean packAllowed = true;
 
+  /**
+   * Runs validation when enabling/disabling the "pack" command for use in freestyle projects.
+   * <p>
+   * In particular, when disabling the command, this will check to see whether there are any freestyle projects currently using the
+   * command.
+   *
+   * @param packAllowed The checked state of the relevant checkbox on the configuration page.
+   *
+   * @return The validation result; either "OK" or a warning indicating the command is still in use.
+   */
   @NonNull
   @POST
   public FormValidation doCheckPackAllowed(@QueryParameter boolean packAllowed) {
@@ -246,8 +325,19 @@ public class DotNetConfiguration extends GlobalConfiguration implements Serializ
     this.save();
   }
 
+  /** Indicates whether the "publish" command should be available for use in freestyle projects. */
   private boolean publishAllowed = true;
 
+  /**
+   * Runs validation when enabling/disabling the "publish" command for use in freestyle projects.
+   * <p>
+   * In particular, when disabling the command, this will check to see whether there are any freestyle projects currently using the
+   * command.
+   *
+   * @param publishAllowed The checked state of the relevant checkbox on the configuration page.
+   *
+   * @return The validation result; either "OK" or a warning indicating the command is still in use.
+   */
   @NonNull
   @POST
   public FormValidation doCheckPublishAllowed(@QueryParameter boolean publishAllowed) {
@@ -274,8 +364,19 @@ public class DotNetConfiguration extends GlobalConfiguration implements Serializ
     this.save();
   }
 
+  /** Indicates whether the "restore" command should be available for use in freestyle projects. */
   private boolean restoreAllowed = true;
 
+  /**
+   * Runs validation when enabling/disabling the "restore" command for use in freestyle projects.
+   * <p>
+   * In particular, when disabling the command, this will check to see whether there are any freestyle projects currently using the
+   * command.
+   *
+   * @param restoreAllowed The checked state of the relevant checkbox on the configuration page.
+   *
+   * @return The validation result; either "OK" or a warning indicating the command is still in use.
+   */
   @NonNull
   @POST
   public FormValidation doCheckRestoreAllowed(@QueryParameter boolean restoreAllowed) {
@@ -302,6 +403,7 @@ public class DotNetConfiguration extends GlobalConfiguration implements Serializ
     this.save();
   }
 
+  /** Indicates whether the telemetry opt-out is set. */
   private boolean telemetryOptOut = true;
 
   /**
@@ -323,8 +425,19 @@ public class DotNetConfiguration extends GlobalConfiguration implements Serializ
     this.telemetryOptOut = telemetryOptOut;
   }
 
+  /** Indicates whether the "test" command should be available for use in freestyle projects. */
   private boolean testAllowed = true;
 
+  /**
+   * Runs validation when enabling/disabling the "test" command for use in freestyle projects.
+   * <p>
+   * In particular, when disabling the command, this will check to see whether there are any freestyle projects currently using the
+   * command.
+   *
+   * @param testAllowed The checked state of the relevant checkbox on the configuration page.
+   *
+   * @return The validation result; either "OK" or a warning indicating the command is still in use.
+   */
   @NonNull
   @POST
   public FormValidation doCheckTestAllowed(@QueryParameter boolean testAllowed) {
@@ -351,8 +464,19 @@ public class DotNetConfiguration extends GlobalConfiguration implements Serializ
     this.save();
   }
 
+  /** Indicates whether the "tool restore" command should be available for use in freestyle projects. */
   private boolean toolRestoreAllowed = true;
 
+  /**
+   * Runs validation when enabling/disabling the "tool restore" command for use in freestyle projects.
+   * <p>
+   * In particular, when disabling the command, this will check to see whether there are any freestyle projects currently using the
+   * command.
+   *
+   * @param toolRestoreAllowed The checked state of the relevant checkbox on the configuration page.
+   *
+   * @return The validation result; either "OK" or a warning indicating the command is still in use.
+   */
   @NonNull
   @POST
   public FormValidation doCheckToolRestoreAllowed(@QueryParameter boolean toolRestoreAllowed) {
