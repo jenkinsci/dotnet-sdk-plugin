@@ -72,7 +72,8 @@ public class Command extends Builder implements SimpleBuildStep {
    * @throws IOException          When an I/O error occurs.
    */
   @Override
-  public void perform(@NonNull Run<?, ?> run, @NonNull FilePath workspace, @NonNull EnvVars env, @NonNull Launcher launcher, @NonNull TaskListener listener) throws InterruptedException, IOException {
+  public void perform(@NonNull Run<?, ?> run, @NonNull FilePath workspace, @NonNull EnvVars env, @NonNull Launcher launcher,
+                      @NonNull TaskListener listener) throws InterruptedException, IOException {
     final Charset cs = this.charset == null ? run.getCharset() : Charset.forName(this.charset);
     final DotNetSDK sdkInstance;
     if (this.sdk == null)
@@ -120,18 +121,32 @@ public class Command extends Builder implements SimpleBuildStep {
         final ArgumentListBuilder cmdLine = new ArgumentListBuilder(executable, "build-server", "shutdown");
         launcher.launch().cmds(cmdLine).envs(env).stdout(scanner).pwd(workspace).join();
       }
-      // TODO: Maybe also add configuration to set the build as either failed or unstable based on return code
-      if (scanner.getErrors() > 0) {
-        run.setResult(this.unstableIfErrors ? Result.UNSTABLE : Result.FAILURE);
-      }
-      else {
-        if (this.unstableIfWarnings && scanner.getWarnings() > 0) {
+      final int errors = scanner.getErrors();
+      if (errors > 0) {
+        if (this.unstableIfErrors) {
           run.setResult(Result.UNSTABLE);
         }
-        if (rc != 0) {
+        else if (this.continueOnError) {
           run.setResult(Result.FAILURE);
         }
+        else {
+          throw new AbortException(Messages.Command_ExecutionCompletedWithErrors(errors));
+        }
       }
+      else if (rc != 0) {
+        if (this.continueOnError) {
+          run.setResult(Result.FAILURE);
+        }
+        else {
+          throw new AbortException(Messages.Command_ExecutionCompletedWithNonZeroReturnCode(rc));
+        }
+      }
+      else if (this.unstableIfWarnings && scanner.getWarnings() > 0) {
+        run.setResult(Result.UNSTABLE);
+      }
+    }
+    catch (AbortException ae) {
+      throw ae;
     }
     catch (Throwable t) {
       Functions.printStackTrace(t, listener.fatalError(Messages.Command_ExecutionFailed()));
@@ -169,6 +184,30 @@ public class Command extends Builder implements SimpleBuildStep {
   @DataBoundSetter
   public void setCharset(@CheckForNull String charset) {
     this.charset = Util.fixEmptyAndTrim(charset);
+  }
+
+  private boolean continueOnError = false;
+
+  /**
+   * Determines whether the build should continue when there is an error.
+   *
+   * @return {@code false} if the build should be aborted when there is an error; {@code true} to set build status to failed or
+   * unstable, based on configuration, but allow the next build step to execute.
+   */
+  @SuppressWarnings("unused")
+  public boolean isContinueOnError() {
+    return this.continueOnError;
+  }
+
+  /**
+   * Determines whether the build should continue when there is an error.
+   *
+   * @param continueOnError {@code false} if the build should be aborted when there is an error; {@code true} if the build status
+   *                        should be set to failed or unstable, based on configuration, allowing the next build step to execute.
+   */
+  @DataBoundSetter
+  public void setContinueOnError(boolean continueOnError) {
+    this.continueOnError = continueOnError;
   }
 
   /** The name of the SDK to use. */
