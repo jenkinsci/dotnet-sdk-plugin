@@ -132,6 +132,8 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
     if (this.configuration.isTelemetryOptOut() || this.telemetryOptOut) {
       env.put("DOTNET_CLI_TELEMETRY_OPTOUT", "1");
     }
+    // Without this, a more recent system-level SDK can get used (especially on Windows) instead of the configured one.
+    env.put("DOTNET_MULTILEVEL_LOOKUP", "0");
   }
 
   /**
