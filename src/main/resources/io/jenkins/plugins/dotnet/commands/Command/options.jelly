@@ -5,4 +5,8 @@
     <f:textbox/>
   </f:entry>
 
+  <f:entry title="${%Continue On Error}" field="continueOnError">
+    <f:checkbox/>
+  </f:entry>
+
 </j:jelly>
