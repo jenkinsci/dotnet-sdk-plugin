@@ -25,7 +25,7 @@
   </developers>
 
   <properties>
-    <revision>1.4.1</revision>
+    <revision>2.0.0</revision>
     <changelist>-SNAPSHOT</changelist>
     <jenkins.version>2.332.1</jenkins.version>
     <useBeta>true</useBeta>
