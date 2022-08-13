@@ -4,7 +4,6 @@ import edu.umd.cs.findbugs.annotations.CheckForNull;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.Util;
-import io.jenkins.plugins.dotnet.DotNetConfiguration;
 import io.jenkins.plugins.dotnet.DotNetUtils;
 import io.jenkins.plugins.dotnet.commands.DotNetArguments;
 import io.jenkins.plugins.dotnet.commands.Messages;
@@ -314,11 +313,6 @@ public final class Build extends MSBuildCommand {
     @NonNull
     public String getDisplayName() {
       return Messages.MSBuild_Build_DisplayName();
-    }
-
-    @Override
-    protected boolean isApplicableToFreeStyleProjects(@NonNull DotNetConfiguration configuration) {
-      return configuration.isBuildAllowed();
     }
 
   }

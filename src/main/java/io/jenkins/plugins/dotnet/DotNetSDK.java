@@ -58,7 +58,6 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
    */
   public DotNetSDK(@NonNull String name, @NonNull String home) {
     super(name, home, Collections.emptyList());
-    this.configuration = ExtensionList.lookupSingleton(DotNetConfiguration.class);
   }
 
   /**
@@ -71,12 +70,7 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
   @DataBoundConstructor
   public DotNetSDK(@NonNull String name, @NonNull String home, @CheckForNull List<? extends ToolProperty<?>> properties) {
     super(name, home, properties);
-    this.configuration = ExtensionList.lookupSingleton(DotNetConfiguration.class);
   }
-
-  /** The global configuration for the .NET SDK plugin. */
-  @NonNull
-  private final DotNetConfiguration configuration;
 
   /** Indicates whether the telemetry opt-out is set. */
   private boolean telemetryOptOut = false;
@@ -129,7 +123,12 @@ public final class DotNetSDK extends ToolInstallation implements NodeSpecific<Do
       env.put(DotNetSDK.ROOT_ENVIRONMENT_VARIABLE, home);
       env.put("PATH+DOTNET", home);
     }
-    if (this.configuration.isTelemetryOptOut() || this.telemetryOptOut) {
+    boolean telemetryOptOut = this.telemetryOptOut;
+    if (!telemetryOptOut) {
+      // If not configured specifically at the SDK level, get it from the global one.
+      telemetryOptOut = ExtensionList.lookupSingleton(DotNetConfiguration.class).isTelemetryOptOut();
+    }
+    if (telemetryOptOut) {
       env.put("DOTNET_CLI_TELEMETRY_OPTOUT", "1");
     }
     // Without this, a more recent system-level SDK can get used (especially on Windows) instead of the configured one.

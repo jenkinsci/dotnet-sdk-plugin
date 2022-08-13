@@ -6,7 +6,6 @@ import hudson.AbortException;
 import hudson.Extension;
 import hudson.model.Item;
 import hudson.util.ListBoxModel;
-import io.jenkins.plugins.dotnet.DotNetConfiguration;
 import io.jenkins.plugins.dotnet.commands.DotNetArguments;
 import io.jenkins.plugins.dotnet.commands.Messages;
 import org.jenkinsci.Symbol;
@@ -197,11 +196,6 @@ public final class Locals extends NuGetCommand {
     @NonNull
     public String getDisplayName() {
       return Messages.NuGet_Locals_DisplayName();
-    }
-
-    @Override
-    protected boolean isApplicableToFreeStyleProjects(@NonNull DotNetConfiguration configuration) {
-      return configuration.isNuGetLocalsAllowed();
     }
 
   }

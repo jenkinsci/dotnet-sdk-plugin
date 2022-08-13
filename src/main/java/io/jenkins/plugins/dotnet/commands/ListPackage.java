@@ -6,7 +6,6 @@ import hudson.Extension;
 import hudson.Util;
 import hudson.model.Item;
 import hudson.util.FormValidation;
-import io.jenkins.plugins.dotnet.DotNetConfiguration;
 import io.jenkins.plugins.dotnet.DotNetUtils;
 import org.jenkinsci.Symbol;
 import org.jenkinsci.plugins.structs.describable.UninstantiatedDescribable;
@@ -629,11 +628,6 @@ public final class ListPackage extends Command {
     @NonNull
     public String getDisplayName() {
       return Messages.ListPackage_DisplayName();
-    }
-
-    @Override
-    protected boolean isApplicableToFreeStyleProjects(@NonNull DotNetConfiguration configuration) {
-      return configuration.isListPackageAllowed();
     }
 
   }

@@ -6,7 +6,6 @@ import hudson.Extension;
 import hudson.Util;
 import hudson.model.Item;
 import hudson.util.ListBoxModel;
-import io.jenkins.plugins.dotnet.DotNetConfiguration;
 import io.jenkins.plugins.dotnet.DotNetUtils;
 import io.jenkins.plugins.dotnet.commands.DotNetArguments;
 import io.jenkins.plugins.dotnet.commands.Messages;
@@ -362,11 +361,6 @@ public final class Publish extends MSBuildCommand {
     @NonNull
     public String getDisplayName() {
       return Messages.MSBuild_Publish_DisplayName();
-    }
-
-    @Override
-    protected boolean isApplicableToFreeStyleProjects(@NonNull DotNetConfiguration configuration) {
-      return configuration.isPublishAllowed();
     }
 
   }

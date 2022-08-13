@@ -7,61 +7,6 @@
       <f:checkbox default="true"/>
     </f:entry>
 
-    <f:advanced title="${%Section.FreeStyle}">
-
-      <div class="setting-name help-sibling">
-        ${%Section.FreeStyle}
-        <f:helpLink featureName="${%Section.FreeStyle}" url="${descriptor.getHelpFile()}"/>
-      </div>
-
-      <f:entry title="dotnet build" field="buildAllowed">
-        <f:checkbox/>
-      </f:entry>
-
-      <f:entry title="dotnet clean" field="cleanAllowed">
-        <f:checkbox/>
-      </f:entry>
-
-      <f:entry title="dotnet list package" field="listPackageAllowed">
-        <f:checkbox/>
-      </f:entry>
-
-      <f:entry title="dotnet nuget delete" field="nuGetDeleteAllowed">
-        <f:checkbox/>
-      </f:entry>
-
-      <f:entry title="dotnet nuget locals" field="nuGetLocalsAllowed">
-        <f:checkbox/>
-      </f:entry>
-
-      <f:entry title="dotnet nuget push" field="nuGetPushAllowed">
-        <f:checkbox/>
-      </f:entry>
-
-      <f:entry title="dotnet pack" field="packAllowed">
-        <f:checkbox/>
-      </f:entry>
-
-      <f:entry title="dotnet publish" field="publishAllowed">
-        <f:checkbox/>
-      </f:entry>
-
-      <f:entry title="dotnet restore" field="restoreAllowed">
-        <f:checkbox/>
-      </f:entry>
-
-      <f:entry title="dotnet test" field="testAllowed">
-        <f:checkbox/>
-      </f:entry>
-
-      <f:entry title="dotnet tool restore" field="toolRestoreAllowed">
-        <f:checkbox/>
-      </f:entry>
-
-      <f:helpArea/>
-
-    </f:advanced>
-
   </f:section>
 
 </j:jelly>

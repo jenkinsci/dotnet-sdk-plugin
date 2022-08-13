@@ -1,6 +1,16 @@
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
 
+  <div class="alert alert-warning">
+    <dl>
+      <dt>This build step is deprecated.</dt>
+      <dd>
+        Instead of separate build steps for each .NET command, there is now a single build step that uses configuration to set up
+        which specific command to run. This reduces clutter when selecting build steps.
+      </dd>
+    </dl>
+  </div>
+
   <f:entry title="${%.NET SDK}" field="sdk">
     <f:select/>
   </f:entry>

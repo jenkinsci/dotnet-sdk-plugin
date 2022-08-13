@@ -8,7 +8,6 @@ import hudson.Util;
 import hudson.model.Item;
 import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
-import io.jenkins.plugins.dotnet.DotNetConfiguration;
 import io.jenkins.plugins.dotnet.DotNetUtils;
 import io.jenkins.plugins.dotnet.commands.DotNetArguments;
 import io.jenkins.plugins.dotnet.commands.Messages;
@@ -179,11 +178,6 @@ public final class Delete extends DeleteOrPush {
     @NonNull
     public String getDisplayName() {
       return Messages.NuGet_Delete_DisplayName();
-    }
-
-    @Override
-    protected boolean isApplicableToFreeStyleProjects(@NonNull DotNetConfiguration configuration) {
-      return configuration.isNuGetDeleteAllowed();
     }
 
   }

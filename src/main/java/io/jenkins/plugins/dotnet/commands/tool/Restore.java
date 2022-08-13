@@ -5,7 +5,6 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.AbortException;
 import hudson.Extension;
 import hudson.Util;
-import io.jenkins.plugins.dotnet.DotNetConfiguration;
 import io.jenkins.plugins.dotnet.DotNetUtils;
 import io.jenkins.plugins.dotnet.commands.DotNetArguments;
 import io.jenkins.plugins.dotnet.commands.Messages;
@@ -289,10 +288,6 @@ public final class Restore extends ToolCommand {
       return Messages.Tool_Restore_DisplayName();
     }
 
-    @Override
-    protected boolean isApplicableToFreeStyleProjects(@NonNull DotNetConfiguration configuration) {
-      return configuration.isToolRestoreAllowed();
-    }
   }
 
   //endregion
