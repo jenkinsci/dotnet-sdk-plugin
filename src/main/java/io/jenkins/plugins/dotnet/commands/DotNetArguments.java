@@ -94,6 +94,18 @@ public final class DotNetArguments {
   }
 
   /**
+   * Adds a flag argument.
+   *
+   * @param flag The name of the flag (without the {@code --} prefix).
+   *
+   * @return This .NET CLI argument processor.
+   */
+  public DotNetArguments addFlag(@NonNull String flag) {
+    this.cmdLine.add("--" + flag);
+    return this;
+  }
+
+  /**
    * Optionally adds a flag argument.
    *
    * @param flag The name of the flag (without the {@code --} prefix).
@@ -102,8 +114,18 @@ public final class DotNetArguments {
    * @return This .NET CLI argument processor.
    */
   public DotNetArguments addFlag(@NonNull String flag, boolean set) {
-    if (set)
-      this.cmdLine.add("--" + flag);
+    return set ? this.addFlag(flag) : this;
+  }
+
+  /**
+   * Adds a flag argument.
+   *
+   * @param flag The name of the flag (without the {@code -} prefix).
+   *
+   * @return This .NET CLI argument processor.
+   */
+  public DotNetArguments addFlag(char flag) {
+    this.cmdLine.add("-" + flag);
     return this;
   }
 
@@ -116,9 +138,7 @@ public final class DotNetArguments {
    * @return This .NET CLI argument processor.
    */
   public DotNetArguments addFlag(char flag, boolean set) {
-    if (set)
-      this.cmdLine.add("-" + flag);
-    return this;
+    return set ? this.addFlag(flag) : this;
   }
 
   /**
