@@ -24,17 +24,35 @@ import java.util.regex.Pattern;
  */
 public final class DiagnosticScanner extends LineTransformationOutputStream {
 
-  /** The output stream being decorated by this scanner. */
-  private final OutputStream out;
+  /** The marker that a completion message should contain, to indicate where exit code information starts. */
+  private static final String COMPLETION_MESSAGE_EXIT_CODE_MARKER = "<!>";
+
+  /** Regular expression pattern for the MSBuild error count line. */
+  private static final Pattern RE_ERROR_COUNT = Pattern.compile("^ *(\\d+) Error\\(s\\)$");
+
+  /** Regular expression pattern for the MSBuild warning count line. */
+  private static final Pattern RE_WARNING_COUNT = Pattern.compile("^ *(\\d+) Warning\\(s\\)$");
 
   /** The character set to use when interpreting output as text. */
   private final Charset charset;
 
+  /** The encoded {@link CompletionNote} to use when marking command completion lines. */
+  private final byte[] completionNote;
+
   /** The encoded {@link DiagnosticNote} to use when marking diagnostic lines. */
   private final byte[] diagnosticNote;
 
-  /** The encoded {@link CompletionNote} to use when marking command completion lines. */
-  private final byte[] completionNote;
+  /** The number of errors reported by an MSBuild-based command in its build summary. */
+  private int errors = 0;
+
+  /** The output stream being decorated by this scanner. */
+  private final OutputStream out;
+
+  /** Indicates whether this scanner "owns" the output stream. */
+  private final boolean owned;
+
+  /** The number of warnings reported by an MSBuild-based command in its build summary. */
+  private int warnings = 0;
 
   /**
    * Creates a new scanner.
@@ -43,7 +61,19 @@ public final class DiagnosticScanner extends LineTransformationOutputStream {
    * @param charset The character set in use.
    */
   public DiagnosticScanner(@NonNull OutputStream out, @NonNull Charset charset) {
-    this(out, charset, DotNetUtils.encodeNote(DiagnosticNote::new), DotNetUtils.encodeNote(CompletionNote::new));
+    this(out, charset, false);
+  }
+
+  /**
+   * Creates a new scanner.
+   *
+   * @param out           The output stream to decorate.
+   * @param charset       The character set in use.
+   * @param takeOwnership Indicates whether the scanner should take ownership of the output stream (i.e. close it when the scanner
+   *                      is closed).
+   */
+  public DiagnosticScanner(@NonNull OutputStream out, @NonNull Charset charset, boolean takeOwnership) {
+    this(out, charset, DotNetUtils.encodeNote(DiagnosticNote::new), DotNetUtils.encodeNote(CompletionNote::new), takeOwnership);
   }
 
   /**
@@ -54,7 +84,8 @@ public final class DiagnosticScanner extends LineTransformationOutputStream {
    * @param diagnosticNote A specific encoded {@link DiagnosticNote} to use.
    */
   DiagnosticScanner(@NonNull OutputStream out, @NonNull Charset charset, @NonNull byte[] diagnosticNote) {
-    this(out, charset, diagnosticNote, null);
+    // Assumption: The filter should take ownership (it has done so until now).
+    this(out, charset, diagnosticNote, null, true);
   }
 
   /**
@@ -64,36 +95,16 @@ public final class DiagnosticScanner extends LineTransformationOutputStream {
    * @param charset        The character set in use.
    * @param diagnosticNote A specific encoded {@link DiagnosticNote} to use.
    * @param completionNote A specific encoded {@link CompletionNote} to use.
+   * @param takeOwnership  Indicates whether the scanner should take ownership of the output stream (i.e. close it when the scanner
+   *                       is closed).
    */
-  private DiagnosticScanner(@NonNull OutputStream out, @NonNull Charset charset, @NonNull byte[] diagnosticNote, @CheckForNull byte[] completionNote) {
-    this.out = out;
+  private DiagnosticScanner(@NonNull OutputStream out, @NonNull Charset charset, @NonNull byte[] diagnosticNote,
+                            @CheckForNull byte[] completionNote, boolean takeOwnership) {
     this.charset = charset;
-    this.diagnosticNote = diagnosticNote;
     this.completionNote = completionNote;
-  }
-
-  /** The number of errors reported by an MSBuild-based command in its build summary. */
-  private int errors = 0;
-
-  /**
-   * Gets the number of errors reported by an MSBuild-based command in its build summary.
-   *
-   * @return The number of errors reported; 0 if no build summary was seen.
-   */
-  public int getErrors() {
-    return this.errors;
-  }
-
-  /** The number of warnings reported by an MSBuild-based command in its build summary. */
-  private int warnings = 0;
-
-  /**
-   * Gets the number of warnings reported by an MSBuild-based command in its build summary.
-   *
-   * @return The number of warnings reported; 0 if no build summary was seen.
-   */
-  public int getWarnings() {
-    return this.warnings;
+    this.diagnosticNote = diagnosticNote;
+    this.out = out;
+    this.owned = takeOwnership;
   }
 
   /**
@@ -104,24 +115,10 @@ public final class DiagnosticScanner extends LineTransformationOutputStream {
   @Override
   public void close() throws IOException {
     super.close();
-    this.out.close();
+    if (this.owned) {
+      this.out.close();
+    }
   }
-
-  /**
-   * Flushes the wrapped output stream.
-   *
-   * @throws IOException When thrown by {@link OutputStream#flush()}.
-   */
-  @Override
-  public void flush() throws IOException {
-    this.out.flush();
-  }
-
-  /** Regular expression pattern for the MSBuild error count line. */
-  private static final Pattern RE_ERROR_COUNT = Pattern.compile("^ *(\\d+) Error\\(s\\)$");
-
-  /** Regular expression pattern for the MSBuild warning count line. */
-  private static final Pattern RE_WARNING_COUNT = Pattern.compile("^ *(\\d+) Warning\\(s\\)$");
 
   /**
    * Scans a line of output, then forwards it to the wrapped output stream.
@@ -151,8 +148,33 @@ public final class DiagnosticScanner extends LineTransformationOutputStream {
     this.out.write(lineBytes, 0, lineLength);
   }
 
-  /** The marker that a completion message should contain, to indicate where exit code information starts. */
-  private static final String COMPLETION_MESSAGE_EXIT_CODE_MARKER = "<!>";
+  /**
+   * Flushes the wrapped output stream.
+   *
+   * @throws IOException When thrown by {@link OutputStream#flush()}.
+   */
+  @Override
+  public void flush() throws IOException {
+    this.out.flush();
+  }
+
+  /**
+   * Gets the number of errors reported by an MSBuild-based command in its build summary.
+   *
+   * @return The number of errors reported; 0 if no build summary was seen.
+   */
+  public int getErrors() {
+    return this.errors;
+  }
+
+  /**
+   * Gets the number of warnings reported by an MSBuild-based command in its build summary.
+   *
+   * @return The number of warnings reported; 0 if no build summary was seen.
+   */
+  public int getWarnings() {
+    return this.warnings;
+  }
 
   /**
    * Writes the command completion message to the stream wrapped by this scanner.

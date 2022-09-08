@@ -98,51 +98,52 @@ public class Command extends Builder implements SimpleBuildStep {
     if (this.workDirectory != null)
       workspace = workspace.child(this.workDirectory);
     try {
-      if (sdkInstance != null && this.specificSdkVersion)
+      if (sdkInstance != null && this.specificSdkVersion) {
         sdkInstance.createGlobalJson(workspace, listener);
-      // Note: this MUST NOT BE CLOSED, because that also closes the build listener, causing all further output to go bye-bye
-      final DiagnosticScanner scanner = new DiagnosticScanner(listener.getLogger(), cs);
-      if (this.showSdkInfo) {
-        final ArgumentListBuilder cmdLine = new ArgumentListBuilder(executable, "--info");
-        launcher.launch().cmds(cmdLine).envs(env).stdout(scanner).pwd(workspace).join();
       }
-      int rc = -1;
-      {
-        final ArgumentListBuilder cmdLine = new ArgumentListBuilder(executable);
-        this.addCommandLineArguments(new DotNetArguments(run, cmdLine));
-        try {
-          rc = launcher.launch().cmds(cmdLine).envs(env).stdout(scanner).pwd(workspace).join();
+      try (final DiagnosticScanner scanner = new DiagnosticScanner(listener.getLogger(), cs, false)) {
+        if (this.showSdkInfo) {
+          final ArgumentListBuilder cmdLine = new ArgumentListBuilder(executable, "--info");
+          launcher.launch().cmds(cmdLine).envs(env).stdout(scanner).pwd(workspace).join();
         }
-        finally {
-          scanner.writeCompletionMessage(rc);
+        int rc = -1;
+        {
+          final ArgumentListBuilder cmdLine = new ArgumentListBuilder(executable);
+          this.addCommandLineArguments(new DotNetArguments(run, cmdLine));
+          try {
+            rc = launcher.launch().cmds(cmdLine).envs(env).stdout(scanner).pwd(workspace).join();
+          }
+          finally {
+            scanner.writeCompletionMessage(rc);
+          }
         }
-      }
-      if (this.shutDownBuildServers) {
-        final ArgumentListBuilder cmdLine = new ArgumentListBuilder(executable, "build-server", "shutdown");
-        launcher.launch().cmds(cmdLine).envs(env).stdout(scanner).pwd(workspace).join();
-      }
-      final int errors = scanner.getErrors();
-      if (errors > 0) {
-        if (this.unstableIfErrors) {
+        if (this.shutDownBuildServers) {
+          final ArgumentListBuilder cmdLine = new ArgumentListBuilder(executable, "build-server", "shutdown");
+          launcher.launch().cmds(cmdLine).envs(env).stdout(scanner).pwd(workspace).join();
+        }
+        final int errors = scanner.getErrors();
+        if (errors > 0) {
+          if (this.unstableIfErrors) {
+            run.setResult(Result.UNSTABLE);
+          }
+          else if (this.continueOnError) {
+            run.setResult(Result.FAILURE);
+          }
+          else {
+            throw new AbortException(Messages.Command_ExecutionCompletedWithErrors(errors));
+          }
+        }
+        else if (rc != 0) {
+          if (this.continueOnError) {
+            run.setResult(Result.FAILURE);
+          }
+          else {
+            throw new AbortException(Messages.Command_ExecutionCompletedWithNonZeroReturnCode(rc));
+          }
+        }
+        else if (this.unstableIfWarnings && scanner.getWarnings() > 0) {
           run.setResult(Result.UNSTABLE);
         }
-        else if (this.continueOnError) {
-          run.setResult(Result.FAILURE);
-        }
-        else {
-          throw new AbortException(Messages.Command_ExecutionCompletedWithErrors(errors));
-        }
-      }
-      else if (rc != 0) {
-        if (this.continueOnError) {
-          run.setResult(Result.FAILURE);
-        }
-        else {
-          throw new AbortException(Messages.Command_ExecutionCompletedWithNonZeroReturnCode(rc));
-        }
-      }
-      else if (this.unstableIfWarnings && scanner.getWarnings() > 0) {
-        run.setResult(Result.UNSTABLE);
       }
     }
     catch (AbortException ae) {
