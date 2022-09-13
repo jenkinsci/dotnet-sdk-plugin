@@ -1,0 +1,16 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
+
+  <f:entry title="${%Shut down MSBuild servers}" field="msBuild">
+    <f:checkbox/>
+  </f:entry>
+
+  <f:entry title="${%Shut down VB/C# compiler servers}" field="vbCsCompiler">
+    <f:checkbox/>
+  </f:entry>
+
+  <f:entry title="${%Shut down Razor build servers}" field="razor">
+    <f:checkbox/>
+  </f:entry>
+
+</j:jelly>

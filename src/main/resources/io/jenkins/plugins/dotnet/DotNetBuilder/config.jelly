@@ -1,0 +1,6 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form"  xmlns:s="jelly:stapler">
+
+  <s:include page="config.jelly" class="io.jenkins.plugins.dotnet.DotNetStep"/>
+
+</j:jelly>

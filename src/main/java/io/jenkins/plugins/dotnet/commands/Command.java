@@ -5,22 +5,19 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.AbortException;
 import hudson.EnvVars;
 import hudson.FilePath;
-import hudson.Functions;
 import hudson.Launcher;
 import hudson.Util;
-import hudson.model.Result;
 import hudson.model.Run;
 import hudson.model.TaskListener;
 import hudson.tasks.Builder;
 import hudson.tools.ToolInstallation;
-import hudson.util.ArgumentListBuilder;
 import io.jenkins.plugins.dotnet.DotNetSDK;
-import io.jenkins.plugins.dotnet.console.DiagnosticScanner;
+import io.jenkins.plugins.dotnet.DotNetStepExecution;
+import io.jenkins.plugins.dotnet.extensions.commands.CommandLineArgumentProvider;
 import jenkins.tasks.SimpleBuildStep;
 import org.kohsuke.stapler.DataBoundSetter;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
 
 /** A build step executing a .NET CLI command. */
 public class Command extends Builder implements SimpleBuildStep {
@@ -54,9 +51,19 @@ public class Command extends Builder implements SimpleBuildStep {
     // spotbugs does not like explicit throws of NullPointerException (see https://github.com/spotbugs/spotbugs/issues/1175), so we
     // need to do the test explicitly instead of using Objects.requireNonNull.
     final DotNetSDK.DescriptorImpl sdkDescriptor = ToolInstallation.all().get(DotNetSDK.DescriptorImpl.class);
-    if (sdkDescriptor == null)
+    if (sdkDescriptor == null) {
       throw new AbortException(".NET SDK descriptor not found.");
+    }
     return sdkDescriptor;
+  }
+
+  private final class CompatibilityLayer implements CommandLineArgumentProvider {
+
+    @Override
+    public void addCommandLineArguments(@NonNull DotNetArguments args) throws AbortException {
+      Command.this.addCommandLineArguments(args);
+    }
+
   }
 
   /**
@@ -74,89 +81,17 @@ public class Command extends Builder implements SimpleBuildStep {
   @Override
   public void perform(@NonNull Run<?, ?> run, @NonNull FilePath workspace, @NonNull EnvVars env, @NonNull Launcher launcher,
                       @NonNull TaskListener listener) throws InterruptedException, IOException {
-    final Charset cs = this.charset == null ? run.getCharset() : Charset.forName(this.charset);
-    final DotNetSDK sdkInstance;
-    if (this.sdk == null)
-      sdkInstance = null;
-    else
-      sdkInstance = Command.getSdkDescriptor().prepareAndValidateInstance(this.sdk, workspace, env, listener);
-    final String executable;
-    if (sdkInstance != null) {
-      executable = sdkInstance.ensureExecutableExists(launcher);
-      sdkInstance.buildEnvVars(env);
-    }
-    else {
-      final String basename = DotNetSDK.getExecutableFileName(launcher);
-      {
-        final String home = Util.fixEmptyAndTrim(env.get(DotNetSDK.ROOT_ENVIRONMENT_VARIABLE, ""));
-        if (home != null) // construct the full remote path
-          executable = new FilePath(launcher.getChannel(), home).child(basename).absolutize().getRemote();
-        else // will have to rely on the system's PATH
-          executable = basename;
-      }
-    }
-    if (this.workDirectory != null)
-      workspace = workspace.child(this.workDirectory);
-    try {
-      if (sdkInstance != null && this.specificSdkVersion) {
-        sdkInstance.createGlobalJson(workspace, listener);
-      }
-      try (final DiagnosticScanner scanner = new DiagnosticScanner(listener.getLogger(), cs, false)) {
-        if (this.showSdkInfo) {
-          final ArgumentListBuilder cmdLine = new ArgumentListBuilder(executable, "--info");
-          launcher.launch().cmds(cmdLine).envs(env).stdout(scanner).pwd(workspace).join();
-        }
-        int rc = -1;
-        {
-          final ArgumentListBuilder cmdLine = new ArgumentListBuilder(executable);
-          this.addCommandLineArguments(new DotNetArguments(run, cmdLine));
-          try {
-            rc = launcher.launch().cmds(cmdLine).envs(env).stdout(scanner).pwd(workspace).join();
-          }
-          finally {
-            scanner.writeCompletionMessage(rc);
-          }
-        }
-        if (this.shutDownBuildServers) {
-          final ArgumentListBuilder cmdLine = new ArgumentListBuilder(executable, "build-server", "shutdown");
-          launcher.launch().cmds(cmdLine).envs(env).stdout(scanner).pwd(workspace).join();
-        }
-        final int errors = scanner.getErrors();
-        if (errors > 0) {
-          if (this.unstableIfErrors) {
-            run.setResult(Result.UNSTABLE);
-          }
-          else if (this.continueOnError) {
-            run.setResult(Result.FAILURE);
-          }
-          else {
-            throw new AbortException(Messages.Command_ExecutionCompletedWithErrors(errors));
-          }
-        }
-        else if (rc != 0) {
-          if (this.continueOnError) {
-            run.setResult(Result.FAILURE);
-          }
-          else {
-            throw new AbortException(Messages.Command_ExecutionCompletedWithNonZeroReturnCode(rc));
-          }
-        }
-        else if (this.unstableIfWarnings && scanner.getWarnings() > 0) {
-          run.setResult(Result.UNSTABLE);
-        }
-      }
-    }
-    catch (AbortException ae) {
-      throw ae;
-    }
-    catch (Throwable t) {
-      Functions.printStackTrace(t, listener.fatalError(Messages.Command_ExecutionFailed()));
-      throw new AbortException(Messages.Command_ExecutionFailed());
-    }
-    finally {
-      if (sdkInstance != null && this.specificSdkVersion)
-        DotNetSDK.removeGlobalJson(workspace, listener);
-    }
+    final DotNetStepExecution.Settings settings = new DotNetStepExecution.Settings();
+    settings.charset = this.charset;
+    settings.continueOnError = this.continueOnError;
+    settings.sdk = this.sdk;
+    settings.showSdkInfo = this.showSdkInfo;
+    settings.shutDownBuildServers = this.shutDownBuildServers;
+    settings.specificSdkVersion = this.specificSdkVersion;
+    settings.unstableIfErrors = this.unstableIfErrors;
+    settings.unstableIfWarnings = this.unstableIfWarnings;
+    settings.workDirectory = this.workDirectory;
+    DotNetStepExecution.perform(new CompatibilityLayer(), settings, run, workspace, env, launcher, listener);
   }
 
   //region Properties
