@@ -38,8 +38,9 @@ public final class Runtime extends DownloadService.Downloadable {
   public AutoCompletionCandidates autoCompleteIdentifier(@CheckForNull String text) {
     final AutoCompletionCandidates candidates = new AutoCompletionCandidates();
     for (final String rid : this.identifiers) {
-      if (text == null || rid.startsWith(text))
+      if (text == null || rid.startsWith(text)) {
         candidates.add(rid);
+      }
     }
     return candidates;
   }
@@ -55,8 +56,9 @@ public final class Runtime extends DownloadService.Downloadable {
   public FormValidation checkIdentifier(@CheckForNull String text) {
     text = Util.fixEmptyAndTrim(text);
     if (text != null) {
-      if (!this.identifiers.contains(text))
-        return FormValidation.error(Messages.Runtime_Invalid(text));
+      if (!this.identifiers.contains(text)) {
+        return FormValidation.warning(Messages.Runtime_Invalid(text));
+      }
     }
     return FormValidation.ok();
   }
@@ -71,13 +73,15 @@ public final class Runtime extends DownloadService.Downloadable {
   @NonNull
   public FormValidation checkIdentifiers(@CheckForNull String text) {
     text = Util.fixEmptyAndTrim(text);
-    if (text == null)
+    if (text == null) {
       return FormValidation.ok();
+    }
     final List<FormValidation> result = new ArrayList<>();
     for (final String runtime : Util.tokenize(text)) {
       final FormValidation fv = this.checkIdentifier(runtime);
-      if (fv.kind != FormValidation.Kind.OK)
+      if (fv.kind != FormValidation.Kind.OK) {
         result.add(fv);
+      }
     }
     return FormValidation.aggregate(result);
   }

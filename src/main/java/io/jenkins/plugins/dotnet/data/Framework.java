@@ -38,8 +38,9 @@ public final class Framework extends DownloadService.Downloadable {
   public AutoCompletionCandidates autoCompleteMoniker(@CheckForNull String text) {
     final AutoCompletionCandidates candidates = new AutoCompletionCandidates();
     for (final String tfm : this.monikers) {
-      if (text == null || tfm.startsWith(text))
+      if (text == null || tfm.startsWith(text)) {
         candidates.add(tfm);
+      }
     }
     return candidates;
   }
@@ -55,8 +56,9 @@ public final class Framework extends DownloadService.Downloadable {
   public FormValidation checkMoniker(@CheckForNull String text) {
     text = Util.fixEmptyAndTrim(text);
     if (text != null) {
-      if (!this.monikers.contains(text))
-        return FormValidation.error(Messages.Framework_Invalid(text));
+      if (!this.monikers.contains(text)) {
+        return FormValidation.warning(Messages.Framework_Invalid(text));
+      }
     }
     return FormValidation.ok();
   }
@@ -71,13 +73,15 @@ public final class Framework extends DownloadService.Downloadable {
   @NonNull
   public FormValidation checkMonikers(@CheckForNull String text) {
     text = Util.fixEmptyAndTrim(text);
-    if (text == null)
+    if (text == null) {
       return FormValidation.ok();
+    }
     final List<FormValidation> result = new ArrayList<>();
     for (final String runtime : Util.tokenize(text)) {
       final FormValidation fv = this.checkMoniker(runtime);
-      if (fv.kind != FormValidation.Kind.OK)
+      if (fv.kind != FormValidation.Kind.OK) {
         result.add(fv);
+      }
     }
     return FormValidation.aggregate(result);
   }
