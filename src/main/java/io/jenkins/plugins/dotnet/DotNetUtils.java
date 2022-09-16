@@ -40,8 +40,9 @@ public interface DotNetUtils {
    */
   @CheckForNull
   static Map<String, String> createPropertyMap(@CheckForNull String propertyString) throws IOException {
-    if (Util.fixEmpty(propertyString) == null)
+    if (Util.fixEmpty(propertyString) == null) {
       return null;
+    }
     final Properties properties = Util.loadProperties(propertyString);
     return properties.entrySet().stream().collect(Collectors.toMap(e -> (String) e.getKey(), e -> (String) e.getValue()));
   }
@@ -57,8 +58,9 @@ public interface DotNetUtils {
    */
   @CheckForNull
   static String createPropertyString(@CheckForNull Map<String, String> propertyMap) throws IOException {
-    if (propertyMap == null || propertyMap.isEmpty())
+    if (propertyMap == null || propertyMap.isEmpty()) {
       return null;
+    }
     final Properties properties = new Properties();
     properties.putAll(propertyMap);
     try (final StringWriter sw = new StringWriter()) {
@@ -78,17 +80,20 @@ public interface DotNetUtils {
   @CheckForNull
   static String detokenize(char delimiter, @CheckForNull String token) {
     token = Util.fixEmptyAndTrim(token);
-    if (token == null)
+    if (token == null) {
       return null;
+    }
     final boolean needQuoting;
-    if (token.indexOf(delimiter) >= 0)
+    if (token.indexOf(delimiter) >= 0) {
       needQuoting = true;
+    }
     else {
       final String[] subTokens = Util.tokenize(token);
       needQuoting = subTokens.length != 1;
     }
-    if (needQuoting) // FIXME: This is not ideal. A smarter method that uses either ' or " based on nicest result would be useful.
+    if (needQuoting) { // FIXME: This is not ideal. A smarter method that uses either ' or " based on nicest result would be useful.
       token = Util.singleQuote(token.replace("'", "\\'"));
+    }
     return token;
   }
 
@@ -103,21 +108,26 @@ public interface DotNetUtils {
    */
   @CheckForNull
   static String detokenize(char delimiter, @CheckForNull String... tokens) {
-    if (tokens == null || tokens.length == 0)
+    if (tokens == null || tokens.length == 0) {
       return null;
-    if (tokens.length == 1)
+    }
+    if (tokens.length == 1) {
       return DotNetUtils.detokenize(delimiter, tokens[0]);
+    }
     final StringBuilder sb = new StringBuilder();
     for (String token : tokens) {
       token = DotNetUtils.detokenize(delimiter, token);
-      if (token == null)
+      if (token == null) {
         continue;
-      if (sb.length() > 0)
+      }
+      if (sb.length() > 0) {
         sb.append(delimiter);
+      }
       sb.append(token);
     }
-    if (sb.length() == 0)
+    if (sb.length() == 0) {
       return null;
+    }
     return sb.toString();
   }
 
@@ -139,6 +149,21 @@ public interface DotNetUtils {
     catch (IOException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  /**
+   * Returns an array as long as it's not empty.
+   *
+   * @param array An array.
+   *
+   * @return {@code array}, or {@code null} when it was empty.
+   */
+  @CheckForNull
+  static <T> T[] fixEmpty(@CheckForNull T[] array) {
+    if (array == null || array.length == 0) {
+      return null;
+    }
+    return array;
   }
 
   /**
@@ -165,6 +190,21 @@ public interface DotNetUtils {
   }
 
   /**
+   * Returns the single item from an array.
+   *
+   * @param array An array.
+   *
+   * @return The sole item contained in {@code array}, or {@code null} when it did not contain exactly one item.
+   */
+  @CheckForNull
+  static <T> T singleItem(@CheckForNull T[] array) {
+    if (array == null || array.length != 1) {
+      return null;
+    }
+    return array[0];
+  }
+
+  /**
    * Tokenizes text separated by (default) delimiters and returns the sole resulting token.
    *
    * @param s A string containing tokens.
@@ -175,10 +215,7 @@ public interface DotNetUtils {
    */
   @CheckForNull
   static String singleToken(@CheckForNull String s) {
-    final String[] tokens = DotNetUtils.tokenize(s);
-    if (tokens == null || tokens.length != 1)
-      return null;
-    return tokens[0];
+    return DotNetUtils.singleItem(DotNetUtils.tokenize(s));
   }
 
   /**
@@ -193,10 +230,7 @@ public interface DotNetUtils {
    */
   @CheckForNull
   static String singleToken(@CheckForNull String s, @CheckForNull String delimiters) {
-    final String[] tokens = DotNetUtils.tokenize(s, delimiters);
-    if (tokens == null || tokens.length != 1)
-      return null;
-    return tokens[0];
+    return DotNetUtils.singleItem(DotNetUtils.tokenize(s, delimiters));
   }
 
   /**
@@ -210,12 +244,10 @@ public interface DotNetUtils {
    */
   @CheckForNull
   static String[] tokenize(@CheckForNull String s) {
-    if (s == null)
+    if (s == null) {
       return null;
-    final String[] tokens = Util.tokenize(s);
-    if (tokens.length == 0)
-      return null;
-    return tokens;
+    }
+    return DotNetUtils.fixEmpty(Util.tokenize(s));
   }
 
   /**
@@ -230,12 +262,10 @@ public interface DotNetUtils {
    */
   @CheckForNull
   static String[] tokenize(@CheckForNull String s, @CheckForNull String delimiters) {
-    if (s == null)
+    if (s == null) {
       return null;
-    final String[] tokens = Util.tokenize(s, delimiters);
-    if (tokens.length == 0)
-      return null;
-    return tokens;
+    }
+    return DotNetUtils.fixEmpty(Util.tokenize(s, delimiters));
   }
 
 }
