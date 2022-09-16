@@ -55,11 +55,11 @@ public final class Shutdown extends BuildServerAction {
   //endregion
 
   @Override
-  public void addCommandLineArguments(@NonNull DotNetArguments args) throws AbortException {
-    args.addOption("shutdown");
-    args.addFlag("msbuild", this.msBuild);
-    args.addFlag("razor", this.razor);
-    args.addFlag("vbcscompiler", this.vbCsCompiler);
+  public void addCommandLineArguments(@NonNull DotNetArguments arguments) throws AbortException {
+    arguments.addOption("shutdown");
+    arguments.addFlag("msbuild", this.msBuild);
+    arguments.addFlag("razor", this.razor);
+    arguments.addFlag("vbcscompiler", this.vbCsCompiler);
   }
 
   @Extension
