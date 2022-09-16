@@ -5,7 +5,7 @@
     <f:select/>
   </f:entry>
 
-  <f:dropdownDescriptorSelector title="${%Command To Run}" field="command" />
+  <f:dropdownDescriptorSelector title="${%Command to Run}" field="command" />
 
   <f:advanced title="${descriptor.moreOptions}">
 
@@ -17,7 +17,7 @@
       <f:textbox/>
     </f:entry>
 
-    <f:entry title="${%Continue On Error}" field="continueOnError">
+    <f:entry title="${%Continue on Error}" field="continueOnError">
       <f:checkbox/>
     </f:entry>
 
