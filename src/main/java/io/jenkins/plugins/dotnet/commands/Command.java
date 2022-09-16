@@ -60,8 +60,9 @@ public class Command extends Builder implements SimpleBuildStep {
   private final class CompatibilityLayer implements CommandLineArgumentProvider {
 
     @Override
-    public void addCommandLineArguments(@NonNull DotNetArguments args) throws AbortException {
-      Command.this.addCommandLineArguments(args);
+    public void addCommandLineArguments(@NonNull io.jenkins.plugins.dotnet.DotNetArguments arguments) throws AbortException {
+      final DotNetArguments oldArguments = new DotNetArguments(arguments);
+      Command.this.addCommandLineArguments(oldArguments);
     }
 
   }

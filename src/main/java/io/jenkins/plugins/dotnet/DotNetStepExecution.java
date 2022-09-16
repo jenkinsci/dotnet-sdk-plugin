@@ -13,7 +13,6 @@ import hudson.model.Run;
 import hudson.model.TaskListener;
 import hudson.tools.ToolInstallation;
 import hudson.util.ArgumentListBuilder;
-import io.jenkins.plugins.dotnet.commands.DotNetArguments;
 import io.jenkins.plugins.dotnet.console.DiagnosticScanner;
 import io.jenkins.plugins.dotnet.extensions.commands.Command;
 import io.jenkins.plugins.dotnet.extensions.commands.CommandLineArgumentProvider;

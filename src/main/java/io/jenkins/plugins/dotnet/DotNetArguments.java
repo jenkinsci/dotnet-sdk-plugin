@@ -1,34 +1,28 @@
-package io.jenkins.plugins.dotnet.commands;
+package io.jenkins.plugins.dotnet;
 
+import com.cloudbees.plugins.credentials.CredentialsProvider;
 import edu.umd.cs.findbugs.annotations.CheckForNull;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.AbortException;
+import hudson.Util;
+import hudson.model.AbstractBuild;
 import hudson.model.Run;
 import hudson.util.ArgumentListBuilder;
+import hudson.util.Secret;
+import hudson.util.VariableResolver;
+import io.jenkins.plugins.dotnet.commands.Messages;
+import org.jenkinsci.plugins.plaincredentials.StringCredentials;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.Set;
 
 /**
  * Convenience class for handling the adding of command line arguments, including variable expansions and masking of sensitive
  * properties.
- *
- * @deprecated The maintained version lives in the top-level package ({@link io.jenkins.plugins.dotnet.DotNetArguments}).
  */
-@Deprecated
 @SuppressWarnings("UnusedReturnValue")
 public final class DotNetArguments {
-
-  @NonNull
-  private final io.jenkins.plugins.dotnet.DotNetArguments arguments;
-
-  /**
-   * Creates a new .NET CLI argument processor.
-   *
-   * @param arguments The "real" .NET argument handler to use.
-   */
-  DotNetArguments(@NonNull io.jenkins.plugins.dotnet.DotNetArguments arguments) {
-    this.arguments = arguments;
-  }
 
   /**
    * Creates a new .NET CLI argument processor.
@@ -37,8 +31,30 @@ public final class DotNetArguments {
    * @param cmdLine The underlying argument list builder (expected to be preloaded with the path to the {@code dotnet} executable.
    */
   public DotNetArguments(@NonNull Run<?, ?> run, @NonNull ArgumentListBuilder cmdLine) {
-    this.arguments = new io.jenkins.plugins.dotnet.DotNetArguments(run, cmdLine);
+    this.run = run;
+    if (run instanceof AbstractBuild<?, ?>) {
+      final AbstractBuild<?, ?> build = (AbstractBuild<?, ?>) run;
+      this.resolver = build.getBuildVariableResolver();
+      this.sensitive = build.getSensitiveBuildVariables();
+    }
+    else { // No variable resolution in code - substitution should be done at the Groovy level
+      this.resolver = DotNetUtils.RESOLVE_NOTHING;
+      this.sensitive = Collections.emptySet();
+    }
+    this.cmdLine = cmdLine;
   }
+
+  @NonNull
+  private final Run<?, ?> run;
+
+  @NonNull
+  private final ArgumentListBuilder cmdLine;
+
+  @NonNull
+  private final VariableResolver<String> resolver;
+
+  @NonNull
+  private final Set<String> sensitive;
 
   /**
    * Adds a literal string argument.
@@ -48,7 +64,7 @@ public final class DotNetArguments {
    * @return This .NET CLI argument processor.
    */
   public DotNetArguments add(@NonNull String value) {
-    this.arguments.add(value);
+    this.cmdLine.add(value);
     return this;
   }
 
@@ -60,7 +76,7 @@ public final class DotNetArguments {
    * @return This .NET CLI argument processor.
    */
   public DotNetArguments add(@NonNull String... values) {
-    this.arguments.add(values);
+    this.cmdLine.add(values);
     return this;
   }
 
@@ -73,7 +89,7 @@ public final class DotNetArguments {
    * @return This .NET CLI argument processor.
    */
   public DotNetArguments add(@NonNull String value, boolean mask) {
-    this.arguments.add(value, mask);
+    this.cmdLine.add(value, mask);
     return this;
   }
 
@@ -85,7 +101,7 @@ public final class DotNetArguments {
    * @return This .NET CLI argument processor.
    */
   public DotNetArguments addFlag(@NonNull String flag) {
-    this.arguments.addFlag(flag);
+    this.cmdLine.add("--" + flag);
     return this;
   }
 
@@ -98,8 +114,7 @@ public final class DotNetArguments {
    * @return This .NET CLI argument processor.
    */
   public DotNetArguments addFlag(@NonNull String flag, boolean set) {
-    this.arguments.addFlag(flag, set);
-    return this;
+    return set ? this.addFlag(flag) : this;
   }
 
   /**
@@ -110,7 +125,7 @@ public final class DotNetArguments {
    * @return This .NET CLI argument processor.
    */
   public DotNetArguments addFlag(char flag) {
-    this.arguments.addFlag(flag);
+    this.cmdLine.add("-" + flag);
     return this;
   }
 
@@ -123,8 +138,7 @@ public final class DotNetArguments {
    * @return This .NET CLI argument processor.
    */
   public DotNetArguments addFlag(char flag, boolean set) {
-    this.arguments.addFlag(flag, set);
-    return this;
+    return set ? this.addFlag(flag) : this;
   }
 
   /**
@@ -136,7 +150,9 @@ public final class DotNetArguments {
    * @return This .NET CLI argument processor.
    */
   public DotNetArguments addOption(@CheckForNull String value) {
-    this.arguments.addOption(value);
+    value = this.expand(value);
+    if (value != null)
+      this.cmdLine.add(value);
     return this;
   }
 
@@ -150,7 +166,8 @@ public final class DotNetArguments {
    * @return This .NET CLI argument processor.
    */
   public DotNetArguments addOption(@NonNull String option, @CheckForNull Boolean value) {
-    this.arguments.addOption(option, value);
+    if (value != null)
+      this.cmdLine.add("--" + option).add(value ? "true" : "false");
     return this;
   }
 
@@ -158,13 +175,14 @@ public final class DotNetArguments {
    * Adds an option argument.
    *
    * @param option The name of the option (without the {@code --} prefix).
-   * @param value  The option argument to add; it will be converted to its string representation is base 10. If this is
-   *               {@code null}, no argument is added.
+   * @param value  The option argument to add; it will be converted to its string representation is base 10. If this is {@code
+   *               null}, no argument is added.
    *
    * @return This .NET CLI argument processor.
    */
   public DotNetArguments addOption(@NonNull String option, @CheckForNull Integer value) {
-    this.arguments.addOption(option, value);
+    if (value != null)
+      this.cmdLine.add("--" + option).add(Integer.toString(value, 10));
     return this;
   }
 
@@ -178,7 +196,9 @@ public final class DotNetArguments {
    * @return This .NET CLI argument processor.
    */
   public DotNetArguments addOption(@NonNull String option, @CheckForNull String value) {
-    this.arguments.addOption(option, value);
+    value = this.expand(value);
+    if (value != null)
+      this.cmdLine.add("--" + option).add(value);
     return this;
   }
 
@@ -192,7 +212,9 @@ public final class DotNetArguments {
    * @return This .NET CLI argument processor.
    */
   public DotNetArguments addOption(char option, @CheckForNull String value) {
-    this.arguments.addOption(option, value);
+    value = this.expand(value);
+    if (value != null)
+      this.cmdLine.add("-" + option + ":" + value);
     return this;
   }
 
@@ -205,7 +227,14 @@ public final class DotNetArguments {
    * @return This .NET CLI argument processor.
    */
   public DotNetArguments addOptions(@CheckForNull String values) {
-    this.arguments.addOptions(values);
+    values = this.expand(values);
+    if (values == null)
+      return this;
+    for (String value : Util.tokenize(values)) {
+      value = Util.fixEmptyAndTrim(value);
+      if (value != null)
+        this.cmdLine.add(value);
+    }
     return this;
   }
 
@@ -219,7 +248,14 @@ public final class DotNetArguments {
    * @return This .NET CLI argument processor.
    */
   public DotNetArguments addOptions(@NonNull String option, @CheckForNull String values) {
-    this.arguments.addOptions(option, values);
+    values = this.expand(values);
+    if (values == null)
+      return this;
+    for (String value : Util.tokenize(values)) {
+      value = Util.fixEmptyAndTrim(value);
+      if (value != null)
+        this.cmdLine.add("--" + option).add(value);
+    }
     return this;
   }
 
@@ -233,7 +269,14 @@ public final class DotNetArguments {
    * @return This .NET CLI argument processor.
    */
   public DotNetArguments addOptions(char option, @CheckForNull String values) {
-    this.arguments.addOptions(option, values);
+    values = this.expand(values);
+    if (values == null)
+      return this;
+    for (String value : Util.tokenize(values)) {
+      value = Util.fixEmptyAndTrim(value);
+      if (value != null)
+        this.cmdLine.add("-" + option + ":" + value);
+    }
     return this;
   }
 
@@ -248,7 +291,14 @@ public final class DotNetArguments {
    * @return This .NET CLI argument processor.
    */
   public DotNetArguments addOptions(char option, @CheckForNull String values, @NonNull String delimiter) {
-    this.arguments.addOptions(option, values, delimiter);
+    values = this.expand(values);
+    if (values == null)
+      return this;
+    for (String value : Util.tokenize(values, delimiter)) {
+      value = Util.fixEmptyAndTrim(value);
+      if (value != null)
+        this.cmdLine.add("-" + option + ":" + value);
+    }
     return this;
   }
 
@@ -263,7 +313,7 @@ public final class DotNetArguments {
    * @throws IOException When {@code propertyString} could not be loaded as a set of properties.
    */
   public DotNetArguments addPropertyOptions(@NonNull String prefix, @CheckForNull String propertyString) throws IOException {
-    this.arguments.addPropertyOptions(prefix, propertyString);
+    this.cmdLine.addKeyValuePairsFromPropertyString(prefix, propertyString, this.resolver, this.sensitive);
     return this;
   }
 
@@ -279,7 +329,9 @@ public final class DotNetArguments {
    * @throws AbortException When no matching string credential could be found.
    */
   public DotNetArguments addStringCredential(@NonNull String option, @CheckForNull String value) throws AbortException {
-    this.arguments.addStringCredential(option, value);
+    final Secret secret = this.expandStringCredential(value);
+    if (secret != null)
+      this.cmdLine.add("--" + option).add(secret, true);
     return this;
   }
 
@@ -291,7 +343,28 @@ public final class DotNetArguments {
    * @return The expanded form of {@code text}.
    */
   public String expand(@CheckForNull String text) {
-    return this.arguments.expand(text);
+    if (this.resolver != DotNetUtils.RESOLVE_NOTHING)
+      text = Util.replaceMacro(text, this.resolver);
+    return Util.fixEmptyAndTrim(text);
+  }
+
+  /**
+   * Gets the actual secret text associated with a string credential ID.
+   *
+   * @param value The string credential ID; it will have variable substitution applied.
+   *
+   * @return The secret text for the given string credential.
+   *
+   * @throws AbortException When the specified credential could not be found.
+   */
+  private Secret expandStringCredential(@CheckForNull String value) throws AbortException {
+    value = this.expand(value);
+    if (value == null)
+      return null;
+    final StringCredentials credential = CredentialsProvider.findCredentialById(value, StringCredentials.class, this.run);
+    if (credential == null)
+      throw new AbortException(Messages.DotNetArguments_StringCredentialNotFound(value));
+    return credential.getSecret();
   }
 
 }

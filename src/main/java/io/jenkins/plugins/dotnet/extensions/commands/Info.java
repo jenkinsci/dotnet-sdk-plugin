@@ -3,7 +3,7 @@ package io.jenkins.plugins.dotnet.extensions.commands;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.AbortException;
 import hudson.Extension;
-import io.jenkins.plugins.dotnet.commands.DotNetArguments;
+import io.jenkins.plugins.dotnet.DotNetArguments;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 
@@ -16,8 +16,8 @@ public class Info extends Command {
   }
 
   @Override
-  public void addCommandLineArguments(@NonNull DotNetArguments args) throws AbortException {
-    args.addFlag("info");
+  public void addCommandLineArguments(@NonNull DotNetArguments arguments) throws AbortException {
+    arguments.addFlag("info");
   }
 
   @Extension

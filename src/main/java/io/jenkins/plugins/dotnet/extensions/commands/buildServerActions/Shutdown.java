@@ -3,7 +3,7 @@ package io.jenkins.plugins.dotnet.extensions.commands.buildServerActions;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.AbortException;
 import hudson.Extension;
-import io.jenkins.plugins.dotnet.commands.DotNetArguments;
+import io.jenkins.plugins.dotnet.DotNetArguments;
 import io.jenkins.plugins.dotnet.extensions.commands.Messages;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;

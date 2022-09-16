@@ -3,7 +3,7 @@ package io.jenkins.plugins.dotnet.extensions.commands;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.AbortException;
 import hudson.Extension;
-import io.jenkins.plugins.dotnet.commands.DotNetArguments;
+import io.jenkins.plugins.dotnet.DotNetArguments;
 import io.jenkins.plugins.dotnet.extensions.commands.buildServerActions.BuildServerAction;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -31,9 +31,9 @@ public class BuildServer extends Command {
 
 
   @Override
-  public void addCommandLineArguments(@NonNull DotNetArguments args) throws AbortException {
-    args.addOption("build-server");
-    this.action.addCommandLineArguments(args);
+  public void addCommandLineArguments(@NonNull DotNetArguments arguments) throws AbortException {
+    arguments.addOption("build-server");
+    this.action.addCommandLineArguments(arguments);
   }
 
   @Extension
