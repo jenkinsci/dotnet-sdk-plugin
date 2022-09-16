@@ -214,7 +214,7 @@ public final class DotNetBuilder extends Builder {
   }
 
   @Extension
-  public static final class DescriptorImpl extends BuildStepDescriptor<Builder> implements DotNetBuildStepDescriptor {
+  public static final class DescriptorImpl extends BuildStepDescriptor<Builder> implements CommonDescriptorMethods {
 
     /**
      * Gets the display name for this build step (as used in the project configuration UI).

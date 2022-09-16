@@ -2,28 +2,15 @@ package io.jenkins.plugins.dotnet.commands;
 
 import edu.umd.cs.findbugs.annotations.CheckForNull;
 import edu.umd.cs.findbugs.annotations.NonNull;
-import hudson.Util;
 import hudson.model.AbstractProject;
-import hudson.model.AutoCompletionCandidates;
-import hudson.model.Item;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
-import hudson.util.FormValidation;
-import hudson.util.ListBoxModel;
-import io.jenkins.plugins.dotnet.DotNetBuildStepDescriptor;
-import io.jenkins.plugins.dotnet.data.Framework;
-import io.jenkins.plugins.dotnet.data.Runtime;
+import io.jenkins.plugins.dotnet.CommonDescriptorMethods;
 import org.jenkinsci.plugins.structs.describable.CustomDescribableModel;
-import org.kohsuke.stapler.AncestorInPath;
-import org.kohsuke.stapler.QueryParameter;
-import org.kohsuke.stapler.verb.POST;
-
-import java.nio.charset.Charset;
-import java.util.Set;
 
 /** A descriptor for a .NET command. */
 public abstract class CommandDescriptor extends BuildStepDescriptor<Builder>
-  implements CustomDescribableModel, DotNetBuildStepDescriptor {
+  implements CustomDescribableModel, CommonDescriptorMethods {
 
   /**
    * Creates a new .NET command descriptor instance.

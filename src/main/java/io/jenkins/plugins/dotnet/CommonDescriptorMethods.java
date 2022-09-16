@@ -16,8 +16,8 @@ import org.kohsuke.stapler.verb.POST;
 import java.nio.charset.Charset;
 import java.util.Set;
 
-/*** Methods common to the descriptors for {@link DotNetBuilder} and {@link DotNetStep}. */
-public interface DotNetBuildStepDescriptor {
+/*** Methods common to the several of the descriptors in this plugin. */
+public interface CommonDescriptorMethods {
 
   /**
    * Performs auto-completion for a .NET target framework moniker.

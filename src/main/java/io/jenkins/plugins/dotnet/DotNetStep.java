@@ -208,7 +208,7 @@ public final class DotNetStep extends Step {
   }
 
   @Extension
-  public static final class DescriptorImpl extends StepDescriptor implements DotNetBuildStepDescriptor {
+  public static final class DescriptorImpl extends StepDescriptor implements CommonDescriptorMethods {
 
     /**
      * Gets the display name for this build step (as used in the project configuration UI).
