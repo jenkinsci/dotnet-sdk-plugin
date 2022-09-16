@@ -29,7 +29,6 @@ public class BuildServer extends Command {
 
   //endregion
 
-
   @Override
   public void addCommandLineArguments(@NonNull DotNetArguments arguments) throws AbortException {
     arguments.addOption("build-server");
@@ -37,7 +36,7 @@ public class BuildServer extends Command {
   }
 
   @Extension
-  @Symbol("list")
+  @Symbol("buildServer")
   public static final class DescriptorImpl extends CommandDescriptor {
 
     @NonNull
