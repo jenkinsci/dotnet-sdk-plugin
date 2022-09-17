@@ -1,0 +1,56 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
+
+  <f:entry title="${%Project or Solution}" field="project">
+    <f:textbox/>
+  </f:entry>
+
+  <f:advanced title="${descriptor.moreOptions}">
+
+    <f:entry title="${%Frameworks}" field="frameworksString">
+      <f:textbox autoCompleteDelimChar=" "/>
+    </f:entry>
+
+    <f:entry title="${%Include Transitive Packages}" field="includeTransitive">
+      <f:checkbox/>
+    </f:entry>
+
+    <f:entry title="${%Show Deprecated Packages}" field="deprecated">
+      <f:checkbox/>
+    </f:entry>
+
+    <f:entry title="${%Show Outdated Packages}" field="outdated">
+      <f:checkbox/>
+    </f:entry>
+
+    <f:entry title="${%Show Packages With Known Vulnerabilities}" field="vulnerable">
+      <f:checkbox/>
+    </f:entry>
+
+    <f:entry title="${%Include Pre-Release Versions}" field="includePrerelease">
+      <f:checkbox/>
+    </f:entry>
+
+    <f:entry title="${%NuGet Config to Use}" field="config">
+      <f:textbox/>
+    </f:entry>
+
+    <f:entry title="${%NuGet Sources to Search for Updates}" field="sourcesString">
+      <f:textbox/>
+    </f:entry>
+
+    <f:entry title="${%Major Version Must Match}" field="highestMinor">
+      <f:checkbox/>
+    </f:entry>
+
+    <f:entry title="${%Major/Minor Versions Must Match}" field="highestPatch">
+      <f:checkbox/>
+    </f:entry>
+
+    <f:entry title="${%Verbosity}" field="verbosity">
+      <f:select/>
+    </f:entry>
+
+  </f:advanced>
+
+</j:jelly>
