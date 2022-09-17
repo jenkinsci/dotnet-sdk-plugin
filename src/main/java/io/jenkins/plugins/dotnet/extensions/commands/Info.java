@@ -27,7 +27,7 @@ public class Info extends Command {
     @NonNull
     @Override
     public String getDisplayName() {
-      return "Show Installation Information (dotnet --info)";
+      return Messages.Info_DisplayName();
     }
 
   }
