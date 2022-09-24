@@ -49,6 +49,6 @@ Available as part of the [GitHub Releases][Releases].
 [Badge:Build]: https://ci.jenkins.io/job/Plugins/job/dotnet-sdk-plugin/job/main/badge/icon?subject=Jenkins%20CI
 [Issues]: https://issues.jenkins-ci.org/
 [Jenkins]: https://www.jenkins.io/
-[MS:Docs]: https://docs.microsoft.com/en-us/dotnet/core/tools/
+[MS:Docs]: https://learn.microsoft.com/en-us/dotnet/core/tools/
 [MS:Download]: https://dotnet.microsoft.com/download/dotnet-core
 [Releases]: https://github.com/jenkinsci/dotnet-sdk-plugin/releases

@@ -6,19 +6,18 @@
 </div>
 <div>
   Properties of particular interest to <code>dotnet publish</code>:
-  <!-- Adapted From: https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-publish -->
   <ul>
     <li>
       <code>PublishProfile=Properties\PublishProfiles\profile.pubxml</code>: Use a <em>.pubxml</em> to set publish-related
       properties. See
-      <a href="https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/visual-studio-publish-profiles">
+      <a href="https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/visual-studio-publish-profiles">
         Visual Studio publish profiles (.pubxml) for ASP.NET Core app deployment
       </a> for more information.
     </li>
     <li>
       <code>PublishReadyToRun=true</code>: Compiles application assemblies as ReadyToRun (R2R) format. R2R is a form of
       ahead-of-time (AOT) compilation. For more information, see
-      <a href="https://docs.microsoft.com/en-us/dotnet/core/whats-new/dotnet-core-3-0#readytorun-images">ReadyToRun images</a>.<br/>
+      <a href="https://learn.microsoft.com/en-us/dotnet/core/whats-new/dotnet-core-3-0#readytorun-images">ReadyToRun images</a>.<br/>
       Available since .NET Core 3.0 SDK.
     </li>
     <li>
@@ -35,7 +34,7 @@
     <li>
       <code>PublishTrimmed=true</code>: Trims unused libraries to reduce the deployment size of an app when publishing a
       self-contained executable. For more information, see
-      <a href="https://docs.microsoft.com/en-us/dotnet/core/deploying/trim-self-contained">
+      <a href="https://learn.microsoft.com/en-us/dotnet/core/deploying/trim-self-contained">
         Trim self-contained deployments and executables
       </a>.<br/>
       Available since .NET Core 3.0 SDK.
@@ -43,4 +42,7 @@
   </ul>
   Note that it is recommended to specify all of these, other than <code>PublishProfile</code>, in a publish profile rather than
   here.
+</div>
+<div align="right">
+  (see also: <a href="https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-publish#options">Microsoft Documentation</a>)
 </div>
