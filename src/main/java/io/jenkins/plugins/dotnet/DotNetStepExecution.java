@@ -45,6 +45,9 @@ public class DotNetStepExecution extends StepExecution {
     @CheckForNull
     public String charset = null;
 
+    /** Indicates whether diagnostic output should be enabled. */
+    public boolean diagnostics = false;
+
     /** Indicates whether project execution should continue when there is an error in this step. */
     public boolean continueOnError = false;
 
@@ -132,13 +135,21 @@ public class DotNetStepExecution extends StepExecution {
       final Charset cs = settings.charset == null ? run.getCharset() : Charset.forName(settings.charset);
       try (final DiagnosticScanner scanner = new DiagnosticScanner(listener.getLogger(), cs, false)) {
         if (settings.showSdkInfo) {
-          final ArgumentListBuilder cmdLine = new ArgumentListBuilder(executable, "--info");
+          final ArgumentListBuilder cmdLine = new ArgumentListBuilder(executable);
+          final DotNetArguments arguments = new DotNetArguments(run, cmdLine);
+          if (settings.diagnostics) {
+            arguments.addFlag("diagnostics");
+          }
+          arguments.addFlag("info");
           launcher.launch().cmds(cmdLine).envs(env).stdout(scanner).pwd(workspace).join();
         }
         int rc = -1;
         {
           final ArgumentListBuilder cmdLine = new ArgumentListBuilder(executable);
           final DotNetArguments arguments = new DotNetArguments(run, cmdLine);
+          if (settings.diagnostics) {
+            arguments.addFlag("diagnostics");
+          }
           command.addCommandLineArguments(arguments);
           try {
             rc = launcher.launch().cmds(cmdLine).envs(env).stdout(scanner).pwd(workspace).join();
@@ -148,7 +159,12 @@ public class DotNetStepExecution extends StepExecution {
           }
         }
         if (settings.shutDownBuildServers) {
-          final ArgumentListBuilder cmdLine = new ArgumentListBuilder(executable, "build-server", "shutdown");
+          final ArgumentListBuilder cmdLine = new ArgumentListBuilder(executable);
+          final DotNetArguments arguments = new DotNetArguments(run, cmdLine);
+          if (settings.diagnostics) {
+            arguments.addFlag("diagnostics");
+          }
+          arguments.add("build-server", "shutdown");
           launcher.launch().cmds(cmdLine).envs(env).stdout(scanner).pwd(workspace).join();
         }
         final int errors = scanner.getErrors();

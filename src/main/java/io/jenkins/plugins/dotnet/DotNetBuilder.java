@@ -96,6 +96,26 @@ public final class DotNetBuilder extends Builder {
   }
 
   /**
+   * Determines whether diagnostic output should be enabled.
+   *
+   * @return {@code true} if diagnostic output should be enabled for the command; {@code false} otherwise.
+   */
+  @SuppressWarnings("unused")
+  public boolean isDiagnosticOutput() {
+    return this.settings.diagnostics;
+  }
+
+  /**
+   * Determines whether diagnostic output should be enabled.
+   *
+   * @param diagnosticOutput {@code true} if diagnostic output should be enabled for the command; {@code false} otherwise.
+   */
+  @DataBoundSetter
+  public void setDiagnosticOutput(boolean diagnosticOutput) {
+    this.settings.diagnostics = diagnosticOutput;
+  }
+
+  /**
    * Gets the name of the SDK to use.
    *
    * @return The name of the SDK to use, or {@code null} to use the SDK made available by the parent context (or the system).
