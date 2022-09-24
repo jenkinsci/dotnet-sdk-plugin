@@ -1,0 +1,20 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
+
+  <f:advanced title="${descriptor.moreOptions}">
+
+    <f:entry title="${%Only List Installed Runtimes}" field="listRuntimes">
+      <f:checkbox/>
+    </f:entry>
+
+    <f:entry title="${%Only List Installed SDKs}" field="listSdks">
+      <f:checkbox/>
+    </f:entry>
+
+    <f:entry title="${%Only Show SDK Version}" field="showVersion">
+      <f:checkbox/>
+    </f:entry>
+
+  </f:advanced>
+
+</j:jelly>
