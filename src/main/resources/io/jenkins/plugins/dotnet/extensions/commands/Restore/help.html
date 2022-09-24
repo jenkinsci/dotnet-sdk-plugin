@@ -1,0 +1,23 @@
+<div>
+  The <code>dotnet restore</code> command uses NuGet to restore dependencies as well as project-specific tools that are specified in
+  the project file. In most cases, you don't need to explicitly use the <code>dotnet restore</code> command, since a NuGet restore
+  is run implicitly if necessary when you run the following commands:
+</div>
+<ul>
+  <li><a href="https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-new">dotnet new</a></li>
+  <li><a href="https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-build">dotnet build</a></li>
+  <li><a href="https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-build-server">dotnet build-server</a></li>
+  <li><a href="https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-run">dotnet run</a></li>
+  <li><a href="https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-test">dotnet test</a></li>
+  <li><a href="https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-publish">dotnet publish</a></li>
+  <li><a href="https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-pack">dotnet pack</a></li>
+</ul>
+<div>
+  Sometimes, it might be inconvenient to run the implicit NuGet restore with these commands. For example, some automated systems,
+  such as build systems, need to call <code>dotnet restore</code> explicitly to control when the restore occurs so that they can
+  control network usage. To prevent the implicit NuGet restore, you can use the <code>--no-restore</code> flag with any of these
+  commands to disable implicit restore.
+</div>
+<div align="right">
+  (see also: <a href="https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-restore">Microsoft Documentation</a>)
+</div>
