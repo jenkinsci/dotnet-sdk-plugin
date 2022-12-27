@@ -155,6 +155,7 @@ public interface DotNetUtils {
    * Returns an array as long as it's not empty.
    *
    * @param array An array.
+   * @param <T>   The element type for the array.
    *
    * @return {@code array}, or {@code null} when it was empty.
    */
@@ -193,6 +194,7 @@ public interface DotNetUtils {
    * Returns the single item from an array.
    *
    * @param array An array.
+   * @param <T>   The element type for the array.
    *
    * @return The sole item contained in {@code array}, or {@code null} when it did not contain exactly one item.
    */
