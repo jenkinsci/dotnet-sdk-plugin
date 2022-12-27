@@ -1,0 +1,20 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form" xmlns:s="jelly:stapler">
+
+  <f:entry title="${%Cache Location}" field="cacheLocation">
+    <f:select default="all"/>
+  </f:entry>
+
+  <f:entry title="${%Operation}" field="operation">
+    <f:select default="list"/>
+  </f:entry>
+
+  <f:advanced title="${descriptor.moreOptions}">
+
+    <f:entry title="${%Force English Output}" field="forceEnglishOutput">
+      <f:checkbox/>
+    </f:entry>
+
+  </f:advanced>
+
+</j:jelly>
