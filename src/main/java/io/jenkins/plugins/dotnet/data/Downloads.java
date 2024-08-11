@@ -200,10 +200,30 @@ public final class Downloads extends DownloadService.Downloadable {
     Version(@NonNull JSONObject json) {
       {
         final Object value = json.get("name");
-        if (value instanceof String)
+        if (value instanceof String) {
           this.name = (String) value;
-        else
+        }
+        else {
           throw new JSONException("Version object lacks 'name' property.");
+        }
+      }
+      {
+        final Object value = json.get("type");
+        if (value instanceof String) {
+          ReleaseType type;
+          try {
+            type = Enum.valueOf(ReleaseType.class, (String) value);
+          }
+          catch (Throwable t) {
+            Downloads.LOGGER.warning(String.format("Encountered an unsupported release type ('%s') for version %s.", value,
+              this.name));
+            type = ReleaseType.UNKNOWN;
+          }
+          this.type = type;
+        }
+        else {
+          this.type = null;
+        }
       }
       {
         final Object value = json.get("status");
@@ -213,28 +233,73 @@ public final class Downloads extends DownloadService.Downloadable {
             status = Enum.valueOf(Status.class, (String) value);
           }
           catch (Throwable t) {
-            Downloads.LOGGER.warning(String.format("Encountered an unsupported version status ('%s').", value));
+            Downloads.LOGGER.warning(String.format("Encountered an unsupported version status ('%s') for version %s.", value,
+              this.name));
             status = Status.UNKNOWN;
           }
           this.status = status;
         }
-        else
+        else {
           this.status = Status.UNKNOWN;
+        }
       }
       {
         final Object value = json.get("endOfSupport");
-        if (value instanceof String)
+        if (value instanceof String) {
           this.endOfSupport = (String) value;
-        else
+        }
+        else {
           this.endOfSupport = null;
+        }
       }
       this.releases = Downloads.readJsonObjectArray(json, "releases", Release::new, r -> r.name);
     }
+
+    //region Release Type Enum
+
+    public enum ReleaseType {
+
+      /** A long-term-support release. */
+      LTS,
+
+      /** A short-term-support release. */
+      STS,
+
+      /** An unknown release type. */
+      UNKNOWN
+
+      ;
+
+      /**
+       * Maps this release type to a descriptive string.
+       *
+       * @return A string describing this release type.
+       */
+      @NonNull
+      public String getDisplayName() {
+        switch (this) {
+          case LTS:
+            return Messages.Downloads_Version_Type_LTS();
+          case STS:
+            return Messages.Downloads_Version_Type_STS();
+          case UNKNOWN:
+            return Messages.Downloads_Version_Type_Unknown();
+          default:
+            return this.toString();
+        }
+      }
+
+    }
+
+    //endregion
 
     //region Status Enum
 
     /** The support status of a .NET version. */
     public enum Status {
+
+      /** This version is current and supported; a separate release type indicates its support level. */
+      ACTIVE,
 
       /** This version is current and supported. */
       CURRENT,
@@ -267,6 +332,8 @@ public final class Downloads extends DownloadService.Downloadable {
       @NonNull
       public String getDisplayName() {
         switch (this) {
+          case ACTIVE:
+            return Messages.Downloads_Version_Status_Active();
           case CURRENT:
             return Messages.Downloads_Version_Status_Current();
           case EOL:
@@ -290,21 +357,24 @@ public final class Downloads extends DownloadService.Downloadable {
 
     //endregion
 
+    /** The date on which support for this version ends (or ended), if known. */
+    @CheckForNull
+    public String endOfSupport;
+
     /** The name of the version. */
     @NonNull
     public final String name;
+
+    /** The releases for this version. */
+    @NonNull
+    private final Map<String, Release> releases;
 
     /** The status of the version. */
     @NonNull
     public final Status status;
 
-    /** The date on which support for this version ends (or ended), if known. */
     @CheckForNull
-    public String endOfSupport;
-
-    /** The releases for this version. */
-    @NonNull
-    private final Map<String, Release> releases;
+    public final ReleaseType type;
 
     /**
      * Maps this version to a descriptive string.
@@ -314,10 +384,24 @@ public final class Downloads extends DownloadService.Downloadable {
     @Override
     @NonNull
     public String getDisplayName() {
-      if (this.endOfSupport != null)
-        return Messages.Downloads_Version_DisplayNameWithDate(this.name, this.status.getDisplayName(), this.endOfSupport);
-      else
-        return Messages.Downloads_Version_DisplayName(this.name, this.status.getDisplayName());
+      final String status = this.status.getDisplayName();
+      final String type = this.type == null ? null : this.type.getDisplayName();
+      if (this.endOfSupport != null) {
+        if (type != null) {
+          return Messages.Downloads_Version_DisplayNameWithTypeAndDate(this.name, status, type, this.endOfSupport);
+        }
+        else {
+          return Messages.Downloads_Version_DisplayNameWithDate(this.name, status, this.endOfSupport);
+        }
+      }
+      else {
+        if (type != null) {
+          return Messages.Downloads_Version_DisplayNameWithType(this.name, status, type);
+        }
+        else {
+          return Messages.Downloads_Version_DisplayName(this.name, status);
+        }
+      }
     }
 
     /**
